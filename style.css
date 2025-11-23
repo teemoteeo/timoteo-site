@@ -55,7 +55,7 @@
   
 .portrait-hover {
   object-fit: cover;
-  object-position: 50% 52%;
+  object-position: 70% 52%;
   opacity: 0;
   transition: opacity 0.25s ease, transform 0.25s ease;
   transform: scale(1.12);
