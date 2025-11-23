@@ -49,13 +49,16 @@
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
-	object-position: 50% 30%;
+	object-position: 50% 28%;
 	transition: opacity 0.25s ease;
   }
   
-  .portrait-hover {
-	opacity: 0;
-  }
+.portrait-hover {
+  object-fit: cover;
+  object-position: 50% 28%;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
   
   .portrait-wrapper:hover .portrait-hover {
 	opacity: 1;
