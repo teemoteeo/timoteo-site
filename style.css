@@ -118,28 +118,21 @@ a:hover {
   margin: 1rem 0;
 }
 
-.tags,
-.contact {
-  list-style: none;
-  padding: 0;
-  margin: 1rem 0 1.5rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  text-transform: lowercase;
-  letter-spacing: 0.08em;
+.tags {
+  margin-bottom: 1rem;
 }
 
-.tags li,
-.contact li {
-  white-space: nowrap;
+.contact {
+  margin-bottom: 1.5rem;
+  display: grid;
+  gap: 0.35rem;
 }
 
 .contact a {
-  border-bottom: none;
-  text-decoration: underline;
-  text-decoration-thickness: var(--link-underline);
-  text-underline-offset: 0.2em;
+  width: fit-content;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  border-bottom-width: calc(var(--link-underline) * 1.25);
 }
 
 .subsection {
