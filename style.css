@@ -1,7 +1,11 @@
+:root {
+        --terminal-green: #00ff00;
+}
+
 * {
-	box-sizing: border-box;
-	margin: 0;
-	padding: 0;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
   }
   
   body {
@@ -77,8 +81,13 @@
   }
   
   .section-label {
-	margin-top: 1.5rem;
-	margin-bottom: 0.5rem;
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+  }
+
+  .terminal-green {
+        color: var(--terminal-green);
+        border-color: var(--terminal-green);
   }
   
   .project-list {
