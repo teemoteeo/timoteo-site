@@ -23,9 +23,9 @@
   }
 
   .page {
-        max-width: 800px;
+        max-width: 650px;
         margin: 0;
-        padding: 3rem 2rem;
+        padding: 3rem 0 3rem 3rem;
   }
 
   .portrait-wrapper {
@@ -91,27 +91,30 @@
   }
 
   .project-item {
-	margin-bottom: 1.5rem;
-	padding: 1rem;
+	margin-bottom: 1rem;
+	padding: 0.75rem;
 	background: #252526;
 	border-left: 2px solid #569cd6;
+	max-width: 550px;
   }
 
   .project-title {
 	color: #dcdcaa;
 	font-weight: bold;
 	margin-bottom: 0.25rem;
+	font-size: 0.95rem;
   }
 
   .project-year {
 	color: #6a9955;
-	font-size: 0.85rem;
+	font-size: 0.8rem;
   }
 
   .project-description {
 	color: #d4d4d4;
-	font-size: 0.9rem;
-	margin-top: 0.5rem;
+	font-size: 0.85rem;
+	margin-top: 0.4rem;
+	line-height: 1.5;
   }
 
   .project-list {
@@ -137,6 +140,7 @@
 	background: #252526;
 	padding: 0.75rem 0;
 	border-left: 3px solid #569cd6;
+	max-width: 550px;
   }
 
   .tags {
