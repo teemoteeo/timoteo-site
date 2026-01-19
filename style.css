@@ -23,26 +23,24 @@
   }
 
   .page {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 2rem;
-        display: grid;
-        grid-template-columns: 280px 1fr;
-        gap: 4rem;
-        align-items: start;
-  }
-
-  .sidebar {
-        position: sticky;
-        top: 2rem;
+        max-width: 800px;
+        margin: 0;
+        padding: 3rem 2rem;
   }
 
   .portrait-wrapper {
         position: relative;
-        width: 170px;
-        height: 170px;
+        width: 150px;
+        height: 150px;
         overflow: hidden;
+        margin-bottom: 2rem;
+  }
+
+  h1 {
+        font-size: 1.5rem;
+        font-weight: normal;
         margin-bottom: 1.5rem;
+        color: #d4d4d4;
   }
 
   .portrait {
@@ -71,29 +69,17 @@
 	opacity: 0;
   }
 
-  .sidebar h1 {
-        font-size: 1.1rem;
-        font-weight: normal;
-        margin-bottom: 2rem;
-  }
-  
-  .main-content {
-        font-size: 0.95rem;
-  }
-
-  .main-content p {
+  p {
         margin-bottom: 1rem;
+        line-height: 1.7;
   }
 
   .section-label {
-	margin-top: 2rem;
-	margin-bottom: 0.75rem;
+	margin-top: 3rem;
+	margin-bottom: 1rem;
 	font-weight: normal;
 	color: #6a9955;
-  }
-
-  .sidebar .section-label {
-        margin-top: 1.5rem;
+	font-size: 1rem;
   }
 
   .subsection {
@@ -140,10 +126,6 @@
 	position: relative;
   }
 
-  .sidebar .project-list li {
-        font-size: 0.9rem;
-  }
-
   .cv {
 	margin: 1.5rem 0;
   }
@@ -180,50 +162,32 @@
   }
 
   .contact {
-	margin-bottom: 1.5rem;
+	margin: 2rem 0;
   }
 
   .contact a {
         display: block;
-        margin-bottom: 0.25rem;
+        margin-bottom: 0.5rem;
+        line-height: 1.8;
   }
 
-  .destroy-btn {
-        display: inline-block;
-        padding: 0.5rem 1rem;
-        background: #252526;
-        color: #ce9178;
-        border: 1px solid #569cd6;
-        cursor: pointer;
-        font-family: inherit;
-        font-size: 0.9rem;
-        margin-top: 2rem;
-        transition: all 0.2s;
-  }
-
-  .destroy-btn:hover {
-        background: #569cd6;
-        color: #1e1e1e;
-  }
 
   strong {
 	color: #4ec9b0;
   }
   
   /* responsive */
-  @media (max-width: 900px) {
+  @media (max-width: 768px) {
         .page {
-          grid-template-columns: 1fr;
-          gap: 2rem;
-          padding: 1.5rem;
-        }
-
-        .sidebar {
-          position: static;
+          padding: 2rem 1.5rem;
         }
 
         .portrait-wrapper {
-          width: 150px;
-          height: 150px;
+          width: 120px;
+          height: 120px;
+        }
+
+        h1 {
+          font-size: 1.3rem;
         }
   }
