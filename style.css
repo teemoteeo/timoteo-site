@@ -28,8 +28,8 @@
 
   .layout-grid {
         display: grid;
-        grid-template-columns: 300px 1fr;
-        gap: 4rem;
+        grid-template-columns: 180px 1fr;
+        gap: 2rem;
         max-width: 1200px;
         margin: 0 auto;
   }
@@ -45,9 +45,10 @@
 
   .portrait-wrapper {
         position: relative;
-        width: 100%;
-        height: 300px;
+        width: 135px;
+        height: 135px;
         overflow: hidden;
+        border-radius: 50%;
   }
 
   .portrait {
@@ -74,6 +75,32 @@
 
   .portrait-wrapper:hover .portrait-default {
 	opacity: 0;
+  }
+
+  .experiments-nav {
+        font-size: 0.9rem;
+  }
+
+  .experiments-nav h3 {
+        color: #ce9178;
+        font-weight: normal;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+  }
+
+  .experiments-nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+  }
+
+  .experiments-nav li {
+        margin-bottom: 0.25rem;
+  }
+
+  .experiments-nav a {
+        color: #569cd6;
+        font-size: 0.85rem;
   }
 
   .intro-box {
@@ -138,6 +165,7 @@
 	display: flex;
         flex-direction: column;
         gap: 0.3rem;
+        margin-bottom: 2rem;
   }
 
   .contact a {
@@ -211,8 +239,9 @@
         }
 
         .portrait-wrapper {
-          width: 100%;
-          height: 250px;
+          width: 120px;
+          height: 120px;
+          margin: 0 auto;
         }
 
         .intro-box h1 {
