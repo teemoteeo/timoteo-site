@@ -28,7 +28,7 @@
 
   .layout-grid {
         display: grid;
-        grid-template-columns: 180px 1fr;
+        grid-template-columns: 90px 1fr;
         gap: 2rem;
         max-width: 1200px;
         margin: 0 auto;
@@ -40,13 +40,13 @@
         height: fit-content;
         display: flex;
         flex-direction: column;
-        gap: 1.5rem;
+        gap: 1rem;
   }
 
   .portrait-wrapper {
         position: relative;
-        width: 135px;
-        height: 135px;
+        width: 70px;
+        height: 70px;
         overflow: hidden;
         border-radius: 50%;
   }
@@ -78,13 +78,14 @@
   }
 
   .experiments-nav {
-        font-size: 0.9rem;
+        font-size: 0.75rem;
+        word-wrap: break-word;
   }
 
   .experiments-nav h3 {
         color: #ce9178;
         font-weight: normal;
-        font-size: 0.9rem;
+        font-size: 0.8rem;
         margin-bottom: 0.5rem;
   }
 
@@ -100,7 +101,7 @@
 
   .experiments-nav a {
         color: #569cd6;
-        font-size: 0.85rem;
+        font-size: 0.75rem;
   }
 
   .intro-box {
@@ -229,7 +230,8 @@
         }
 
         .layout-grid {
-          grid-template-columns: 1fr;
+          display: flex;
+          flex-direction: column;
           gap: 2rem;
         }
 
@@ -239,8 +241,8 @@
         }
 
         .portrait-wrapper {
-          width: 120px;
-          height: 120px;
+          width: 80px;
+          height: 80px;
           margin: 0 auto;
         }
 
