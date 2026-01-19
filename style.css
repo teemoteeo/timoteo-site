@@ -3,40 +3,46 @@
 	margin: 0;
 	padding: 0;
   }
-  
+
   body {
-	background: #000;
-	color: #f5f5f5;
+	background: #f5f5f0;
+	color: #333;
 	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
 	  monospace;
+	font-size: 14px;
+	line-height: 1.6;
   }
-  
+
   a {
-        color: #f5f5f5;
+        color: #0066cc;
         text-decoration: none;
-        border-bottom: 1px solid #f5f5f5;
   }
 
   a:hover {
-        opacity: 0.8;
+        text-decoration: underline;
   }
 
   .page {
-        max-width: 960px;
-        margin: 3rem auto;
-        padding: 0 1.5rem 3rem;
-        display: block;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 4rem;
+        align-items: start;
+  }
+
+  .sidebar {
+        position: sticky;
+        top: 2rem;
   }
 
   .portrait-wrapper {
         position: relative;
-        width: 220px;
-        height: 220px;
+        width: 170px;
+        height: 170px;
         overflow: hidden;
-        border-radius: 50%;
-        float: left;
-        shape-outside: circle(50%);
-        margin: 0 2rem 1.5rem 0;
+        margin-bottom: 1.5rem;
   }
 
   .portrait {
@@ -48,7 +54,7 @@
 	object-position: 50% 28%;
 	transition: opacity 0.25s ease;
   }
-  
+
 .portrait-hover {
   object-fit: cover;
   object-position: 70% 52%;
@@ -56,74 +62,110 @@
   transition: opacity 0.25s ease, transform 0.25s ease;
   transform: scale(1.12);
 }
-  
+
   .portrait-wrapper:hover .portrait-hover {
 	opacity: 1;
   }
-  
+
   .portrait-wrapper:hover .portrait-default {
 	opacity: 0;
   }
+
+  .sidebar h1 {
+        font-size: 1.1rem;
+        font-weight: normal;
+        margin-bottom: 2rem;
+  }
   
-  .right {
+  .main-content {
         font-size: 0.95rem;
-        line-height: 1.6;
-        text-indent: 0;
   }
-  
-  .name {
-	font-size: 1.6rem;
-	margin-bottom: 1rem;
+
+  .main-content p {
+        margin-bottom: 1rem;
   }
-  
+
   .section-label {
-	margin-top: 1.5rem;
-	margin-bottom: 0.5rem;
+	margin-top: 2rem;
+	margin-bottom: 0.75rem;
+	font-weight: normal;
   }
-  
+
+  .sidebar .section-label {
+        margin-top: 1.5rem;
+  }
+
   .project-list {
 	list-style: none;
-	margin-bottom: 1rem;
-	padding-left: 1rem;
+	margin-bottom: 1.5rem;
+	padding-left: 0;
   }
-  
+
   .project-list li {
-	margin-bottom: 0.25rem;
+	margin-bottom: 0.5rem;
+	padding-left: 1.2rem;
+	position: relative;
   }
-  
-  .destroy {
-	margin-top: 1.5rem;
-	margin-bottom: 0.75rem;
+
+  .sidebar .project-list li {
+        font-size: 0.9rem;
   }
-  
+
   .cv {
-	margin: 1rem 0;
+	margin: 1.5rem 0;
   }
-  
+
   .tags {
 	margin-bottom: 1rem;
+	font-size: 0.9rem;
   }
-  
+
   .contact {
 	margin-bottom: 1.5rem;
   }
-  
+
+  .contact a {
+        display: block;
+        margin-bottom: 0.25rem;
+  }
+
   .subsection {
-	margin-top: 2rem;
-	margin-bottom: 0.5rem;
+	margin-top: 2.5rem;
+	margin-bottom: 1rem;
+	font-size: 1rem;
+	font-weight: normal;
+  }
+
+  .destroy-btn {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background: #ddd;
+        color: #333;
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 0.9rem;
+        margin-top: 2rem;
+  }
+
+  .destroy-btn:hover {
+        background: #ccc;
   }
   
   /* responsive */
-  @media (max-width: 700px) {
+  @media (max-width: 900px) {
         .page {
-          margin-top: 2rem;
+          grid-template-columns: 1fr;
+          gap: 2rem;
+          padding: 1.5rem;
+        }
+
+        .sidebar {
+          position: static;
         }
 
         .portrait-wrapper {
-          width: 180px;
-          height: 180px;
-          float: none;
-          shape-outside: none;
-          margin: 0 auto 1rem auto;
+          width: 150px;
+          height: 150px;
         }
   }
