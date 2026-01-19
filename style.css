@@ -9,7 +9,7 @@
 	color: #d4d4d4;
 	font-family: 'Consolas', 'Courier New', monospace;
 	font-size: 14px;
-	line-height: 1.6;
+	line-height: 1.5;
   }
 
   a {
@@ -25,14 +25,14 @@
   .page {
         max-width: 1000px;
         margin: 0;
-        padding: 3rem 0 3rem 3rem;
+        padding: 2rem 0 2rem 2rem;
   }
 
   .top-section {
         display: grid;
-        grid-template-columns: 100px 450px 300px;
-        gap: 1.5rem;
-        margin-bottom: 3rem;
+        grid-template-columns: 100px 450px 280px;
+        gap: 1rem;
+        margin-bottom: 2rem;
         align-items: start;
   }
 
@@ -45,39 +45,39 @@
 
   .intro-box {
         border: 2px solid #569cd6;
-        padding: 1.5rem;
+        padding: 1rem;
         background: #252526;
   }
 
   .intro-box h1 {
         font-size: 1.2rem;
         font-weight: normal;
-        margin-bottom: 1rem;
+        margin-bottom: 0.75rem;
         color: #d4d4d4;
   }
 
   .intro-box p {
-        margin-bottom: 0.75rem;
+        margin-bottom: 0.5rem;
         font-size: 0.9rem;
-        line-height: 1.6;
+        line-height: 1.5;
   }
 
   .intro-box .tags-container {
-        margin: 1rem 0 0 0;
+        margin: 0.75rem 0 0 0;
   }
 
   .passions-box {
         border: 2px solid #ce9178;
-        padding: 2rem;
+        padding: 1.25rem;
         background: #252526;
         display: flex;
         align-items: center;
         justify-content: center;
-        min-height: 200px;
+        min-height: 120px;
   }
 
   .passions-box h2 {
-        font-size: 2rem;
+        font-size: 1.5rem;
         font-weight: normal;
         color: #ce9178;
         letter-spacing: 0.1em;
@@ -86,7 +86,7 @@
   h1 {
         font-size: 1.5rem;
         font-weight: normal;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1rem;
         color: #d4d4d4;
   }
 
@@ -117,29 +117,29 @@
   }
 
   p {
-        margin-bottom: 1rem;
-        line-height: 1.7;
+        margin-bottom: 0.75rem;
+        line-height: 1.5;
   }
 
   .section-label {
-	margin-top: 3rem;
-	margin-bottom: 1rem;
+	margin-top: 2rem;
+	margin-bottom: 0.75rem;
 	font-weight: normal;
 	color: #6a9955;
 	font-size: 1rem;
   }
 
   .subsection {
-	margin-top: 2.5rem;
-	margin-bottom: 1rem;
+	margin-top: 1.5rem;
+	margin-bottom: 0.75rem;
 	font-size: 1.1rem;
 	font-weight: normal;
 	color: #4ec9b0;
   }
 
   .project-item {
-	margin-bottom: 1rem;
-	padding: 0.75rem;
+	margin-bottom: 0.75rem;
+	padding: 0.6rem;
 	background: #252526;
 	border-left: 2px solid #569cd6;
 	max-width: 550px;
@@ -160,8 +160,8 @@
   .project-description {
 	color: #d4d4d4;
 	font-size: 0.85rem;
-	margin-top: 0.4rem;
-	line-height: 1.5;
+	margin-top: 0.3rem;
+	line-height: 1.4;
   }
 
   .project-list {
@@ -177,15 +177,15 @@
   }
 
   .cv {
-	margin: 1.5rem 0;
+	margin: 1rem 0;
   }
 
   .tags-container {
 	overflow: hidden;
-	margin: 2rem 0;
+	margin: 0.75rem 0 0 0;
 	position: relative;
 	background: #252526;
-	padding: 0.75rem 0;
+	padding: 0.6rem 0;
 	border-left: 3px solid #569cd6;
 	max-width: 550px;
   }
@@ -213,13 +213,13 @@
   }
 
   .contact {
-	margin: 2rem 0;
+	margin: 1.25rem 0;
   }
 
   .contact a {
         display: block;
-        margin-bottom: 0.5rem;
-        line-height: 1.8;
+        margin-bottom: 0.3rem;
+        line-height: 1.6;
   }
 
 
