@@ -23,17 +23,64 @@
   }
 
   .page {
-        max-width: 650px;
+        max-width: 1000px;
         margin: 0;
         padding: 3rem 0 3rem 3rem;
   }
 
+  .top-section {
+        display: grid;
+        grid-template-columns: 100px 450px 300px;
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+        align-items: start;
+  }
+
   .portrait-wrapper {
         position: relative;
-        width: 150px;
-        height: 150px;
+        width: 100px;
+        height: 100px;
         overflow: hidden;
-        margin-bottom: 2rem;
+  }
+
+  .intro-box {
+        border: 2px solid #569cd6;
+        padding: 1.5rem;
+        background: #252526;
+  }
+
+  .intro-box h1 {
+        font-size: 1.2rem;
+        font-weight: normal;
+        margin-bottom: 1rem;
+        color: #d4d4d4;
+  }
+
+  .intro-box p {
+        margin-bottom: 0.75rem;
+        font-size: 0.9rem;
+        line-height: 1.6;
+  }
+
+  .intro-box .tags-container {
+        margin: 1rem 0 0 0;
+  }
+
+  .passions-box {
+        border: 2px solid #ce9178;
+        padding: 2rem;
+        background: #252526;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 200px;
+  }
+
+  .passions-box h2 {
+        font-size: 2rem;
+        font-weight: normal;
+        color: #ce9178;
+        letter-spacing: 0.1em;
   }
 
   h1 {
@@ -186,9 +233,22 @@
           padding: 2rem 1.5rem;
         }
 
+        .top-section {
+          grid-template-columns: 1fr;
+          gap: 1rem;
+        }
+
         .portrait-wrapper {
-          width: 120px;
-          height: 120px;
+          width: 100px;
+          height: 100px;
+        }
+
+        .passions-box {
+          min-height: 150px;
+        }
+
+        .passions-box h2 {
+          font-size: 1.5rem;
         }
 
         h1 {
