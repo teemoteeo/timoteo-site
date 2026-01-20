@@ -9,14 +9,14 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-dark: #1e1e1e;
-      --text-primary: #d4d4d4;
-      --text-muted: #6e6e6e;
-      --accent-green: #23d18b;
-      --accent-red: #f14c4c;
-      --accent-blue: #3b8eea;
-      --accent-yellow: #e2e210;
-      --accent-cyan: #29b8db;
+      --bg-dark: #000000;
+      --text-primary: #ffffff;
+      --text-muted: #ffffff;
+      --accent-green: #ffffff;
+      --accent-red: #ffffff;
+      --accent-blue: #ffffff;
+      --accent-yellow: #ffffff;
+      --accent-cyan: #ffffff;
       --border-color: #3c3c3c;
     }
 
@@ -42,9 +42,8 @@
 
     /* ========== SIDEBAR ========== */
     .sidebar {
-      width: 280px;
-      border-right: 1px solid var(--border-color);
-      padding: 32px 24px;
+      width: 340px;
+      padding: 35px 24px 32px 35px;
       position: fixed;
       left: 0;
       top: 0;
@@ -55,23 +54,35 @@
     }
 
     .profile {
-      text-align: center;
+      text-align: left;
       margin-bottom: 32px;
     }
 
-    .profile-pic {
-      width: 120px;
-      height: 120px;
-      border-radius: 8px;
-      object-fit: cover;
-      filter: grayscale(0.5);
-      transition: filter 0.3s ease;
-      display: block;
-      margin: 0 auto 16px;
+    .profile-pic-container {
+      position: relative;
+      width: 240px;
+      height: 240px;
+      margin: 0 0 16px;
     }
 
-    .profile-pic:hover {
-      filter: grayscale(0);
+    .profile-pic {
+      width: 240px;
+      height: 240px;
+      border-radius: 0;
+      object-fit: cover;
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .profile-pic-hover {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .profile-pic-container:hover .profile-pic-hover {
+      opacity: 1;
     }
 
     .profile-name {
@@ -79,6 +90,35 @@
       font-weight: 500;
       color: var(--text-primary);
       line-height: 1.4;
+    }
+
+    .profile-born {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .age-clock {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .sidebar-contacts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      margin-bottom: 24px;
+      font-size: 12px;
+    }
+
+    .sidebar-contacts a {
+      color: #3b8eea;
+      text-decoration: none;
+    }
+
+    .sidebar-contacts a:hover {
+      text-decoration: underline;
     }
 
     .nav-section {
@@ -105,10 +145,6 @@
       gap: 8px;
     }
 
-    .nav-list li.featured::before {
-      content: '📌';
-      font-size: 10px;
-    }
 
     .project-name {
       color: var(--text-primary);
@@ -142,7 +178,7 @@
 
     /* ========== MAIN CONTENT ========== */
     .main-content {
-      margin-left: 280px;
+      margin-left: 340px;
       padding: 48px 64px;
       flex: 1;
       overflow-y: auto;
@@ -180,16 +216,27 @@
       color: var(--accent-green);
     }
 
-    .interest-list {
-      list-style: none;
-      padding-left: 16px;
+    .ticker-wrapper {
+      overflow: hidden;
       margin-top: 8px;
     }
 
-    .interest-list li::before {
-      content: '•';
-      color: var(--accent-green);
+    .interest-list {
+      list-style: none;
+      display: flex;
+      gap: 24px;
+      white-space: nowrap;
+      animation: scroll 10s linear infinite;
+    }
+
+    .interest-list li::after {
+      content: ',';
       margin-right: 8px;
+    }
+
+    @keyframes scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
     }
 
     .contact-list {
@@ -292,13 +339,26 @@
     <!-- SIDEBAR -->
     <aside class="sidebar">
       <div class="profile">
-        <img src="timoteo-1.jpg" alt="Timoteo Costantini Scala" class="profile-pic">
+        <div class="profile-pic-container">
+          <img src="timoteo-1.jpg" alt="Timoteo Costantini Scala" class="profile-pic">
+          <img src="timoteo-2.jpg" alt="Timoteo Costantini Scala" class="profile-pic profile-pic-hover">
+        </div>
         <div class="profile-name">Timoteo Costantini Scala</div>
+        <div class="profile-born">born: 2003 · Udine, Italy</div>
+        <div class="age-clock" id="age-clock"></div>
+      </div>
+
+      <div class="sidebar-contacts">
+        <a href="CURRICULUM.JPG" target="_blank">CV</a>
+        <a href="mailto:timoteocostantiniscala@gmail.com">email</a>
+        <a href="https://github.com/teemoteeo" target="_blank">github</a>
+        <a href="https://www.instagram.com/teemoteeo" target="_blank">instagram</a>
+        <a href="https://www.linkedin.com/in/timoteo-costantini-scala-06726a2a4/" target="_blank">linkedin</a>
       </div>
 
       <nav>
         <div class="nav-section">
-          <div class="nav-header">>>> code</div>
+          <div class="nav-header">>>> 📌 code</div>
           <ul class="nav-list">
             <li class="featured">
               <span class="project-name">chefdotcom</span>
@@ -320,7 +380,7 @@
         </div>
 
         <div class="nav-section">
-          <div class="nav-header">>>> pseudo-code</div>
+          <div class="nav-header">>>> 📌 pseudo-code</div>
           <ul class="nav-list">
             <li class="featured">
               <span class="project-name">fine dining</span>
@@ -338,15 +398,12 @@
         </div>
       </nav>
 
-      <button class="destroy-btn" onclick="alert('Session terminated. Goodbye! 👋')">destroy</button>
     </aside>
 
     <!-- MAIN CONTENT -->
     <main class="main-content">
       <!-- BIO -->
       <section class="section">
-        <h2 class="section-title">$ whoami</h2>
-        <div class="bio-line birth-year">born: 2003 · Udine, Italy</div>
         <div class="bio-line tagline">tech founder in training · hospitality · developer in progress</div>
 
         <div class="bio-line">
@@ -356,29 +413,26 @@
           Background in <strong>fine dining</strong> and <strong>fashion</strong> (runway, shooting).
         </div>
 
-        <ul class="interest-list">
-          <li>explorer</li>
-          <li>waiter & host</li>
-          <li>model</li>
-          <li>nerd</li>
-          <li>aspiring tech founder</li>
-          <li>note-taker</li>
-          <li>traveller</li>
-          <li>restaurant kid</li>
-        </ul>
-      </section>
-
-      <!-- CONTACTS -->
-      <section class="section">
-        <h2 class="section-title">$ contact --list</h2>
-        <ul class="contact-list">
-          <li><a href="mailto:timoteocostantiniscala@gmail.com">timoteocostantiniscala@gmail.com</a></li>
-          <li><a href="https://github.com/teemoteeo" target="_blank">github.com/teemoteeo</a></li>
-          <li><a href="https://www.instagram.com/teemoteeo" target="_blank" class="muted">instagram.com/teemoteeo</a></li>
-          <li><a href="https://www.linkedin.com/in/timoteo-costantini-scala-06726a2a4/" target="_blank" class="muted">linkedin</a></li>
-        </ul>
-
-        <div class="signature">Cheers, Timoteo</div>
+        <div class="ticker-wrapper">
+          <ul class="interest-list">
+            <li>explorer</li>
+            <li>waiter & host</li>
+            <li>model</li>
+            <li>nerd</li>
+            <li>aspiring tech founder</li>
+            <li>note-taker</li>
+            <li>traveller</li>
+            <li>restaurant kid</li>
+            <li>explorer</li>
+            <li>waiter & host</li>
+            <li>model</li>
+            <li>nerd</li>
+            <li>aspiring tech founder</li>
+            <li>note-taker</li>
+            <li>traveller</li>
+            <li>restaurant kid</li>
+          </ul>
+        </div>
       </section>
 
       <!-- AWARDS & ACHIEVEMENTS -->
@@ -452,5 +506,35 @@
       </section>
     </main>
   </div>
+
+  <script>
+    function updateAge() {
+      const birthDate = new Date(2003, 0, 9, 15, 45, 0);
+      const now = new Date();
+
+      let years = now.getFullYear() - birthDate.getFullYear();
+      let months = now.getMonth() - birthDate.getMonth();
+      let days = now.getDate() - birthDate.getDate();
+      let hours = now.getHours() - birthDate.getHours();
+      let minutes = now.getMinutes() - birthDate.getMinutes();
+      let seconds = now.getSeconds() - birthDate.getSeconds();
+
+      if (seconds < 0) { seconds += 60; minutes--; }
+      if (minutes < 0) { minutes += 60; hours--; }
+      if (hours < 0) { hours += 24; days--; }
+      if (days < 0) {
+        const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+        days += prevMonth.getDate();
+        months--;
+      }
+      if (months < 0) { months += 12; years--; }
+
+      document.getElementById('age-clock').textContent =
+        years + 'y ' + months + 'm ' + days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's';
+    }
+
+    updateAge();
+    setInterval(updateAge, 1000);
+  </script>
 </body>
 </html>
