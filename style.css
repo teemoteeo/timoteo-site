@@ -5,7 +5,7 @@
 }
 
 body {
-  background: #000;
+  background: #000000;
   color: #fff;
   font-family: 'Consolas', monospace;
   font-size: 14px;
@@ -14,7 +14,7 @@ body {
 }
 
 a {
-  color: #0f0;
+  color: #fff;
 }
 
 a:hover {
@@ -22,7 +22,7 @@ a:hover {
 }
 
 strong, h1, h2, h3, .project-title {
-  color: #0f0;
+  color: #fff;
 }
 
 .layout-grid {
@@ -76,12 +76,12 @@ strong, h1, h2, h3, .project-title {
 }
 
 .section-label {
-  color: #0f0;
+  color: #fff;
   margin: 2rem 0 1rem;
 }
 
 .tags {
-  color: #0f0;
+  color: #fff;
   white-space: nowrap;
   animation: slide 30s linear infinite;
   padding-left: 100%;
