@@ -1,95 +1,225 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang='en-us'>
+<!-- the creation of this portfolio was totally inspired by https://www.markfingerhut.com and https://matildee3.github.io/matilde/ -->
+
 <head>
-  <meta charset="UTF-8" />
-  <title>Timoteo Costantini Scala</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="style.css" />
+    <meta charset='utf-8'>
+    <title>timoteo costantini scala</title>
+
+
+    <link rel='stylesheet' href='style/reset.css' type='text/css' />
+    <link rel='stylesheet' href='style/base.css' type='text/css' />
+    <link rel='stylesheet' href='style/style.css' type='text/css' />
+    <style type='text/css'>
+        #index {
+            width: 350px;
+        }
+
+        #exhibit {
+            margin-left: 350px;
+        }
+
+        a {
+            pointer-events: auto !important;
+        }
+
+        #index,
+        #exhibit {
+            font-size: 14px;
+        }
+
+        #index,
+        #exhibit {
+            line-height: 16px;
+        }
+
+        .container {
+            padding-top: 27px;
+        }
+
+        .container {
+            padding-left: 27px;
+        }
+
+
+        #index,
+        #exhibit {
+            color: #000000;
+            font-family: DejaVu;
+        }
+
+
+
+        #index ul.section span.section_title,
+        #index ul.section span.section_title a,
+        #index ul.section span.subsection_title,
+        #index ul.section span.subsection_title a {
+            font-size: 15px;
+        }
+    </style>
+
+
+
 </head>
-<body>
-  <div class="page">
-    <div class="layout-grid">
-      <aside class="sidebar">
-        <div class="portrait-wrapper">
-          <img src="timoteo-1.jpg" alt="timoteo" class="portrait portrait-default" />
-          <img src="timoteo-2.jpg" alt="timoteo hover" class="portrait portrait-hover" />
+
+<body class='exhibits section-1 exhibit-1 format-visual_index' style=" margin-bottom: 0px !important;">
+    <div id='index' style=" width: 350px;display: flex; flex-direction: column;">
+
+        <div class='container' style="height: 85%">
+
+            <div class='top'>
+                <p></p>
+                <div class='top' style="margin-bottom: 20px;">
+
+                    <div class="image-container">
+                        <img src="file/timoteo-1.jpg" alt="timoteo" class="normal-image">
+                        <img src="file/timoteo-2.jpg" alt="timoteo on hover" class="hover-image">
+                    </div>
+
+
+                </div>
+            </div>
+            <ul class='section active_section' id='section_1'>
+                <li>
+                    <span id='section_title_1' class='section_title active_section_title'>
+                        <a href='index.html' id='section_link_1'>
+                            <span class="text-original">Timoteo Costantini Scala</span>
+                            <span class="text-hover">About Me</span>
+                        </a>
+                    </span>
+                </li>
+            </ul>
+            <ul class='section' id='section_30'
+                style="padding-left: 10px; padding-top: 10px; height: 60%; overflow-y: auto;">
+                <p style="font-weight: bold;">>>> code </p>
+                <ul>
+                    <li class='exhibit_title'><a href='#'>📌 chefdotcom <small>[2024-present]</small></a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class='exhibit_title'><a href='#'>42 firenze projects <small>[2025]</small></a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class='exhibit_title'><a href='#'>productivity workflows with AI <small>[2024]</small></a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class='exhibit_title'><a href='#'>digital scriptures <small>[2023-present]</small></a></li>
+                </ul>
+
+                <p style="font-weight: bold; padding-top: 10px;">>>> coming soon</p>
+                <ul>
+                    <li class='exhibit_title'><a href='#'>more projects on the way...</a></li>
+                </ul>
+
+                </li>
+            </ul>
+
+            <div class='bot'></div>
+
+
         </div>
+        <button class="button" role="button">destroy</button>
+        <audio id="clickSound" src="file/click.mp3" preload="auto"></audio>
 
-        <nav class="experiments-nav">
-          <h3>>> coding experiments</h3>
-          <ul>
-            <li><a href="#">[coming soon]</a></li>
-          </ul>
-        </nav>
-      </aside>
+    </div>
 
-      <main class="feed">
-        <div class="intro-box">
-          <h1>Timoteo Costantini Scala</h1>
+    <div id='exhibit' style="overflow-x: hidden; display: flex; flex-direction: column; padding-bottom: 50px;">
+        <div class='container'>
 
-          <p>I was born in 2003 in Udine, Italy.</p>
-
-          <p>tech founder in training · hospitality · developer in progress</p>
-
-          <p>
-            Currently at <strong>42 Firenze</strong> (algorithms, low-level thinking, programming).
-            Background in <strong>fine dining</strong> and <strong>fashion</strong> (runway, shooting).
-          </p>
-
-          <div class="tags-container">
-            <p class="tags">
-              explorer • waiter • host • model • nerd • aspiring tech founder • note-taker • traveller • restaurant kid • student • teammate • boyfriend • friend • son • brother
+            <div class='top'><!-- --></div>
+            <!-- text and image -->
+            <p>I was born in 2003 in Udine, Italy.</p>
+            <br>
+            <p>tech founder in training - hospitality - developer in progress</p>
+            <p style="width: 650px;">Currently at <strong>42 Firenze</strong> (algorithms, low-level thinking, programming).
+                Background in <strong>fine dining</strong> and <strong>fashion</strong> (runway, shooting).</p>
+            <p><a href="file/CURRICULUM.JPG" target="_blank"><u>CV</u></a></p>
+            <div style="width: 100%; margin-top: 10px;">
+                <marquee behaviour="scroll" direction="left" style="box-sizing: border-box; margin: 0; padding: 0;">
+                    explorer · waiter · host · model · nerd · aspiring tech founder · note-taker · traveller · restaurant kid · student · teammate · boyfriend · friend · son · brother</marquee>
+            </div>
             </p>
-          </div>
+            </p>
+
+            <p> timoteocostantiniscala@gmail.com<br>
+                <a href="https://github.com/teemoteeo"
+                    onclick="event.stopPropagation(); event.preventDefault(); window.open(this.href, '_blank'); return false;">github</a><br />
+                <a href="https://www.instagram.com/teemoteeo"
+                    onclick="event.stopPropagation(); event.preventDefault(); window.open(this.href, '_blank'); return false;">instagram</a><br />
+                <a href="https://www.linkedin.com/in/timoteo-costantini-scala-06726a2a4/"
+                    onclick="event.stopPropagation(); event.preventDefault(); window.open(this.href, '_blank'); return false;">linkedin</a><br />
+                <a href="https://models.com/models/timoteo-scala?utm_source=ig&utm_medium=social&utm_content=link_in_bio"
+                    onclick="event.stopPropagation(); event.preventDefault(); window.open(this.href, '_blank'); return false;">models.com</a>
+            </p>
+
+            <p>Cheers, <br />
+                Timoteo</p>
+
+            <p style="font-size: 14px; margin-top: 70px; margin-bottom: 0px;">Projects:</p>
+
+            <p style="font-size: 12px; width: 95%; margin: 0px; ">chefdotcom</p>
+            <p style="font-size: 12px; width: 95%; margin: 0px; margin-left: 20px;">A digital stage for chefs to showcase their work, connect with food enthusiasts, and share culinary stories. Building a platform at the intersection of hospitality and technology.</p>
+
+            <p style="font-size: 12px; width: 95%; margin: 0px; margin-top: 10px;">42 Firenze</p>
+            <p style="font-size: 12px; width: 95%; margin: 0px; margin-left: 20px;">Deep dive into algorithms, low-level programming, and computer science fundamentals. Learning to think like a machine while solving complex problems.</p>
+
+            <p style="font-size: 12px; width: 95%; margin: 0px; margin-top: 10px;">productivity workflows with AI</p>
+            <p style="font-size: 12px; width: 95%; margin: 0px; margin-left: 20px;">Exploring how AI can be integrated into daily workflows. Experimenting with automation, code assistance, and creative problem-solving tools.</p>
+
+            <p style="font-size: 12px; width: 95%; margin: 0px; margin-top: 10px;">digital scriptures</p>
+            <p style="font-size: 12px; width: 95%; margin: 0px; margin-left: 20px;">Personal knowledge base and notes system. Capturing thoughts, learnings, and ideas as I navigate tech, hospitality, and life.</p>
+
+            <p style="font-size: 14px ; margin-top: 40px; margin-bottom: 0px;">Passions:</p>
+
+            <p style="font-size: 12px; width: 95%; margin: 0px; ">travel & exploration</p>
+            <p style="font-size: 12px; width: 95%; margin: 0px; margin-left: 20px">Constantly moving, discovering new places, cultures, and perspectives. Feeding curiosity and staying engaged.</p>
+
+
         </div>
 
-        <p class="cv">
-          <a href="CURRICULUM.JPG" target="_blank">CV</a>
-        </p>
 
-        <div class="contact">
-          <a href="mailto:timoteocostantiniscala@gmail.com">timoteocostantiniscala@gmail.com</a>
-          <a href="https://github.com/teemoteeo" target="_blank">github</a>
-          <a href="https://www.instagram.com/teemoteeo" target="_blank">instagram</a>
-          <a href="https://models.com/models/timoteo-scala?utm_source=ig&utm_medium=social&utm_content=link_in_bio" target="_blank">models.com</a>
-          <a href="https://www.linkedin.com/in/timoteo-costantini-scala-06726a2a4/" target="_blank">linkedin</a>
-        </div>
-
-        <h2 class="section-label">Projects</h2>
-
-    <div class="project-item">
-      <div class="project-title">chefdotcom</div>
-      <div class="project-year">[work in progress · 2024–present]</div>
-      <div class="project-description">A digital stage for chefs to showcase their work, connect with food enthusiasts, and share culinary stories. Building a platform at the intersection of hospitality and technology.</div>
+    </div>
     </div>
 
-    <div class="project-item">
-      <div class="project-title">42 Firenze</div>
-      <div class="project-year">[2025]</div>
-      <div class="project-description">Deep dive into algorithms, low-level programming, and computer science fundamentals. Learning to think like a machine while solving complex problems.</div>
-    </div>
 
-    <div class="project-item">
-      <div class="project-title">productivity workflows with AI</div>
-      <div class="project-year">[2024]</div>
-      <div class="project-description">Exploring how AI can be integrated into daily workflows. Experimenting with automation, code assistance, and creative problem-solving tools.</div>
-    </div>
-
-    <div class="project-item">
-      <div class="project-title">digital scriptures</div>
-      <div class="project-year">[2023–present]</div>
-      <div class="project-description">Personal knowledge base and notes system. Capturing thoughts, learnings, and ideas as I navigate tech, hospitality, and life.</div>
-    </div>
-
-    <h2 class="section-label">Passions</h2>
-
-        <div class="project-item">
-          <div class="project-title">travel & exploration</div>
-          <div class="project-year">[ongoing]</div>
-          <div class="project-description">Constantly moving, discovering new places, cultures, and perspectives. Feeding curiosity and staying engaged.</div>
-        </div>
-      </main>
-    </div>
-  </div>
 </body>
+<script src="js/destroy.js"></script>
+
 </html>
+
+
+<!--
+
+                                    +++                             ++++++
+                                  +++++++                         +++++++++
+                                 +++++++++                       +++++++++++
+                               ++++++++++++                    ++++++++++++++
+                              ++++++++++++++                   +++++++++++++++
+                              ++++++++++++++++                 +++++++++++++++++
+                             ++++++++++++++++++                +++    ++   +++++
+                            ++++++++++++++++++++                      ++
+                            ++++++++++++++++++++                       +
+                            ++++++   +++++++++++         ++++          ++
+                            +++        ++    ++        +++++++          +
+                                       ++            ++++++++++         ++
+                                       ++           +++++++++++         ++
+                                       ++          +++++++++++++         ++
+                                       ++         ++++++++++++++         ++
+                                       ++         +++++++++++++++         ++
+                                       ++        ++++++ ++++++++++         +
+                                       ++         ++++  ++   +++++         ++
+                                       ++               +                   +
+                                       ++               +                   ++
+                                      +++               +                   ++
+                                      ++               ++                    ++
+                                      ++               +                     ++
+                                      ++              ++                     +++
+                                     ++               +                       ++
+                                     ++              ++                       ++
+                                    ++              +++                       +++
+                                   +++             +++                        +++
+                                   +++             +++                        +++
+timoteo costantini scala
+-->
