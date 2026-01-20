@@ -1,0 +1,301 @@
+/**
+* CSS
+*
+* @version 2.0
+* @author Vaska
+*mark was here
+* There are also some obscure rules in base.css
+*matilde was here too :)
+*timoteo is now here :)
+*/
+
+@font-face {
+    font-family: 'DejaVu';
+    src: url('../font/DejaVuSansMono.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+	font-size: 16px;
+	font-family: 'DejaVu' 'Helvetica Neue', Arial, Helvetica, Verdana, sans-serif;
+	background: #ffffff;
+	color: #ffffff;
+	line-height: 1.4em;
+
+}
+
+/* link scheme */
+/* you can customize links further down the page too */
+
+a:link { text-decoration: none; color: #1122CC; }
+a:visited { text-decoration: none; color: gray; }
+a:hover { text-decoration: underline; color:#1122CC ;}
+a:active { text-decoration: none; color: #1122CC; }
+a img { border: none; }
+audio:focus { outline: none; }
+.exhibit_title a:link {
+  color: #000000; /* Black color for unvisited links */
+  text-decoration: none; /* Remove underline if desired */
+}
+
+.exhibit_title a:visited {
+  color: #858585; /* Gray color for visited links */
+  text-decoration: none; /* Remove underline if desired */
+}
+
+
+.exhibit_title a:active {
+  color: #000000; /* Keep black when active */
+  text-decoration: none; /* Remove underline if desired */
+}
+
+
+
+/* general styles */
+small { font-size: 9px; }
+code { font-family: monospace; }
+blockquote { padding-left: 9px; }
+
+/* headings */
+h1 { font-size: 16px; margin-bottom: 1em; font-weight: bold; }
+h2 { font-size: 16px; margin-bottom: 1em; font-weight: bold; }
+h3 { font-size: 16px; margin-bottom: 1em; }
+h4 { font-size: 16px; margin-bottom: 1em; }
+
+/* paragraph width */
+#index p { margin-bottom: 1em; }
+#exhibit p, code, blockquote { width: 600px; margin-bottom: 1em; /* line-height: 1.3em; */ }
+
+/* highlighter style - maybe you want to change colors? */
+.highlight { background: #ccff00; color: #000000; }
+
+/* never adjust the margin or padding here unless you seriously know what you are doing */
+/* think #index .container and #exhibit .container for only padding adjustments */
+#index { width: 215px; background: #ffffff; /* line-height: 1.3em; */ }
+#exhibit { margin: 0 0 0 215px; }
+
+/* styling the index */
+#index ul { list-style: none; margin: 0; margin-bottom:10px; }
+#index ul.section { margin-bottom: 1em; }
+#index ul.subsection {  }
+
+/* the follow rules for index are not required */
+/* they are mostly for complex customization */
+/* for tag display */
+#index ul#all_tags { list-style-type: none; margin-bottom: 1em; }
+#index ul#all_tags li { display: inline; margin-right: 3px; }
+#index ul#all_tags li a {  }
+
+/* styles for the section titles */
+#index ul.section span.section_title { color: rgb(0, 0, 0); }
+#index ul.section span.section_title a
+{ color: rgb(0, 0, 0); }
+
+/* active section title */
+#index span.active_section_title,
+#index span.active_section_title a { font-weight: bold; }
+
+/* active exhibit title parts */
+/* color of active exhibit title link and font-weight */
+li.active a:link, li a.active, li.active a:hover, li a.active, li.active a:active, li a.active,
+li.active a:visited, li a.activ
+/* links styles just for h1 title of site (your name/logo) */
+#index h1 a { font-weight: normal; text-decoration: none; color: #ffffff; }
+
+/* this is where you adjust your paddings for #index and #exhibit together */
+.container { padding: 27px 9px 25px 27px; }
+
+/* this is where you pad them separately */
+#index .container {  }
+#exhibit .container {  }
+
+/* size and style of titles and captions (not mobile though) */
+.captioning { margin-top: 2px; }
+.title { font-size: 0.7em; font-style: italic; line-height: 1.2em; }
+.caption { font-size: 0.7em; font-style: italic; line-height: 1.2em; }
+
+.exhibit_title::before {
+    /* content: "★";  */
+    color: black;
+    font-size: 1.2em;
+    margin-right: 5px;
+}
+
+
+/* start destroy */
+.letter {
+    display: inline-block;
+    position: static;
+    will-change: transform;
+    opacity: 1;
+}
+
+
+.falling {
+    position: absolute;
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    opacity: 0.9;
+}
+
+
+.falling-element {
+    position: static;
+}
+
+.trembling {
+    animation: shake 0.1s infinite;
+}
+
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+/* end destroy-and chill.  */
+
+/* Image hover effect */
+.image-container {
+  position: relative;
+  width: 180px;
+  height: 180px;
+}
+
+.image-container img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.3s ease;
+}
+
+.image-container .normal-image {
+  opacity: 1;
+}
+
+.image-container .hover-image {
+  opacity: 0;
+}
+
+.image-container:hover .normal-image {
+  opacity: 0;
+}
+
+.image-container:hover .hover-image {
+  opacity: 1;
+}
+
+
+/* Text hover effect */
+#section_title_1 a {
+  position: relative;
+  display: inline-block;
+  color: #000000;
+  /* Set to match the desired color */
+}
+
+#section_title_1 a .text-original {
+  visibility: visible;
+  opacity: 1;
+  transition: visibility 0s, opacity 0.3s ease;
+}
+
+#section_title_1 a .text-hover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.3s ease;
+}
+
+#section_title_1 a:hover .text-original {
+  visibility: hidden;
+  opacity: 0;
+}
+
+#section_title_1 a:hover .text-hover {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* red button  */
+/* Red-toned button with black text */
+
+
+body {
+  margin: 20px;
+  font-family: Helvetica, sans-serif;
+}
+
+button {
+  font-size: 15px;
+  padding: 7px 20px;
+  background: #c0c0c0;
+  border: 2px outset;
+  outline: none;
+  cursor: pointer;
+  width: 30%;
+  margin-left: 30%;
+  margin-top: 0px;
+  &:active {
+    border: 2px inset;
+  }
+}
+
+
+/* end red button   */
+
+
+/* game main */
+.game {
+  position: relative;
+  height: 100vh; /* Use viewport height */
+  width: 100vw;  /* Use viewport width */
+  margin: 0;     /* Remove any margins */
+  padding: 0;    /* Remove any padding */
+}
+
+.pacman {
+  position: fixed;
+  bottom: 0;      /* Stick to the bottom */
+  left: 0;        /* Align to the left */
+  margin: 0;      /* Remove margin */
+}
+
+.game {
+  pointer-events: none; /* This allows clicks to pass through the game container */
+}
+
+.game img {
+  pointer-events: auto; /* But still allows interaction with the game elements like the Pac-Man image */
+}
+
+.gif-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.gif-container img {
+    width: 55%;   /* keep your original size */
+}
+
+.image-row-onitorinco {
+    display: flex;
+    margin-top: 60px;
+    flex-wrap: wrap;
+    justify-content: left;
+    gap: 10px; /* spacing between images */
+}
+
+.image-row-onitorinco img {
+    width: 30%;  /* your original size */
+}
