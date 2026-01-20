@@ -1,95 +1,456 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Timoteo Costantini Scala</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timoteo Costantini Scala — Terminal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #1e1e1e;
+      --text-primary: #d4d4d4;
+      --text-muted: #6e6e6e;
+      --accent-green: #23d18b;
+      --accent-red: #f14c4c;
+      --accent-blue: #3b8eea;
+      --accent-yellow: #e2e210;
+      --accent-cyan: #29b8db;
+      --border-color: #3c3c3c;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'JetBrains Mono', 'SF Mono', 'Consolas', monospace;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      font-size: 13px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ========== SIDEBAR ========== */
+    .sidebar {
+      width: 280px;
+      border-right: 1px solid var(--border-color);
+      padding: 32px 24px;
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .profile {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .profile-pic {
+      width: 120px;
+      height: 120px;
+      border-radius: 8px;
+      object-fit: cover;
+      filter: grayscale(0.5);
+      transition: filter 0.3s ease;
+      display: block;
+      margin: 0 auto 16px;
+    }
+
+    .profile-pic:hover {
+      filter: grayscale(0);
+    }
+
+    .profile-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.4;
+    }
+
+    .nav-section {
+      margin-bottom: 24px;
+    }
+
+    .nav-header {
+      color: var(--accent-green);
+      font-size: 12px;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .nav-list {
+      list-style: none;
+      padding-left: 16px;
+    }
+
+    .nav-list li {
+      margin-bottom: 6px;
+      font-size: 12px;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .nav-list li.featured::before {
+      content: '📌';
+      font-size: 10px;
+    }
+
+    .project-name {
+      color: var(--text-primary);
+      flex: 1;
+    }
+
+    .project-year {
+      color: var(--text-muted);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .destroy-btn {
+      margin-top: auto;
+      padding: 8px 16px;
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+
+    .destroy-btn:hover {
+      color: var(--accent-red);
+      border-color: var(--accent-red);
+    }
+
+    /* ========== MAIN CONTENT ========== */
+    .main-content {
+      margin-left: 280px;
+      padding: 48px 64px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .section {
+      margin-bottom: 48px;
+    }
+
+    .section-title {
+      color: var(--accent-yellow);
+      font-size: 14px;
+      margin-bottom: 16px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .bio-line {
+      margin-bottom: 12px;
+      font-size: 13px;
+    }
+
+    .bio-line.birth-year {
+      color: var(--text-muted);
+    }
+
+    .bio-line.tagline {
+      color: var(--accent-cyan);
+      font-weight: 500;
+      margin-bottom: 16px;
+    }
+
+    .bio-line strong {
+      color: var(--accent-green);
+    }
+
+    .interest-list {
+      list-style: none;
+      padding-left: 16px;
+      margin-top: 8px;
+    }
+
+    .interest-list li::before {
+      content: '•';
+      color: var(--accent-green);
+      margin-right: 8px;
+    }
+
+    .contact-list {
+      list-style: none;
+    }
+
+    .contact-list li {
+      margin-bottom: 6px;
+    }
+
+    .contact-list a {
+      color: var(--accent-blue);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .contact-list a:hover {
+      color: var(--accent-cyan);
+      text-decoration: underline;
+    }
+
+    .contact-list a.muted {
+      color: var(--text-muted);
+    }
+
+    .signature {
+      margin-top: 24px;
+      font-style: italic;
+      color: var(--text-muted);
+    }
+
+    .entry {
+      margin-bottom: 24px;
+    }
+
+    .entry-title {
+      color: var(--accent-red);
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .entry-title a {
+      color: var(--accent-red);
+      text-decoration: none;
+    }
+
+    .entry-title a:hover {
+      text-decoration: underline;
+    }
+
+    .entry-description {
+      padding-left: 16px;
+      color: var(--text-primary);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        position: relative;
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        padding: 24px 20px;
+        overflow-y: visible;
+      }
+
+      .profile-pic {
+        width: 80px;
+        height: 80px;
+      }
+
+      .nav-section {
+        margin-bottom: 16px;
+      }
+
+      .destroy-btn {
+        margin-top: 24px;
+      }
+
+      .main-content {
+        margin-left: 0;
+        padding: 32px 20px;
+      }
+
+      .section {
+        margin-bottom: 32px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="page">
-    <div class="layout-grid">
-      <aside class="sidebar">
-        <div class="portrait-wrapper">
-          <img src="timoteo-1.jpg" alt="timoteo" class="portrait portrait-default" />
-          <img src="timoteo-2.jpg" alt="timoteo hover" class="portrait portrait-hover" />
+  <div class="container">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="profile">
+        <img src="timoteo-1.jpg" alt="Timoteo Costantini Scala" class="profile-pic">
+        <div class="profile-name">Timoteo Costantini Scala</div>
+      </div>
+
+      <nav>
+        <div class="nav-section">
+          <div class="nav-header">>>> code</div>
+          <ul class="nav-list">
+            <li class="featured">
+              <span class="project-name">chefdotcom</span>
+              <span class="project-year">2024</span>
+            </li>
+            <li>
+              <span class="project-name">42 Firenze</span>
+              <span class="project-year">2025</span>
+            </li>
+            <li>
+              <span class="project-name">AI workflows</span>
+              <span class="project-year">2024</span>
+            </li>
+            <li>
+              <span class="project-name">digital scriptures</span>
+              <span class="project-year">2023</span>
+            </li>
+          </ul>
         </div>
 
-        <nav class="experiments-nav">
-          <h3>>> coding experiments</h3>
-          <ul>
-            <li><a href="#">[coming soon]</a></li>
+        <div class="nav-section">
+          <div class="nav-header">>>> pseudo-code</div>
+          <ul class="nav-list">
+            <li class="featured">
+              <span class="project-name">fine dining</span>
+              <span class="project-year">ongoing</span>
+            </li>
+            <li>
+              <span class="project-name">fashion runway</span>
+              <span class="project-year">ongoing</span>
+            </li>
+            <li>
+              <span class="project-name">exploration</span>
+              <span class="project-year">ongoing</span>
+            </li>
           </ul>
-        </nav>
-      </aside>
+        </div>
+      </nav>
 
-      <main class="feed">
-        <div class="intro-box">
-          <h1>Timoteo Costantini Scala</h1>
+      <button class="destroy-btn" onclick="alert('Session terminated. Goodbye! 👋')">destroy</button>
+    </aside>
 
-          <p>I was born in 2003 in Udine, Italy.</p>
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      <!-- BIO -->
+      <section class="section">
+        <h2 class="section-title">$ whoami</h2>
+        <div class="bio-line birth-year">born: 2003 · Udine, Italy</div>
+        <div class="bio-line tagline">tech founder in training · hospitality · developer in progress</div>
 
-          <p>tech founder in training · hospitality · developer in progress</p>
+        <div class="bio-line">
+          Currently at <strong>42 Firenze</strong> (algorithms, low-level thinking, programming).
+        </div>
+        <div class="bio-line">
+          Background in <strong>fine dining</strong> and <strong>fashion</strong> (runway, shooting).
+        </div>
 
-          <p>
-            Currently at <strong>42 Firenze</strong> (algorithms, low-level thinking, programming).
-            Background in <strong>fine dining</strong> and <strong>fashion</strong> (runway, shooting).
-          </p>
+        <ul class="interest-list">
+          <li>explorer</li>
+          <li>waiter & host</li>
+          <li>model</li>
+          <li>nerd</li>
+          <li>aspiring tech founder</li>
+          <li>note-taker</li>
+          <li>traveller</li>
+          <li>restaurant kid</li>
+        </ul>
+      </section>
 
-          <div class="tags-container">
-            <p class="tags">
-              explorer • waiter • host • model • nerd • aspiring tech founder • note-taker • traveller • restaurant kid • student • teammate • boyfriend • friend • son • brother
-            </p>
+      <!-- CONTACTS -->
+      <section class="section">
+        <h2 class="section-title">$ contact --list</h2>
+        <ul class="contact-list">
+          <li><a href="mailto:timoteocostantiniscala@gmail.com">timoteocostantiniscala@gmail.com</a></li>
+          <li><a href="https://github.com/teemoteeo" target="_blank">github.com/teemoteeo</a></li>
+          <li><a href="https://www.instagram.com/teemoteeo" target="_blank" class="muted">instagram.com/teemoteeo</a></li>
+          <li><a href="https://www.linkedin.com/in/timoteo-costantini-scala-06726a2a4/" target="_blank" class="muted">linkedin</a></li>
+        </ul>
+
+        <div class="signature">Cheers, Timoteo</div>
+      </section>
+
+      <!-- AWARDS & ACHIEVEMENTS -->
+      <section class="section">
+        <h2 class="section-title">$ awards --display</h2>
+
+        <div class="entry">
+          <div class="entry-title">
+            <a href="#">42 Firenze — Core Curriculum</a>
+          </div>
+          <div class="entry-description">
+            Deep dive into algorithms, low-level programming, and computer science fundamentals.
+            Learning to think like a machine while solving complex problems with C and other low-level languages.
           </div>
         </div>
 
-        <p class="cv">
-          <a href="CURRICULUM.JPG" target="_blank">CV</a>
-        </p>
+        <div class="entry">
+          <div class="entry-title">
+            <a href="CURRICULUM.JPG" target="_blank">Professional Curriculum</a>
+          </div>
+          <div class="entry-description">
+            Comprehensive experience across technology, hospitality, and fashion industries.
+            Combining technical skills with creative problem-solving.
+          </div>
+        </div>
+      </section>
 
-        <div class="contact">
-          <a href="mailto:timoteocostantiniscala@gmail.com">timoteocostantiniscala@gmail.com</a>
-          <a href="https://github.com/teemoteeo" target="_blank">github</a>
-          <a href="https://www.instagram.com/teemoteeo" target="_blank">instagram</a>
-          <a href="https://models.com/models/timoteo-scala?utm_source=ig&utm_medium=social&utm_content=link_in_bio" target="_blank">models.com</a>
-          <a href="https://www.linkedin.com/in/timoteo-costantini-scala-06726a2a4/" target="_blank">linkedin</a>
+      <!-- EXHIBITIONS & TALKS -->
+      <section class="section">
+        <h2 class="section-title">$ projects --verbose</h2>
+
+        <div class="entry">
+          <div class="entry-title">
+            <a href="#">chefdotcom</a>
+          </div>
+          <div class="entry-description">
+            A digital stage for chefs to showcase their work, connect with food enthusiasts, and share culinary stories.
+            Building a platform at the intersection of hospitality and technology. Work in progress since 2024.
+          </div>
         </div>
 
-        <h2 class="section-label">Projects</h2>
-
-    <div class="project-item">
-      <div class="project-title">chefdotcom</div>
-      <div class="project-year">[work in progress · 2024–present]</div>
-      <div class="project-description">A digital stage for chefs to showcase their work, connect with food enthusiasts, and share culinary stories. Building a platform at the intersection of hospitality and technology.</div>
-    </div>
-
-    <div class="project-item">
-      <div class="project-title">42 Firenze</div>
-      <div class="project-year">[2025]</div>
-      <div class="project-description">Deep dive into algorithms, low-level programming, and computer science fundamentals. Learning to think like a machine while solving complex problems.</div>
-    </div>
-
-    <div class="project-item">
-      <div class="project-title">productivity workflows with AI</div>
-      <div class="project-year">[2024]</div>
-      <div class="project-description">Exploring how AI can be integrated into daily workflows. Experimenting with automation, code assistance, and creative problem-solving tools.</div>
-    </div>
-
-    <div class="project-item">
-      <div class="project-title">digital scriptures</div>
-      <div class="project-year">[2023–present]</div>
-      <div class="project-description">Personal knowledge base and notes system. Capturing thoughts, learnings, and ideas as I navigate tech, hospitality, and life.</div>
-    </div>
-
-    <h2 class="section-label">Passions</h2>
-
-        <div class="project-item">
-          <div class="project-title">travel & exploration</div>
-          <div class="project-year">[ongoing]</div>
-          <div class="project-description">Constantly moving, discovering new places, cultures, and perspectives. Feeding curiosity and staying engaged.</div>
+        <div class="entry">
+          <div class="entry-title">
+            <a href="#">Productivity Workflows with AI</a>
+          </div>
+          <div class="entry-description">
+            Exploring how AI can be integrated into daily workflows. Experimenting with automation,
+            code assistance, and creative problem-solving tools to enhance productivity.
+          </div>
         </div>
-      </main>
-    </div>
+
+        <div class="entry">
+          <div class="entry-title">
+            <a href="#">Digital Scriptures</a>
+          </div>
+          <div class="entry-description">
+            Personal knowledge base and notes system. Capturing thoughts, learnings, and ideas
+            as I navigate tech, hospitality, and life. An ongoing digital garden since 2023.
+          </div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-title">
+            <a href="https://models.com/models/timoteo-scala" target="_blank">Fashion & Modeling</a>
+          </div>
+          <div class="entry-description">
+            Experience in runway shows and fashion photography. Exploring the intersection
+            of aesthetics, presentation, and visual storytelling through modeling work.
+          </div>
+        </div>
+      </section>
+    </main>
   </div>
 </body>
 </html>
