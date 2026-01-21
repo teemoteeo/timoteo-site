@@ -85,23 +85,51 @@
       opacity: 1;
     }
 
+    .info-text {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 1.2em;
+      text-align: center;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+      line-height: 1.6;
+      width: 100%;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+
+    .info-text .name {
+      font-weight: bold;
+      font-size: 1.1em;
+      margin-bottom: 10px;
+    }
+
+    .info-text .details {
+      font-size: 0.95em;
+    }
+
     .profile-name {
       font-size: 14px;
       font-weight: 500;
       color: var(--text-primary);
       line-height: 1.4;
+      display: none;
     }
 
     .profile-born {
       font-size: 12px;
       color: var(--text-muted);
       margin-top: 4px;
+      display: none;
     }
 
     .age-clock {
       font-size: 12px;
       color: var(--text-muted);
       margin-top: 4px;
+      display: none;
     }
 
     .sidebar-contacts {
@@ -121,75 +149,72 @@
       text-decoration: underline;
     }
 
-    .nav-section {
-      margin-bottom: 24px;
-    }
 
-    .nav-header {
-      color: var(--accent-green);
-      font-size: 12px;
-      margin-bottom: 8px;
-      font-weight: 500;
-    }
+        function getHumanTypingDelay() {
+          const baseDelay = Math.floor(Math.random() * 81) + 40; // 40-120ms
+          if (Math.random() < 0.1) {
+            return Math.floor(Math.random() * 101) + 200; // occasional pause
+          }
+          return baseDelay;
+        }
 
-    .nav-list {
-      list-style: none;
-      padding-left: 16px;
-    }
+        function typeProjectName(element, text, startDelay) {
+          return new Promise((resolve) => {
+            setTimeout(() => {
+              const originalText = text;
+              element.textContent = '';
 
-    .nav-list li {
-      margin-bottom: 6px;
-      font-size: 12px;
-      display: flex;
-      align-items: baseline;
-      gap: 8px;
-    }
+              const cursor = document.createElement('span');
+              cursor.textContent = '█';
+              cursor.style.color = '#ffffff';
+              element.appendChild(cursor);
 
+              let cursorVisible = true;
+              const cursorInterval = setInterval(() => {
+                cursor.style.opacity = cursorVisible ? '1' : '0';
+                cursorVisible = !cursorVisible;
+              }, 530);
 
-    .project-name {
-      color: var(--text-primary);
-      flex: 1;
-    }
+              let charIndex = 0;
 
-    .project-year {
-      color: var(--text-muted);
-      font-size: 11px;
-      white-space: nowrap;
-    }
+              function typeNextChar() {
+                if (charIndex < originalText.length) {
+                  const textNode = document.createTextNode(originalText[charIndex]);
+                  element.insertBefore(textNode, cursor);
+                  charIndex++;
+                  setTimeout(typeNextChar, getHumanTypingDelay());
+                } else {
+                  clearInterval(cursorInterval);
+                  cursor.remove();
+                  resolve();
+                }
+              }
 
-    .destroy-btn {
-      margin-top: auto;
-      padding: 8px 16px;
-      background: transparent;
-      color: var(--text-muted);
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      font-family: inherit;
-      font-size: 12px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      text-align: center;
-    }
+              typeNextChar();
+            }, startDelay);
+          });
+        }
 
-    .destroy-btn:hover {
-      color: var(--accent-red);
-      border-color: var(--accent-red);
-    }
+        async function typeAllProjects() {
+          let initialDelay = 700; // let nav headers finish typing
+          for (let i = 0; i < projectNames.length; i++) {
+            const projectName = projectNames[i];
+            const text = projectName.dataset.original || projectName.textContent;
+            projectName.dataset.original = text;
 
-    /* ========== MAIN CONTENT ========== */
-    .main-content {
-      margin-left: 340px;
-      padding: 48px 64px;
-      flex: 1;
-      overflow-y: auto;
-    }
+            await typeProjectName(projectName, text, initialDelay);
+            initialDelay = 150; // shorter gaps after the first item
+          }
+        }
 
-    .section {
-      margin-bottom: 48px;
-    }
-
+        if (projectNames.length > 0) {
+          typeAllProjects();
+        }
     .section-title {
       color: var(--accent-yellow);
+
+  </body>
+  </html>
       font-size: 14px;
       margin-bottom: 16px;
       font-weight: 600;
@@ -342,15 +367,22 @@
         <div class="profile-pic-container">
           <img src="timoteo-1.jpg" alt="Timoteo Costantini Scala" class="profile-pic">
           <img src="timoteo-2.jpg" alt="Timoteo Costantini Scala" class="profile-pic profile-pic-hover">
+          <div class="info-text">
+            <div class="name">Timoteo Costantini Scala</div>
+            <div class="details">
+              born: 2003 · Udine, Italy<br>
+              <span id="age-clock"></span>
+            </div>
+          </div>
         </div>
         <div class="profile-name">Timoteo Costantini Scala</div>
         <div class="profile-born">born: 2003 · Udine, Italy</div>
-        <div class="age-clock" id="age-clock"></div>
+        <div class="age-clock" id="age-clock-hidden"></div>
       </div>
 
       <div class="sidebar-contacts">
         <a href="CURRICULUM.JPG" target="_blank">CV</a>
-        <a href="mailto:timoteocostantiniscala@gmail.com">email</a>
+        <a href="/cdn-cgi/l/email-protection#285c4145475c4d474b475b5c49465c4146415b4b494449684f45494144064b4745">email</a>
         <a href="https://github.com/teemoteeo" target="_blank">github</a>
         <a href="https://www.instagram.com/teemoteeo" target="_blank">instagram</a>
         <a href="https://www.linkedin.com/in/timoteo-costantini-scala-06726a2a4/" target="_blank">linkedin</a>
@@ -445,7 +477,7 @@
           </div>
           <div class="entry-description">
             Deep dive into algorithms, low-level programming, and computer science fundamentals.
-            Learning to think like a machine while solving complex problems with C and other low-level languages.
+	    Shaping my brain for the new world.
           </div>
         </div>
 
@@ -454,9 +486,9 @@
             <a href="CURRICULUM.JPG" target="_blank">Professional Curriculum</a>
           </div>
           <div class="entry-description">
-            Comprehensive experience across technology, hospitality, and fashion industries.
-            Combining technical skills with creative problem-solving.
-          </div>
+	    Weird mix of tech, fashion and cuisine.
+            Weird is good, right?
+	  </div>
         </div>
       </section>
 
@@ -469,9 +501,9 @@
             <a href="#">chefdotcom</a>
           </div>
           <div class="entry-description">
-            A digital stage for chefs to showcase their work, connect with food enthusiasts, and share culinary stories.
-            Building a platform at the intersection of hospitality and technology. Work in progress since 2024.
-          </div>
+          Digitalizing answers to chefs needs. From network to kitchen managing.
+	  Promised my brother we would build this.
+	  </div>
         </div>
 
         <div class="entry">
@@ -479,8 +511,8 @@
             <a href="#">Productivity Workflows with AI</a>
           </div>
           <div class="entry-description">
-            Exploring how AI can be integrated into daily workflows. Experimenting with automation,
-            code assistance, and creative problem-solving tools to enhance productivity.
+	   Learning and experimenting with real-life AI applications.
+	   Are you scared of the beast?
           </div>
         </div>
 
@@ -489,9 +521,9 @@
             <a href="#">Digital Scriptures</a>
           </div>
           <div class="entry-description">
-            Personal knowledge base and notes system. Capturing thoughts, learnings, and ideas
-            as I navigate tech, hospitality, and life. An ongoing digital garden since 2023.
-          </div>
+          script with a keyboard, scriptures with my hands
+	  never underestimate what power does to man
+	  </div>
         </div>
 
         <div class="entry">
@@ -499,15 +531,15 @@
             <a href="https://models.com/models/timoteo-scala" target="_blank">Fashion & Modeling</a>
           </div>
           <div class="entry-description">
-            Experience in runway shows and fashion photography. Exploring the intersection
-            of aesthetics, presentation, and visual storytelling through modeling work.
+            Experience in runway shows and fashion photography. Walked shows and shit.
+	    Who else?
           </div>
         </div>
       </section>
     </main>
   </div>
 
-  <script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
     function updateAge() {
       const birthDate = new Date(2003, 0, 9, 15, 45, 0);
       const now = new Date();
@@ -529,12 +561,146 @@
       }
       if (months < 0) { months += 12; years--; }
 
-      document.getElementById('age-clock').textContent =
-        years + 'y ' + months + 'm ' + days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's';
+      const parts = [];
+      if (years > 0) parts.push(years + (years === 1 ? ' year' : ' years'));
+      if (months > 0) parts.push(months + (months === 1 ? ' month' : ' months'));
+      if (days > 0) parts.push(days + (days === 1 ? ' day' : ' days'));
+      if (hours > 0) parts.push(hours + (hours === 1 ? ' hour' : ' hours'));
+      if (minutes > 0) parts.push(minutes + (minutes === 1 ? ' minute' : ' minutes'));
+      
+      const ageText = parts.join(' ') + ' ' + seconds + 's';
+      document.getElementById('age-clock').textContent = ageText;
     }
 
     updateAge();
     setInterval(updateAge, 1000);
   </script>
-</body>
-</html>
+
+  <script>
+    // Terminal typing effect for navigation headers
+    (function() {
+      const navHeaders = document.querySelectorAll('.nav-header');
+
+      function typeText(element, text, startDelay) {
+        // Store original text and clear element
+        const originalText = text;
+        element.textContent = '';
+
+        // Create cursor element
+        const cursor = document.createElement('span');
+        cursor.textContent = '█';
+        cursor.style.color = '#ffffff';
+        element.appendChild(cursor);
+
+        // Start cursor blinking
+        let cursorVisible = true;
+        const cursorInterval = setInterval(() => {
+          cursor.style.opacity = cursorVisible ? '1' : '0';
+          cursorVisible = !cursorVisible;
+        }, 500);
+
+        // Start typing after delay
+        setTimeout(() => {
+          let charIndex = 0;
+
+          function typeNextChar() {
+            if (charIndex < originalText.length) {
+              // Insert character before cursor
+              const textNode = document.createTextNode(originalText[charIndex]);
+              element.insertBefore(textNode, cursor);
+              charIndex++;
+
+              // Random delay between 20-50ms per character
+              const delay = Math.floor(Math.random() * 31) + 20;
+              setTimeout(typeNextChar, delay);
+            } else {
+              // Typing complete - remove cursor
+              clearInterval(cursorInterval);
+              cursor.remove();
+            }
+          }
+
+          typeNextChar();
+        }, startDelay);
+      }
+
+      // Apply typing effect to each nav header with staggered delays
+      navHeaders.forEach((header, index) => {
+        const text = header.textContent;
+        const staggerDelay = index * 100; // 100ms delay between sections
+        typeText(header, text, staggerDelay);
+      });
+    })();
+  </script>
+
+  <script>
+    // Terminal typing effect for project lists
+    (function() {
+      const projectNames = document.querySelectorAll('.nav-list .project-name');
+
+      function getHumanTypingDelay() {
+        // Most characters: 40-120ms
+        const baseDelay = Math.floor(Math.random() * 81) + 40;
+
+        // Occasional thinking pause: 10% chance of 200-300ms delay
+        if (Math.random() < 0.1) {
+          return Math.floor(Math.random() * 101) + 200;
+        }
+
+        return baseDelay;
+      }
+
+      function typeProjectName(element, text, startDelay) {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            // Store original text and clear element
+            const originalText = text;
+            element.textContent = '';
+
+            // Create cursor element
+            const cursor = document.createElement('span');
+            cursor.textContent = '█';
+            cursor.style.color = '#ffffff';
+            element.appendChild(cursor);
+
+            // Start cursor blinking
+            let cursorVisible = true;
+            const cursorInterval = setInterval(() => {
+              cursor.style.opacity = cursorVisible ? '1' : '0';
+              cursorVisible = !cursorVisible;
+            }, 530);
+
+            let charIndex = 0;
+
+            function typeNextChar() {
+              if (charIndex < originalText.length) {
+                // Insert character before cursor
+                const textNode = document.createTextNode(originalText[charIndex]);
+                element.insertBefore(textNode, cursor);
+                charIndex++;
+
+                // Human-like random delay
+                const delay = getHumanTypingDelay();
+                setTimeout(typeNextChar, delay);
+              } else {
+                // Typing complete - remove cursor
+                clearInterval(cursorInterval);
+                cursor.remove();
+                resolve();
+              }
+            }
+
+            typeNextChar();
+          }, startDelay);
+        });
+      }
+
+      // Type all projects sequentially
+      async function typeAllProjects() {
+        for (let i = 0; i < projectNames.length; i++) {
+          const projectName = projectNames[i];
+          const text = projectName.textContent;
+
+          // First project starts after headers finish typing (estimate ~600ms)
+          // Subsequent projects have 150ms delay between them
+          const startDelay = i ===
