@@ -25,7 +25,7 @@ strong, h1, h2, h3, .project-title {
   color: #fff;
 }
 
-.layout-grid {
+.container {
   display: grid;
   grid-template-columns: 90px 1fr;
   gap: 2rem;
@@ -46,7 +46,7 @@ strong, h1, h2, h3, .project-title {
   height: 70px;
   overflow: hidden;
   border-radius: 50%;
-  position: relative;
+  position: absolute;
 }
 
 .portrait {
@@ -60,9 +60,8 @@ strong, h1, h2, h3, .project-title {
 }
 
 .portrait-hover {
-  object-position: 70% 52%;
+  object-position: 10% 10%;
   opacity: 0;
-  transform: scale(1.12);
 }
 
 .portrait-wrapper:hover .portrait-hover { opacity: 1; }

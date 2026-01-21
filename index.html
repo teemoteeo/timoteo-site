@@ -54,7 +54,7 @@
     }
 
     .profile {
-      text-align: left;
+      text-align: center;
       margin-bottom: 32px;
     }
 
@@ -62,7 +62,7 @@
       position: relative;
       width: 240px;
       height: 240px;
-      margin: 0 0 16px;
+      margin: 0 auto 16px;
     }
 
     .profile-pic {
@@ -70,6 +70,7 @@
       height: 240px;
       border-radius: 0;
       object-fit: cover;
+      object-position: center 30%;
       display: block;
       position: absolute;
       top: 0;
@@ -79,6 +80,7 @@
     .profile-pic-hover {
       opacity: 0;
       transition: opacity 0.3s ease;
+      object-position: 45% 0%;
     }
 
     .profile-pic-container:hover .profile-pic-hover {
@@ -86,28 +88,7 @@
     }
 
     .info-text {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      color: white;
-      font-size: 1.2em;
-      text-align: center;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-      line-height: 1.6;
-      width: 100%;
-      padding: 0 20px;
-      box-sizing: border-box;
-    }
-
-    .info-text .name {
-      font-weight: bold;
-      font-size: 1.1em;
-      margin-bottom: 10px;
-    }
-
-    .info-text .details {
-      font-size: 0.95em;
+      display: none;
     }
 
     .profile-name {
@@ -115,21 +96,21 @@
       font-weight: 500;
       color: var(--text-primary);
       line-height: 1.4;
-      display: none;
+      display: block;
     }
 
     .profile-born {
       font-size: 12px;
       color: var(--text-muted);
       margin-top: 4px;
-      display: none;
+      display: block;
     }
 
     .age-clock {
       font-size: 12px;
-      color: var(--text-muted);
+      color: #ffffff;
       margin-top: 4px;
-      display: none;
+      display: block;
     }
 
     .sidebar-contacts {
@@ -138,88 +119,16 @@
       gap: 8px 12px;
       margin-bottom: 24px;
       font-size: 12px;
+      justify-content: center;
     }
 
     .sidebar-contacts a {
       color: #3b8eea;
-      text-decoration: none;
+      text-decoration: underline;
     }
 
     .sidebar-contacts a:hover {
       text-decoration: underline;
-    }
-
-
-        function getHumanTypingDelay() {
-          const baseDelay = Math.floor(Math.random() * 81) + 40; // 40-120ms
-          if (Math.random() < 0.1) {
-            return Math.floor(Math.random() * 101) + 200; // occasional pause
-          }
-          return baseDelay;
-        }
-
-        function typeProjectName(element, text, startDelay) {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              const originalText = text;
-              element.textContent = '';
-
-              const cursor = document.createElement('span');
-              cursor.textContent = '█';
-              cursor.style.color = '#ffffff';
-              element.appendChild(cursor);
-
-              let cursorVisible = true;
-              const cursorInterval = setInterval(() => {
-                cursor.style.opacity = cursorVisible ? '1' : '0';
-                cursorVisible = !cursorVisible;
-              }, 530);
-
-              let charIndex = 0;
-
-              function typeNextChar() {
-                if (charIndex < originalText.length) {
-                  const textNode = document.createTextNode(originalText[charIndex]);
-                  element.insertBefore(textNode, cursor);
-                  charIndex++;
-                  setTimeout(typeNextChar, getHumanTypingDelay());
-                } else {
-                  clearInterval(cursorInterval);
-                  cursor.remove();
-                  resolve();
-                }
-              }
-
-              typeNextChar();
-            }, startDelay);
-          });
-        }
-
-        async function typeAllProjects() {
-          let initialDelay = 700; // let nav headers finish typing
-          for (let i = 0; i < projectNames.length; i++) {
-            const projectName = projectNames[i];
-            const text = projectName.dataset.original || projectName.textContent;
-            projectName.dataset.original = text;
-
-            await typeProjectName(projectName, text, initialDelay);
-            initialDelay = 150; // shorter gaps after the first item
-          }
-        }
-
-        if (projectNames.length > 0) {
-          typeAllProjects();
-        }
-    .section-title {
-      color: var(--accent-yellow);
-
-  </body>
-  </html>
-      font-size: 14px;
-      margin-bottom: 16px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
 
     .bio-line {
@@ -244,19 +153,31 @@
     .ticker-wrapper {
       overflow: hidden;
       margin-top: 8px;
+      background: #000000;
+      padding: 4px 0;
+      min-height: 20px;
     }
 
     .interest-list {
       list-style: none;
       display: flex;
-      gap: 24px;
+      gap: 12px;
       white-space: nowrap;
-      animation: scroll 10s linear infinite;
+      font-size: 11px;
+      color: #ffffff;
+    }
+
+    .interest-list li {
+      display: none;
+    }
+
+    .interest-list li.active {
+      display: block;
     }
 
     .interest-list li::after {
-      content: ',';
-      margin-right: 8px;
+      content: '';
+      margin-right: 0;
     }
 
     @keyframes scroll {
@@ -320,6 +241,62 @@
       line-height: 1.7;
     }
 
+    /* ========== NAV SECTION ========== */
+    .nav-section {
+      margin-bottom: 20px;
+    }
+
+    .nav-header {
+      color: #ffffff;
+      font-size: 12px;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .nav-list {
+      list-style: none;
+    }
+
+    .nav-list li {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      font-size: 12px;
+    }
+
+    .nav-list .project-name {
+      color: var(--text-primary);
+    }
+
+    .nav-list .project-year {
+      color: var(--text-muted);
+    }
+
+    .nav-list .featured .project-name {
+      color: var(--accent-green);
+      font-weight: 500;
+    }
+
+    /* ========== MAIN CONTENT ========== */
+    .main-content {
+      margin-left: 340px;
+      padding: 35px 35px 32px;
+      flex: 1;
+    }
+
+    .section {
+      margin-bottom: 48px;
+    }
+
+    .section-title {
+      color: var(--accent-yellow);
+      font-size: 14px;
+      margin-bottom: 16px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
     /* ========== RESPONSIVE ========== */
     @media (max-width: 768px) {
       .container {
@@ -370,14 +347,13 @@
           <div class="info-text">
             <div class="name">Timoteo Costantini Scala</div>
             <div class="details">
-              born: 2003 · Udine, Italy<br>
-              <span id="age-clock"></span>
+              born: 2003 · Udine, Italy
             </div>
           </div>
         </div>
         <div class="profile-name">Timoteo Costantini Scala</div>
         <div class="profile-born">born: 2003 · Udine, Italy</div>
-        <div class="age-clock" id="age-clock-hidden"></div>
+        <div id="age-clock" class="age-clock"></div>
       </div>
 
       <div class="sidebar-contacts">
@@ -390,7 +366,7 @@
 
       <nav>
         <div class="nav-section">
-          <div class="nav-header">>>> 📌 code</div>
+          <div class="nav-header">>>> code</div>
           <ul class="nav-list">
             <li class="featured">
               <span class="project-name">chefdotcom</span>
@@ -412,7 +388,7 @@
         </div>
 
         <div class="nav-section">
-          <div class="nav-header">>>> 📌 pseudo-code</div>
+          <div class="nav-header">>>> pseudo-code</div>
           <ul class="nav-list">
             <li class="featured">
               <span class="project-name">fine dining</span>
@@ -448,36 +424,33 @@
         <div class="ticker-wrapper">
           <ul class="interest-list">
             <li>explorer</li>
+            <li>programmer</li>
             <li>waiter & host</li>
+            <li>cool rigth?</li>
             <li>model</li>
             <li>nerd</li>
             <li>aspiring tech founder</li>
             <li>note-taker</li>
             <li>traveller</li>
-            <li>restaurant kid</li>
-            <li>explorer</li>
-            <li>waiter & host</li>
-            <li>model</li>
-            <li>nerd</li>
-            <li>aspiring tech founder</li>
-            <li>note-taker</li>
-            <li>traveller</li>
-            <li>restaurant kid</li>
+            <li>son</li>
+            <li>brother</li>
+            <li>boyfriend</li>
+            <li>freak</li>
+            <li>rap fan</li>
           </ul>
         </div>
       </section>
 
       <!-- AWARDS & ACHIEVEMENTS -->
       <section class="section">
-        <h2 class="section-title">$ awards --display</h2>
+        <h2 class="section-title"> >>> display</h2>
 
         <div class="entry">
           <div class="entry-title">
             <a href="#">42 Firenze — Core Curriculum</a>
           </div>
           <div class="entry-description">
-            Deep dive into algorithms, low-level programming, and computer science fundamentals.
-	    Shaping my brain for the new world.
+            Deep dive into algorithms, low-level programming, and computer science fundamentals.<br>Shaping my brain for the new world.
           </div>
         </div>
 
@@ -494,15 +467,14 @@
 
       <!-- EXHIBITIONS & TALKS -->
       <section class="section">
-        <h2 class="section-title">$ projects --verbose</h2>
+        <h2 class="section-title"> >>> projects </h2>
 
         <div class="entry">
           <div class="entry-title">
             <a href="#">chefdotcom</a>
           </div>
           <div class="entry-description">
-          Digitalizing answers to chefs needs. From network to kitchen managing.
-	  Promised my brother we would build this.
+          Digitalizing answers to chefs needs. From network to kitchen managing.<br>Promised my brother we would build this.
 	  </div>
         </div>
 
@@ -511,8 +483,7 @@
             <a href="#">Productivity Workflows with AI</a>
           </div>
           <div class="entry-description">
-	   Learning and experimenting with real-life AI applications.
-	   Are you scared of the beast?
+	   Learning and experimenting with real-life AI applications.<br>Are you scared of the beast?
           </div>
         </div>
 
@@ -521,8 +492,7 @@
             <a href="#">Digital Scriptures</a>
           </div>
           <div class="entry-description">
-          script with a keyboard, scriptures with my hands
-	  never underestimate what power does to man
+          script with a keyboard, scriptures with my hands<br>never underestimate what power does to man
 	  </div>
         </div>
 
@@ -531,8 +501,7 @@
             <a href="https://models.com/models/timoteo-scala" target="_blank">Fashion & Modeling</a>
           </div>
           <div class="entry-description">
-            Experience in runway shows and fashion photography. Walked shows and shit.
-	    Who else?
+            Experience in runway shows and fashion photography. Walked shows and shit.<br>Who else?
           </div>
         </div>
       </section>
@@ -582,54 +551,65 @@
       const navHeaders = document.querySelectorAll('.nav-header');
 
       function typeText(element, text, startDelay) {
-        // Store original text and clear element
-        const originalText = text;
-        element.textContent = '';
+        return new Promise((resolve) => {
+          const originalText = text;
+          element.textContent = '';
 
-        // Create cursor element
-        const cursor = document.createElement('span');
-        cursor.textContent = '█';
-        cursor.style.color = '#ffffff';
-        element.appendChild(cursor);
+          const cursor = document.createElement('span');
+          cursor.textContent = '█';
+          cursor.style.color = '#ffffff';
+          element.appendChild(cursor);
 
-        // Start cursor blinking
-        let cursorVisible = true;
-        const cursorInterval = setInterval(() => {
-          cursor.style.opacity = cursorVisible ? '1' : '0';
-          cursorVisible = !cursorVisible;
-        }, 500);
+          let cursorVisible = true;
+          const cursorInterval = setInterval(() => {
+            cursor.style.opacity = cursorVisible ? '1' : '0';
+            cursorVisible = !cursorVisible;
+          }, 500);
 
-        // Start typing after delay
-        setTimeout(() => {
-          let charIndex = 0;
+          setTimeout(() => {
+            let charIndex = 0;
 
-          function typeNextChar() {
-            if (charIndex < originalText.length) {
-              // Insert character before cursor
-              const textNode = document.createTextNode(originalText[charIndex]);
-              element.insertBefore(textNode, cursor);
-              charIndex++;
+            function typeNextChar() {
+              if (charIndex < originalText.length) {
+                const textNode = document.createTextNode(originalText[charIndex]);
+                element.insertBefore(textNode, cursor);
+                charIndex++;
 
-              // Random delay between 20-50ms per character
-              const delay = Math.floor(Math.random() * 31) + 20;
-              setTimeout(typeNextChar, delay);
-            } else {
-              // Typing complete - remove cursor
-              clearInterval(cursorInterval);
-              cursor.remove();
+                const delay = Math.floor(Math.random() * 31) + 20;
+                setTimeout(typeNextChar, delay);
+              } else {
+                clearInterval(cursorInterval);
+                cursor.remove();
+                resolve();
+              }
             }
-          }
 
-          typeNextChar();
-        }, startDelay);
+            typeNextChar();
+          }, startDelay);
+        });
       }
 
       // Apply typing effect to each nav header with staggered delays
-      navHeaders.forEach((header, index) => {
-        const text = header.textContent;
-        const staggerDelay = index * 100; // 100ms delay between sections
-        typeText(header, text, staggerDelay);
-      });
+      async function typeAllHeaders() {
+        const originalTexts = Array.from(navHeaders).map(h => h.dataset.originalText || h.textContent);
+        navHeaders.forEach((header, index) => {
+          if (!header.dataset.originalText) {
+            header.dataset.originalText = originalTexts[index];
+          }
+        });
+
+        for (let i = 0; i < navHeaders.length; i++) {
+          const staggerDelay = i === 0 ? 0 : 100;
+          await typeText(navHeaders[i], originalTexts[i], staggerDelay);
+        }
+
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        typeAllHeaders();
+      }
+
+      if (navHeaders.length > 0) {
+        typeAllHeaders();
+      }
     })();
   </script>
 
@@ -697,10 +677,109 @@
 
       // Type all projects sequentially
       async function typeAllProjects() {
+        let initialDelay = 700;
         for (let i = 0; i < projectNames.length; i++) {
           const projectName = projectNames[i];
-          const text = projectName.textContent;
+          const text = projectName.dataset.originalText || projectName.textContent;
+          if (!projectName.dataset.originalText) {
+            projectName.dataset.originalText = text;
+          }
+          await typeProjectName(projectName, text, initialDelay);
+          initialDelay = 150;
+        }
+        // Aspetta 3 secondi e ricomincia
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        typeAllProjects();
+      }
 
-          // First project starts after headers finish typing (estimate ~600ms)
-          // Subsequent projects have 150ms delay between them
-          const startDelay = i ===
+      if (projectNames.length > 0) {
+        typeAllProjects();
+      }
+    })();
+  </script>
+
+  <script>
+    // Typing effect for interest list
+    (function() {
+      const interestList = document.querySelectorAll('.interest-list li');
+      const words = Array.from(interestList).map(li => li.textContent);
+      let currentIndex = 0;
+
+      function getRandomDelay() {
+        return Math.floor(Math.random() * 1500) + 1500; // 1.5-3s
+      }
+
+      function typeWord(element, word) {
+        return new Promise((resolve) => {
+          element.textContent = '';
+          element.classList.add('active');
+
+          const cursor = document.createElement('span');
+          cursor.textContent = '█';
+          cursor.style.color = '#ffffff';
+          element.appendChild(cursor);
+
+          let cursorVisible = true;
+          const cursorInterval = setInterval(() => {
+            cursor.style.opacity = cursorVisible ? '1' : '0';
+            cursorVisible = !cursorVisible;
+          }, 530);
+
+          let charIndex = 0;
+
+          function typeNextChar() {
+            if (charIndex < word.length) {
+              const textNode = document.createTextNode(word[charIndex]);
+              element.insertBefore(textNode, cursor);
+              charIndex++;
+              const delay = Math.floor(Math.random() * 81) + 40;
+              setTimeout(typeNextChar, delay);
+            } else {
+              // Parola completa, aspetta tempo random
+              setTimeout(() => {
+                deleteWord(element, cursorInterval, resolve);
+              }, getRandomDelay());
+            }
+          }
+
+          typeNextChar();
+        });
+      }
+
+      function deleteWord(element, cursorInterval, resolve) {
+        const cursor = element.querySelector('span');
+        const textNodes = Array.from(element.childNodes).filter(n => n.nodeType === 3);
+        let charIndex = textNodes.length - 1;
+
+        function deleteNextChar() {
+          if (charIndex >= 0) {
+            textNodes[charIndex].remove();
+            charIndex--;
+            const delay = Math.floor(Math.random() * 31) + 20;
+            setTimeout(deleteNextChar, delay);
+          } else {
+            clearInterval(cursorInterval);
+            cursor.remove();
+            element.classList.remove('active');
+            resolve();
+          }
+        }
+
+        deleteNextChar();
+      }
+
+      async function cycleWords() {
+        while (true) {
+          await typeWord(interestList[currentIndex], words[currentIndex]);
+          currentIndex = (currentIndex + 1) % words.length;
+          await new Promise(resolve => setTimeout(resolve, 300));
+        }
+      }
+
+      if (interestList.length > 0) {
+        cycleWords();
+      }
+    })();
+  </script>
+</body>
+</html>
