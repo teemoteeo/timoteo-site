@@ -9,15 +9,15 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-dark: #000000;
-      --text-primary: #ffffff;
-      --text-muted: #ffffff;
-      --accent-green: #ffffff;
-      --accent-red: #ffffff;
-      --accent-blue: #ffffff;
-      --accent-yellow: #ffffff;
-      --accent-cyan: #ffffff;
-      --border-color: #3c3c3c;
+      --bg-dark: #151418;
+      --text-primary: #f0ecdd;
+      --text-muted: #f0ecdd;
+      --accent-green: #f0ecdd;
+      --accent-red: #f0ecdd;
+      --accent-blue: #f0ecdd;
+      --accent-yellow: #f0ecdd;
+      --accent-cyan: #f0ecdd;
+      --border-color: #151418;
     }
 
     * {
@@ -153,7 +153,7 @@
     .ticker-wrapper {
       overflow: hidden;
       margin-top: 8px;
-      background: #000000;
+      background: #151418;
       padding: 4px 0;
       min-height: 20px;
     }
@@ -343,7 +343,7 @@
       <div class="profile">
         <div class="profile-pic-container">
           <img src="timoteo-1.jpg" alt="Timoteo Costantini Scala" class="profile-pic">
-          <img src="timoteo-2.jpg" alt="Timoteo Costantini Scala" class="profile-pic profile-pic-hover">
+          <img src="timoteo-2.png" alt="Timoteo Costantini Scala" class="profile-pic profile-pic-hover">
           <div class="info-text">
             <div class="name">Timoteo Costantini Scala</div>
             <div class="details">
@@ -425,18 +425,19 @@
           <ul class="interest-list">
             <li>explorer</li>
             <li>programmer</li>
-            <li>waiter & host</li>
-            <li>cool rigth?</li>
+            <li>udine milano parigi firenze</li>
             <li>model</li>
+            <li>waiter & host</li>
             <li>nerd</li>
+            <li>mediocre chess player (1100 elo)</li>
             <li>aspiring tech founder</li>
-            <li>note-taker</li>
             <li>traveller</li>
+            <li>failed ball player</li>
+            <li>rap fan</li>
             <li>son</li>
             <li>brother</li>
             <li>boyfriend</li>
             <li>freak</li>
-            <li>rap fan</li>
           </ul>
         </div>
       </section>
@@ -638,7 +639,7 @@
       let currentIndex = 0;
 
       function getRandomDelay() {
-        return Math.floor(Math.random() * 1500) + 1500; // 1.5-3s
+        return Math.floor(Math.random() * 1000) + 500; // 1.5-3s
       }
 
       function typeWord(element, word) {
