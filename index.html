@@ -38,6 +38,11 @@
     .container {
       display: flex;
       min-height: 100vh;
+      transition: opacity 0.8s ease 0.3s;
+    }
+
+    .container:not(.visible) {
+      opacity: 0;
     }
 
     /* ========== SIDEBAR ========== */
@@ -87,10 +92,6 @@
       opacity: 1;
     }
 
-    .info-text {
-      display: none;
-    }
-
     .profile-name {
       font-size: 14px;
       font-weight: 500;
@@ -124,10 +125,6 @@
 
     .sidebar-contacts a {
       color: #3b8eea;
-      text-decoration: underline;
-    }
-
-    .sidebar-contacts a:hover {
       text-decoration: underline;
     }
 
@@ -342,6 +339,38 @@
         margin: 0 auto;
     }
     }
+
+    /* ========== INTRO OVERLAY ========== */
+    #intro-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-dark);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      cursor: pointer;
+      transition: opacity 0.6s ease;
+    }
+
+    #intro-overlay.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #intro-text, #intro-cursor {
+      font-size: clamp(24px, 5vw, 48px);
+      color: var(--text-primary);
+      letter-spacing: 2px;
+    }
+
+    #intro-cursor {
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
   </style>
 </head>
 <body>
@@ -526,34 +555,107 @@
   </div>
 
   <script>
+    // ========== SHARED TYPING UTILITY ==========
+    const TypingUtil = {
+      getHumanDelay() {
+        const baseDelay = Math.floor(Math.random() * 81) + 40;
+        return Math.random() < 0.1 ? Math.floor(Math.random() * 101) + 200 : baseDelay;
+      },
+
+      createCursor(parent) {
+        const cursor = document.createElement('span');
+        cursor.textContent = '█';
+        cursor.style.color = '#ffffff';
+        parent.appendChild(cursor);
+
+        let visible = true;
+        const interval = setInterval(() => {
+          cursor.style.opacity = visible ? '1' : '0';
+          visible = !visible;
+        }, 530);
+
+        return { cursor, interval };
+      },
+
+      typeText(element, text, onComplete, withCursor = true) {
+        element.textContent = '';
+        let charIndex = 0;
+        let cursorData = null;
+
+        if (withCursor) {
+          cursorData = this.createCursor(element);
+        }
+
+        const typeChar = () => {
+          if (charIndex < text.length) {
+            const textNode = document.createTextNode(text[charIndex]);
+            if (withCursor) {
+              element.insertBefore(textNode, cursorData.cursor);
+            } else {
+              element.appendChild(textNode);
+            }
+            charIndex++;
+            setTimeout(typeChar, this.getHumanDelay());
+          } else {
+            if (withCursor) {
+              clearInterval(cursorData.interval);
+              cursorData.cursor.remove();
+            }
+            if (onComplete) onComplete();
+          }
+        };
+
+        typeChar();
+      },
+
+      deleteText(element, onComplete) {
+        const cursor = element.querySelector('span');
+        const textNodes = Array.from(element.childNodes).filter(n => n.nodeType === 3);
+        let charIndex = textNodes.length - 1;
+
+        const deleteChar = () => {
+          if (charIndex >= 0) {
+            textNodes[charIndex].remove();
+            charIndex--;
+            setTimeout(deleteChar, Math.floor(Math.random() * 31) + 20);
+          } else {
+            if (onComplete) onComplete();
+          }
+        };
+
+        deleteChar();
+      }
+    };
+
+    // ========== INTRO OVERLAY ==========
     (function() {
-  const overlay = document.getElementById('intro-overlay');
-  const introText = document.getElementById('intro-text');
-  const container = document.querySelector('.container');
-  const message = 'click to know me';
-  
-  if (sessionStorage.getItem('introSeen')) {
-    overlay.remove();
-    container.classList.add('visible');
-    return;
-  }
-  
-  let i = 0;
-  function type() {
-    if (i < message.length) {
-      introText.textContent += message[i++];
-      setTimeout(type, 70 + Math.random() * 50);
-    }
-  }
-  setTimeout(type, 400);
-  
-  overlay.onclick = () => {
-    sessionStorage.setItem('introSeen', 'true');
-    overlay.classList.add('fade-out');
-    container.classList.add('visible');
-    setTimeout(() => overlay.remove(), 600);
-  };
-})();
+      const overlay = document.getElementById('intro-overlay');
+      const introText = document.getElementById('intro-text');
+      const container = document.querySelector('.container');
+      const message = 'click to know me';
+
+      if (sessionStorage.getItem('introSeen')) {
+        overlay.remove();
+        container.classList.add('visible');
+        return;
+      }
+
+      let i = 0;
+      function type() {
+        if (i < message.length) {
+          introText.textContent += message[i++];
+          setTimeout(type, 70 + Math.random() * 50);
+        }
+      }
+      setTimeout(type, 400);
+
+      overlay.onclick = () => {
+        sessionStorage.setItem('introSeen', 'true');
+        overlay.classList.add('fade-out');
+        container.classList.add('visible');
+        setTimeout(() => overlay.remove(), 600);
+      };
+    })();
   </script>
 
   <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
@@ -594,68 +696,18 @@
   </script>
 
   <script>
-    // Terminal typing effect for project lists
+    // ========== PROJECT NAMES TYPING ==========
     (function() {
       const projectNames = document.querySelectorAll('.nav-list .project-name');
-
-      function getHumanTypingDelay() {
-        // Most characters: 40-120ms
-        const baseDelay = Math.floor(Math.random() * 81) + 40;
-
-        // Occasional thinking pause: 10% chance of 200-300ms delay
-        if (Math.random() < 0.1) {
-          return Math.floor(Math.random() * 101) + 200;
-        }
-
-        return baseDelay;
-      }
 
       function typeProjectName(element, text, startDelay) {
         return new Promise((resolve) => {
           setTimeout(() => {
-            // Store original text and clear element
-            const originalText = text;
-            element.textContent = '';
-
-            // Create cursor element
-            const cursor = document.createElement('span');
-            cursor.textContent = '█';
-            cursor.style.color = '#ffffff';
-            element.appendChild(cursor);
-
-            // Start cursor blinking
-            let cursorVisible = true;
-            const cursorInterval = setInterval(() => {
-              cursor.style.opacity = cursorVisible ? '1' : '0';
-              cursorVisible = !cursorVisible;
-            }, 530);
-
-            let charIndex = 0;
-
-            function typeNextChar() {
-              if (charIndex < originalText.length) {
-                // Insert character before cursor
-                const textNode = document.createTextNode(originalText[charIndex]);
-                element.insertBefore(textNode, cursor);
-                charIndex++;
-
-                // Human-like random delay
-                const delay = getHumanTypingDelay();
-                setTimeout(typeNextChar, delay);
-              } else {
-                // Typing complete - remove cursor
-                clearInterval(cursorInterval);
-                cursor.remove();
-                resolve();
-              }
-            }
-
-            typeNextChar();
+            TypingUtil.typeText(element, text, resolve, true);
           }, startDelay);
         });
       }
 
-      // Type all projects sequentially
       async function typeAllProjects() {
         let initialDelay = 700;
         for (let i = 0; i < projectNames.length; i++) {
@@ -667,7 +719,6 @@
           await typeProjectName(projectName, text, initialDelay);
           initialDelay = 150;
         }
-        // Aspetta 3 secondi e ricomincia
         await new Promise(resolve => setTimeout(resolve, 3000));
         typeAllProjects();
       }
@@ -679,73 +730,34 @@
   </script>
 
   <script>
-    // Typing effect for interest list
+    // ========== INTEREST LIST TYPING ==========
     (function() {
       const interestList = document.querySelectorAll('.interest-list li');
       const words = Array.from(interestList).map(li => li.textContent);
       let currentIndex = 0;
 
       function getRandomDelay() {
-        return Math.floor(Math.random() * 1000) + 500; // 1.5-3s
+        return Math.floor(Math.random() * 1000) + 500;
       }
 
       function typeWord(element, word) {
         return new Promise((resolve) => {
-          element.textContent = '';
           element.classList.add('active');
+          const cursorData = TypingUtil.createCursor(element);
 
-          const cursor = document.createElement('span');
-          cursor.textContent = '█';
-          cursor.style.color = '#ffffff';
-          element.appendChild(cursor);
+          TypingUtil.typeText(element, word, () => {
+            setTimeout(() => {
+              TypingUtil.deleteText(element, () => {
+                clearInterval(cursorData.interval);
+                cursorData.cursor.remove();
+                element.classList.remove('active');
+                resolve();
+              });
+            }, getRandomDelay());
+          }, false);
 
-          let cursorVisible = true;
-          const cursorInterval = setInterval(() => {
-            cursor.style.opacity = cursorVisible ? '1' : '0';
-            cursorVisible = !cursorVisible;
-          }, 530);
-
-          let charIndex = 0;
-
-          function typeNextChar() {
-            if (charIndex < word.length) {
-              const textNode = document.createTextNode(word[charIndex]);
-              element.insertBefore(textNode, cursor);
-              charIndex++;
-              const delay = Math.floor(Math.random() * 81) + 40;
-              setTimeout(typeNextChar, delay);
-            } else {
-              // Parola completa, aspetta tempo random
-              setTimeout(() => {
-                deleteWord(element, cursorInterval, resolve);
-              }, getRandomDelay());
-            }
-          }
-
-          typeNextChar();
+          element.appendChild(cursorData.cursor);
         });
-      }
-
-      function deleteWord(element, cursorInterval, resolve) {
-        const cursor = element.querySelector('span');
-        const textNodes = Array.from(element.childNodes).filter(n => n.nodeType === 3);
-        let charIndex = textNodes.length - 1;
-
-        function deleteNextChar() {
-          if (charIndex >= 0) {
-            textNodes[charIndex].remove();
-            charIndex--;
-            const delay = Math.floor(Math.random() * 31) + 20;
-            setTimeout(deleteNextChar, delay);
-          } else {
-            clearInterval(cursorInterval);
-            cursor.remove();
-            element.classList.remove('active');
-            resolve();
-          }
-        }
-
-        deleteNextChar();
       }
 
       async function cycleWords() {
