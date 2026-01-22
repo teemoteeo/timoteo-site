@@ -92,7 +92,7 @@ const TypingUtil = {
   function type() {
     if (i < message.length) {
       introText.textContent += message[i++];
-      setTimeout(type, 75 + Math.random() * 100);
+      setTimeout(type, 25 + Math.random() * 100);
     }
   }
   setTimeout(type, 800);
@@ -108,32 +108,32 @@ const TypingUtil = {
         overlay.classList.add('fade-out');
         bootSequence.classList.add('active');
       }},
-      { time: 800, action: () => {
+      { time: 200, action: () => {
         bootLine1.textContent = '> BOOTING SYSTEM...';
         bootLine1.classList.add('visible');
       }},
-      { time: 1600, action: () => {
+      { time: 800, action: () => {
         bootLine2.textContent = '> LOADING PROFILE...';
         bootLine2.classList.add('visible');
       }},
-      { time: 2300, action: () => {
+      { time: 1500, action: () => {
         bootSequence.classList.remove('active');
         container.classList.add('visible');
         document.querySelector('[data-boot="photo"]').classList.add('revealed');
       }},
-      { time: 2500, action: () => {
+      { time: 1700, action: () => {
         document.querySelector('[data-boot="name"]').classList.add('revealed');
       }},
-      { time: 2800, action: () => {
+      { time: 1800, action: () => {
         document.querySelector('[data-boot="born"]').classList.add('revealed');
       }},
-      { time: 2800, action: () => {
+      { time: 2100, action: () => {
         document.querySelector('[data-boot="age"]').classList.add('revealed');
       }},
-      { time: 2700, action: () => {
+      { time: 1900, action: () => {
         document.querySelector('[data-boot="code"]').classList.add('revealed');
       }},
-      { time: 2700, action: () => {
+      { time: 1900, action: () => {
         document.querySelector('[data-boot="pseudocode"]').classList.add('revealed');
       }},
       { time: 8100, action: () => {
