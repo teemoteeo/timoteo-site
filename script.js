@@ -124,10 +124,10 @@ const TypingUtil = {
       { time: 2500, action: () => {
         document.querySelector('[data-boot="name"]').classList.add('revealed');
       }},
-      { time: 2550, action: () => {
+      { time: 2800, action: () => {
         document.querySelector('[data-boot="born"]').classList.add('revealed');
       }},
-      { time: 2600, action: () => {
+      { time: 2800, action: () => {
         document.querySelector('[data-boot="age"]').classList.add('revealed');
       }},
       { time: 2700, action: () => {

@@ -416,25 +416,42 @@ a:focus {
 [data-boot].revealed {
   opacity: 1;
   visibility: visible;
-  animation: glitch-reveal 0.15s steps(3);
+  animation: glitch-reveal 0.3s ease-out;
 }
 
 @keyframes glitch-reveal {
-  0% { opacity: 0; transform: translate(-3px, 2px); filter: hue-rotate(90deg); }
-  33% { opacity: 1; transform: translate(3px, -2px); filter: hue-rotate(180deg); }
-  66% { opacity: 0.9; transform: translate(-2px, 0); text-shadow: 2px 0 #ff0000, -2px 0 #00ffff; }
-  100% { opacity: 1; transform: translate(0); filter: none; text-shadow: none; }
+  0% { 
+    opacity: 0; 
+    transform: translateX(-3px);
+  }
+  40% { 
+    opacity: 1; 
+    transform: translateX(2px);
+    text-shadow: 2px 0 0 rgba(255,0,0,0.3), -2px 0 0 rgba(0,255,255,0.3);
+  }
+  100% { 
+    transform: translateX(0);
+    text-shadow: none;
+  }
 }
 
 /* Photo glitch effect */
 [data-boot="photo"].revealed {
-  animation: photo-glitch 0.25s steps(5);
+  animation: photo-glitch 0.3s ease-out;
 }
 
 @keyframes photo-glitch {
-  0% { opacity: 0; clip-path: inset(0 0 100% 0); }
-  25% { opacity: 1; clip-path: inset(60% 0 0 0); filter: hue-rotate(90deg); transform: translateX(-4px); }
-  50% { clip-path: inset(30% 0 30% 0); filter: hue-rotate(180deg); transform: translateX(4px); }
-  75% { clip-path: inset(0 0 40% 0); transform: translateX(-2px); }
-  100% { clip-path: inset(0); filter: none; transform: none; }
+  0% { 
+    opacity: 0; 
+    transform: translateX(-3px);
+  }
+  40% { 
+    opacity: 1; 
+    transform: translateX(2px);
+    filter: drop-shadow(2px 0 0 rgba(255,0,0,0.3)) drop-shadow(-2px 0 0 rgba(0,255,255,0.3));
+  }
+  100% { 
+    transform: translateX(0);
+    filter: none;
+  }
 }
