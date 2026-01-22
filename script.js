@@ -307,7 +307,15 @@ window.addEventListener('beforeunload', () => clearInterval(ageInterval));
     }
   }
 
-  if (interestList.length > 0) {
-    cycleWords();
+  function startTyping() {
+    if (document.querySelector('.container.visible')) {
+      cycleWords();
+    } else {
+      setTimeout(startTyping, 100);
+    }
   }
+
+  if (interestList.length > 0) {
+    startTyping();
+}
 })();

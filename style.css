@@ -193,7 +193,7 @@ body {
 }
 
 .entry {
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 .entry-title {
@@ -216,7 +216,18 @@ body {
   padding-left: 16px;
   color: var(--text-primary);
   font-size: 13px;
-  line-height: 1.7;
+  line-height: 1.9;
+  margin-top: 8px;
+  margin-bottom: 20px;
+}
+
+.nav-list li {
+  cursor: pointer;
+  transition: transform 0.10s ease;
+}
+
+.nav-list li:hover {
+  transform: translateX(2px);
 }
 
 /* ========== NAV SECTION ========== */
