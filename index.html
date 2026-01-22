@@ -345,6 +345,10 @@
   </style>
 </head>
 <body>
+  <div id="intro-overlay">
+    <span id="intro-text"></span>
+    <span id="intro-cursor">█</span>
+  </div>
   <div class="container">
     <!-- SIDEBAR -->
     <aside class="sidebar">
@@ -520,6 +524,37 @@
       </section>
     </main>
   </div>
+
+  <script>
+    (function() {
+  const overlay = document.getElementById('intro-overlay');
+  const introText = document.getElementById('intro-text');
+  const container = document.querySelector('.container');
+  const message = 'click to know me';
+  
+  if (sessionStorage.getItem('introSeen')) {
+    overlay.remove();
+    container.classList.add('visible');
+    return;
+  }
+  
+  let i = 0;
+  function type() {
+    if (i < message.length) {
+      introText.textContent += message[i++];
+      setTimeout(type, 70 + Math.random() * 50);
+    }
+  }
+  setTimeout(type, 400);
+  
+  overlay.onclick = () => {
+    sessionStorage.setItem('introSeen', 'true');
+    overlay.classList.add('fade-out');
+    container.classList.add('visible');
+    setTimeout(() => overlay.remove(), 600);
+  };
+})();
+  </script>
 
   <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
     function updateAge() {
