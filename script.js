@@ -116,15 +116,15 @@ const TypingUtil = {
         bootLine2.textContent = '> LOADING PROFILE...';
         bootLine2.classList.add('visible');
       }},
-      { time: 2500, action: () => {
+      { time: 2300, action: () => {
         bootSequence.classList.remove('active');
         container.classList.add('visible');
         document.querySelector('[data-boot="photo"]').classList.add('revealed');
       }},
-      { time: 2600, action: () => {
+      { time: 2500, action: () => {
         document.querySelector('[data-boot="name"]').classList.add('revealed');
       }},
-      { time: 2600, action: () => {
+      { time: 2550, action: () => {
         document.querySelector('[data-boot="born"]').classList.add('revealed');
       }},
       { time: 2600, action: () => {
