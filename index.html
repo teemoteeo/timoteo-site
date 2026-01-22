@@ -7,394 +7,28 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg-dark: #151418;
-      --text-primary: #f0ecdd;
-      --text-muted: #f0ecdd;
-      --accent-green: #f0ecdd;
-      --accent-red: #f0ecdd;
-      --accent-blue: #f0ecdd;
-      --accent-yellow: #f0ecdd;
-      --accent-cyan: #f0ecdd;
-      --border-color: #151418;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'JetBrains Mono', 'SF Mono', 'Consolas', monospace;
-      background: var(--bg-dark);
-      color: var(--text-primary);
-      font-size: 13px;
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-
-    .container {
-      display: flex;
-      min-height: 100vh;
-      transition: opacity 0.8s ease 0.3s;
-    }
-
-    .container:not(.visible) {
-      opacity: 0;
-    }
-
-    /* ========== SIDEBAR ========== */
-    .sidebar {
-      width: 340px;
-      padding: 35px 24px 32px 35px;
-      position: fixed;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      display: flex;
-      flex-direction: column;
-      overflow-y: auto;
-    }
-
-    .profile {
-      text-align: center;
-      margin-bottom: 32px;
-    }
-
-    .profile-pic-container {
-      position: relative;
-      width: 240px;
-      height: 240px;
-      margin: 0 auto 16px;
-    }
-
-    .profile-pic {
-      width: 240px;
-      height: 240px;
-      border-radius: 7px;
-      object-fit: cover;
-      object-position: center 30%;
-      display: block;
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-
-    .profile-pic-hover {
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      object-position: 45% 0%;
-    }
-
-    .profile-pic-container:hover .profile-pic-hover {
-      opacity: 1;
-    }
-
-    .profile-name {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text-primary);
-      line-height: 1.4;
-      display: block;
-    }
-
-    .profile-born {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 4px;
-      display: block;
-    }
-
-    .age-clock {
-      font-size: 12px;
-      color: #ffffff;
-      margin-top: 4px;
-      display: block;
-    }
-
-    .sidebar-contacts {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px 12px;
-      margin-bottom: 24px;
-      font-size: 12px;
-      justify-content: center;
-    }
-
-    .sidebar-contacts a {
-      color: #3b8eea;
-      text-decoration: underline;
-    }
-
-    .bio-line {
-      margin-bottom: 12px;
-      font-size: 13px;
-    }
-
-    .bio-line.birth-year {
-      color: var(--text-muted);
-    }
-
-    .bio-line.tagline {
-      color: var(--accent-cyan);
-      font-weight: 500;
-      margin-bottom: 16px;
-    }
-
-    .bio-line strong {
-      color: var(--accent-green);
-    }
-
-    .ticker-wrapper {
-      overflow: hidden;
-      margin-top: 8px;
-      background: #151418;
-      padding: 4px 0;
-      min-height: 20px;
-    }
-
-    .interest-list {
-      list-style: none;
-      display: flex;
-      gap: 12px;
-      white-space: nowrap;
-      font-size: 11px;
-      color: #ffffff;
-    }
-
-    .interest-list li {
-      display: none;
-    }
-
-    .interest-list li.active {
-      display: block;
-    }
-
-    .interest-list li::after {
-      content: '';
-      margin-right: 0;
-    }
-
-    @keyframes scroll {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-
-    .contact-list {
-      list-style: none;
-    }
-
-    .contact-list li {
-      margin-bottom: 6px;
-    }
-
-    .contact-list a {
-      color: var(--accent-blue);
-      text-decoration: none;
-      transition: color 0.2s ease;
-    }
-
-    .contact-list a:hover {
-      color: var(--accent-cyan);
-      text-decoration: underline;
-    }
-
-    .contact-list a.muted {
-      color: var(--text-muted);
-    }
-
-    .signature {
-      margin-top: 24px;
-      font-style: italic;
-      color: var(--text-muted);
-    }
-
-    .entry {
-      margin-bottom: 24px;
-    }
-
-    .entry-title {
-      color: var(--accent-red);
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .entry-title a {
-      color: var(--accent-red);
-      text-decoration: none;
-    }
-
-    .entry-title a:hover {
-      text-decoration: underline;
-    }
-
-    .entry-description {
-      padding-left: 16px;
-      color: var(--text-primary);
-      font-size: 13px;
-      line-height: 1.7;
-    }
-
-    /* ========== NAV SECTION ========== */
-    .nav-section {
-      margin-bottom: 20px;
-    }
-
-    .nav-header {
-      color: #ffffff;
-      font-size: 12px;
-      margin-bottom: 8px;
-      font-weight: 600;
-    }
-
-    .nav-list {
-      list-style: none;
-    }
-
-    .nav-list li {
-      display: flex;
-      justify-content: space-between;
-      padding: 4px 0;
-      font-size: 12px;
-    }
-
-    .nav-list .project-name {
-      color: var(--text-primary);
-    }
-
-    .nav-list .project-year {
-      color: var(--text-muted);
-    }
-
-    .nav-list .featured .project-name {
-      color: var(--accent-green);
-      font-weight: 500;
-    }
-
-    /* ========== MAIN CONTENT ========== */
-    .main-content {
-      margin-left: 340px;
-      padding: 35px 35px 32px;
-      flex: 1;
-    }
-
-    .section {
-      margin-bottom: 48px;
-    }
-
-    .section-title {
-      color: var(--accent-yellow);
-      font-size: 14px;
-      margin-bottom: 16px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    /* ========== RESPONSIVE ========== */
-    @media (max-width: 768px) {
-      .container {
-        flex-direction: column;
-      }
-
-      .sidebar {
-        position: relative;
-        width: 100%;
-        border-right: none;
-        border-bottom: 1px solid var(--border-color);
-        padding: 24px 20px;
-        overflow-y: visible;
-      }
-
-      .profile-pic {
-        width: 80px;
-        height: 80px;
-      }
-
-      .nav-section {
-        margin-bottom: 16px;
-      }
-
-      .destroy-btn {
-        margin-top: 24px;
-      }
-
-      .main-content {
-        margin-left: 0;
-        padding: 32px 20px;
-      }
-
-      .section {
-        margin-bottom: 32px;
-      }
-
-      .portrait-wrapper {
-        width: 100%;
-        max-width: 300px;
-        height: auto;
-        aspect-ratio: 1;
-        margin: 0 auto;
-    }
-    }
-
-    /* ========== INTRO OVERLAY ========== */
-    #intro-overlay {
-      position: fixed;
-      inset: 0;
-      background: var(--bg-dark);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      cursor: pointer;
-      transition: opacity 0.6s ease;
-    }
-
-    #intro-overlay.fade-out {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    #intro-text, #intro-cursor {
-      font-size: clamp(24px, 5vw, 48px);
-      color: var(--text-primary);
-      letter-spacing: 2px;
-    }
-
-    #intro-cursor {
-      animation: blink 1s step-end infinite;
-    }
-
-    @keyframes blink {
-      50% { opacity: 0; }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="intro-overlay">
+  <div id="intro-overlay" role="button" tabindex="0" aria-label="Click or press Enter to continue">
     <span id="intro-text"></span>
     <span id="intro-cursor">█</span>
+  </div>
+  <div id="boot-sequence">
+    <div class="boot-line" id="boot-line-1"></div>
+    <div class="boot-line" id="boot-line-2"></div>
   </div>
   <div class="container">
     <!-- SIDEBAR -->
     <aside class="sidebar">
       <div class="profile">
-        <div class="profile-pic-container">
+        <div class="profile-pic-container" data-boot="photo">
           <img src="timoteo-1.jpg" alt="Timoteo Costantini Scala" class="profile-pic">
-          <img src="timoteo-2.png" alt="Timoteo Costantini Scala" class="profile-pic profile-pic-hover">
-          <div class="info-text">
-            <div class="name">Timoteo Costantini Scala</div>
-            <div class="details">
-              born: 2003 · Udine, Italy
-            </div>
-          </div>
+          <img src="timoteo-2.png" alt="Timoteo Costantini Scala - alternate photo" class="profile-pic profile-pic-hover">
         </div>
-        <div class="profile-name">Timoteo Costantini Scala</div>
-        <div class="profile-born">born: 2003 · Udine, Italy</div>
-        <div id="age-clock" class="age-clock"></div>
+        <h1 class="profile-name" data-boot="name">Timoteo Costantini Scala</h1>
+        <div class="profile-born" data-boot="born">born: 2003 · Udine, Italy</div>
+        <div id="age-clock" class="age-clock" data-boot="age"></div>
       </div>
 
       <div class="sidebar-contacts">
@@ -407,7 +41,7 @@
 
       <nav>
         <div class="nav-section">
-          <div class="nav-header">>>> code</div>
+          <div class="nav-header" data-boot="code">>>> code</div>
           <ul class="nav-list">
             <li class="featured">
               <span class="project-name">chefdotcom</span>
@@ -429,7 +63,7 @@
         </div>
 
         <div class="nav-section">
-          <div class="nav-header">>>> pseudo-code</div>
+          <div class="nav-header" data-boot="pseudocode">>>> pseudo-code</div>
           <ul class="nav-list">
             <li class="featured">
               <span class="project-name">fine dining</span>
@@ -489,12 +123,10 @@
 
       <!-- AWARDS & ACHIEVEMENTS -->
       <section class="section">
-        <h2 class="section-title"> >>> display</h2>
+        <h2 class="section-title">>>> display</h2>
 
         <div class="entry">
-          <div class="entry-title">
-            <a href="#">42 Firenze — Core Curriculum</a>
-          </div>
+          <div class="entry-title">42 Firenze — Core Curriculum</div>
           <div class="entry-description">
             Deep dive into algorithms, low-level programming, and computer science fundamentals.<br>Shaping my brain for the new world.
           </div>
@@ -513,30 +145,24 @@
 
       <!-- EXHIBITIONS & TALKS -->
       <section class="section">
-        <h2 class="section-title"> >>> projects </h2>
+        <h2 class="section-title">>>> projects</h2>
 
         <div class="entry">
-          <div class="entry-title">
-            <a href="#">chefdotcom</a>
-          </div>
+          <div class="entry-title">chefdotcom</div>
           <div class="entry-description">
           Digitalizing answers to chefs needs. From network to kitchen managing.<br>Promised my brother we would build this.
 	  </div>
         </div>
 
         <div class="entry">
-          <div class="entry-title">
-            <a href="#">Productivity Workflows with AI</a>
-          </div>
+          <div class="entry-title">Productivity Workflows with AI</div>
           <div class="entry-description">
 	   Learning and experimenting with real-life AI applications.<br>Are you scared of the beast?
           </div>
         </div>
 
         <div class="entry">
-          <div class="entry-title">
-            <a href="#">Digital Scriptures</a>
-          </div>
+          <div class="entry-title">Digital Scriptures</div>
           <div class="entry-description">
           script with a keyboard, scriptures with my hands<br>never underestimate what power does to man
 	  </div>
@@ -554,224 +180,7 @@
     </main>
   </div>
 
-  <script>
-    // ========== SHARED TYPING UTILITY ==========
-    const TypingUtil = {
-      getHumanDelay() {
-        const baseDelay = Math.floor(Math.random() * 81) + 40;
-        return Math.random() < 0.1 ? Math.floor(Math.random() * 101) + 200 : baseDelay;
-      },
-
-      createCursor(parent) {
-        const cursor = document.createElement('span');
-        cursor.textContent = '█';
-        cursor.style.color = '#ffffff';
-        parent.appendChild(cursor);
-
-        let visible = true;
-        const interval = setInterval(() => {
-          cursor.style.opacity = visible ? '1' : '0';
-          visible = !visible;
-        }, 530);
-
-        return { cursor, interval };
-      },
-
-      typeText(element, text, onComplete, withCursor = true) {
-        element.textContent = '';
-        let charIndex = 0;
-        let cursorData = null;
-
-        if (withCursor) {
-          cursorData = this.createCursor(element);
-        }
-
-        const typeChar = () => {
-          if (charIndex < text.length) {
-            const textNode = document.createTextNode(text[charIndex]);
-            if (withCursor) {
-              element.insertBefore(textNode, cursorData.cursor);
-            } else {
-              element.appendChild(textNode);
-            }
-            charIndex++;
-            setTimeout(typeChar, this.getHumanDelay());
-          } else {
-            if (withCursor) {
-              clearInterval(cursorData.interval);
-              cursorData.cursor.remove();
-            }
-            if (onComplete) onComplete();
-          }
-        };
-
-        typeChar();
-      },
-
-      deleteText(element, onComplete) {
-        const cursor = element.querySelector('span');
-        const textNodes = Array.from(element.childNodes).filter(n => n.nodeType === 3);
-        let charIndex = textNodes.length - 1;
-
-        const deleteChar = () => {
-          if (charIndex >= 0) {
-            textNodes[charIndex].remove();
-            charIndex--;
-            setTimeout(deleteChar, Math.floor(Math.random() * 31) + 20);
-          } else {
-            if (onComplete) onComplete();
-          }
-        };
-
-        deleteChar();
-      }
-    };
-
-    // ========== INTRO OVERLAY ==========
-    (function() {
-      const overlay = document.getElementById('intro-overlay');
-      const introText = document.getElementById('intro-text');
-      const container = document.querySelector('.container');
-      const message = 'click to know me';
-
-      if (sessionStorage.getItem('introSeen')) {
-        overlay.remove();
-        container.classList.add('visible');
-        return;
-      }
-
-      let i = 0;
-      function type() {
-        if (i < message.length) {
-          introText.textContent += message[i++];
-          setTimeout(type, 70 + Math.random() * 50);
-        }
-      }
-      setTimeout(type, 400);
-
-      overlay.onclick = () => {
-        sessionStorage.setItem('introSeen', 'true');
-        overlay.classList.add('fade-out');
-        container.classList.add('visible');
-        setTimeout(() => overlay.remove(), 600);
-      };
-    })();
-  </script>
-
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-    function updateAge() {
-      const birthDate = new Date(2003, 0, 9, 15, 45, 0);
-      const now = new Date();
-
-      let years = now.getFullYear() - birthDate.getFullYear();
-      let months = now.getMonth() - birthDate.getMonth();
-      let days = now.getDate() - birthDate.getDate();
-      let hours = now.getHours() - birthDate.getHours();
-      let minutes = now.getMinutes() - birthDate.getMinutes();
-      let seconds = now.getSeconds() - birthDate.getSeconds();
-
-      if (seconds < 0) { seconds += 60; minutes--; }
-      if (minutes < 0) { minutes += 60; hours--; }
-      if (hours < 0) { hours += 24; days--; }
-      if (days < 0) {
-        const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
-        days += prevMonth.getDate();
-        months--;
-      }
-      if (months < 0) { months += 12; years--; }
-
-      const parts = [];
-      if (years > 0) parts.push(years + (years === 1 ? ' year' : ' years'));
-      if (months > 0) parts.push(months + (months === 1 ? ' month' : ' months'));
-      if (days > 0) parts.push(days + (days === 1 ? ' day' : ' days'));
-      if (hours > 0) parts.push(hours + (hours === 1 ? ' hour' : ' hours'));
-      if (minutes > 0) parts.push(minutes + (minutes === 1 ? ' minute' : ' minutes'));
-      
-      const ageText = parts.join(' ') + ' ' + seconds + 's';
-      document.getElementById('age-clock').textContent = ageText;
-    }
-
-    updateAge();
-    setInterval(updateAge, 1000);
-  </script>
-
-  <script>
-    // ========== PROJECT NAMES TYPING ==========
-    (function() {
-      const projectNames = document.querySelectorAll('.nav-list .project-name');
-
-      function typeProjectName(element, text, startDelay) {
-        return new Promise((resolve) => {
-          setTimeout(() => {
-            TypingUtil.typeText(element, text, resolve, true);
-          }, startDelay);
-        });
-      }
-
-      async function typeAllProjects() {
-        let initialDelay = 700;
-        for (let i = 0; i < projectNames.length; i++) {
-          const projectName = projectNames[i];
-          const text = projectName.dataset.originalText || projectName.textContent;
-          if (!projectName.dataset.originalText) {
-            projectName.dataset.originalText = text;
-          }
-          await typeProjectName(projectName, text, initialDelay);
-          initialDelay = 150;
-        }
-        await new Promise(resolve => setTimeout(resolve, 3000));
-        typeAllProjects();
-      }
-
-      if (projectNames.length > 0) {
-        typeAllProjects();
-      }
-    })();
-  </script>
-
-  <script>
-    // ========== INTEREST LIST TYPING ==========
-    (function() {
-      const interestList = document.querySelectorAll('.interest-list li');
-      const words = Array.from(interestList).map(li => li.textContent);
-      let currentIndex = 0;
-
-      function getRandomDelay() {
-        return Math.floor(Math.random() * 1000) + 500;
-      }
-
-      function typeWord(element, word) {
-        return new Promise((resolve) => {
-          element.classList.add('active');
-          const cursorData = TypingUtil.createCursor(element);
-
-          TypingUtil.typeText(element, word, () => {
-            setTimeout(() => {
-              TypingUtil.deleteText(element, () => {
-                clearInterval(cursorData.interval);
-                cursorData.cursor.remove();
-                element.classList.remove('active');
-                resolve();
-              });
-            }, getRandomDelay());
-          }, false);
-
-          element.appendChild(cursorData.cursor);
-        });
-      }
-
-      async function cycleWords() {
-        while (true) {
-          await typeWord(interestList[currentIndex], words[currentIndex]);
-          currentIndex = (currentIndex + 1) % words.length;
-          await new Promise(resolve => setTimeout(resolve, 300));
-        }
-      }
-
-      if (interestList.length > 0) {
-        cycleWords();
-      }
-    })();
-  </script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
