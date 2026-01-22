@@ -197,14 +197,14 @@ body {
 }
 
 .entry-title {
-  color: var(--accent-green);
+  color: var(--text-primary);
   font-size: 13px;
   font-weight: 600;
   margin-bottom: 4px;
 }
 
 .entry-title a {
-  color: var(--accent-green);
+  color: var(--text-primary);
   text-decoration: none;
 }
 
