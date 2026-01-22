@@ -255,6 +255,7 @@ body {
 
 .nav-list .project-name {
   color: var(--text-primary);
+  padding-left: 16px;
 }
 
 .nav-list .project-year {
@@ -457,17 +458,79 @@ a:focus {
 }
 
 @keyframes photo-glitch {
-  0% { 
-    opacity: 0; 
+  0% {
+    opacity: 0;
     transform: translateX(-3px);
   }
-  40% { 
-    opacity: 1; 
+  40% {
+    opacity: 1;
     transform: translateX(2px);
     filter: drop-shadow(2px 0 0 rgba(255,0,0,0.3)) drop-shadow(-2px 0 0 rgba(0,255,255,0.3));
   }
-  100% { 
+  100% {
     transform: translateX(0);
     filter: none;
+  }
+}
+
+/* ========== TREE STRUCTURE ========== */
+
+.tree-branch {
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text-muted);
+  user-select: none;
+  flex-shrink: 0;
+  margin-right: 8px;
+  font-size: 12px;
+  letter-spacing: -1px;
+}
+
+/* Sidebar tree */
+.nav-list.tree-list {
+  padding-left: 16px;
+}
+
+.nav-list.tree-list li.tree-item {
+  display: flex;
+  align-items: center;
+}
+
+.nav-list.tree-list .project-name {
+  padding-left: 0;
+  flex: 1;
+}
+
+/* Main content tree */
+.tree-container {
+  padding-left: 16px;
+}
+
+.entry.tree-entry .entry-header {
+  display: flex;
+  align-items: center;
+}
+
+.entry.tree-entry .entry-title {
+  margin-bottom: 0;
+}
+
+.entry.tree-entry .entry-description {
+  padding-left: 32px;
+}
+
+/* Hover effects */
+.tree-item:hover .tree-branch,
+.tree-entry:hover .tree-branch {
+  color: var(--text-primary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .tree-branch {
+    margin-right: 6px;
+    font-size: 11px;
+  }
+  .entry.tree-entry .entry-description {
+    padding-left: 24px;
   }
 }
