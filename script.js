@@ -76,7 +76,7 @@ const TypingUtil = {
   const introText = document.getElementById('intro-text');
   const container = document.querySelector('.container');
   const bootSequence = document.getElementById('boot-sequence');
-  const message = 'click to deploy';
+  const message = 'click to meet me...';
 
   // Skip if already seen
   if (sessionStorage.getItem('introSeen')) {
@@ -92,7 +92,7 @@ const TypingUtil = {
   function type() {
     if (i < message.length) {
       introText.textContent += message[i++];
-      setTimeout(type, 100 + Math.random() * 100);
+      setTimeout(type, 75 + Math.random() * 100);
     }
   }
   setTimeout(type, 800);
@@ -218,7 +218,7 @@ window.addEventListener('beforeunload', () => clearInterval(ageInterval));
   }
 
   async function typeAllProjects() {
-    let initialDelay = 2100;
+    let initialDelay = 150;
     for (let i = 0; i < projectNames.length; i++) {
       const projectName = projectNames[i];
       const text = projectName.dataset.originalText || projectName.textContent;
@@ -231,10 +231,18 @@ window.addEventListener('beforeunload', () => clearInterval(ageInterval));
     await new Promise(resolve => setTimeout(resolve, 45000));
     typeAllProjects();
   }
-
-  if (projectNames.length > 0) {
-    typeAllProjects();
+  function startTyping() {
+    if (document.querySelector('.container.visible')) {
+      setTimeout(() => {
+        if (projectNames.length > 0) typeAllProjects();
+      }, 8000);
+    } else {
+      // Check again in 100ms
+      setTimeout(startTyping, 100);
+    }
   }
+
+  startTyping();
 })();
 
 // ========== INTEREST LIST TYPING ==========
@@ -244,7 +252,7 @@ window.addEventListener('beforeunload', () => clearInterval(ageInterval));
   let currentIndex = 0;
 
   function getRandomDelay() {
-    return Math.floor(Math.random() * 1000) + 1500;
+    return Math.floor(Math.random() * 1000) + 1000;
   }
 
   function typeWord(element, word) {
