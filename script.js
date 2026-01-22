@@ -11,13 +11,13 @@ const TypingUtil = {
     cursor.style.color = '#ffffff';
     parent.appendChild(cursor);
 
-    let visible = true;
+    /*let visible = true;
     const interval = setInterval(() => {
       cursor.style.opacity = visible ? '1' : '0';
       visible = !visible;
-    }, 1590);
+    }, 400);*/
 
-    return { cursor, interval };
+    return { cursor, interval:null };
   },
 
   typeText(element, text, onComplete, withCursor = true) {
@@ -108,32 +108,32 @@ const TypingUtil = {
         overlay.classList.add('fade-out');
         bootSequence.classList.add('active');
       }},
-      { time: 1200, action: () => {
+      { time: 800, action: () => {
         bootLine1.textContent = '> BOOTING SYSTEM...';
         bootLine1.classList.add('visible');
       }},
-      { time: 2000, action: () => {
+      { time: 1600, action: () => {
         bootLine2.textContent = '> LOADING PROFILE...';
         bootLine2.classList.add('visible');
       }},
-      { time: 3500, action: () => {
+      { time: 2500, action: () => {
         bootSequence.classList.remove('active');
         container.classList.add('visible');
         document.querySelector('[data-boot="photo"]').classList.add('revealed');
       }},
-      { time: 4000, action: () => {
+      { time: 2600, action: () => {
         document.querySelector('[data-boot="name"]').classList.add('revealed');
       }},
-      { time: 4000, action: () => {
+      { time: 2600, action: () => {
         document.querySelector('[data-boot="born"]').classList.add('revealed');
       }},
-      { time: 4000, action: () => {
+      { time: 2600, action: () => {
         document.querySelector('[data-boot="age"]').classList.add('revealed');
       }},
-      { time: 4000, action: () => {
+      { time: 2700, action: () => {
         document.querySelector('[data-boot="code"]').classList.add('revealed');
       }},
-      { time: 4000, action: () => {
+      { time: 2700, action: () => {
         document.querySelector('[data-boot="pseudocode"]').classList.add('revealed');
       }},
       { time: 8100, action: () => {
@@ -189,11 +189,11 @@ function updateAge() {
   if (months < 0) { months += 12; years--; }
 
   const parts = [];
-  if (years > 0) parts.push(years + (years === 1 ? ' year' : ' years'));
-  if (months > 0) parts.push(months + (months === 1 ? ' month' : ' months'));
-  if (days > 0) parts.push(days + (days === 1 ? ' day' : ' days'));
-  if (hours > 0) parts.push(hours + (hours === 1 ? ' hour' : ' hours'));
-  if (minutes > 0) parts.push(minutes + (minutes === 1 ? ' minute' : ' minutes'));
+  if (years > 0) parts.push(years + (years === 1 ? 'year' : 'years'));
+  if (months > 0) parts.push(months + (months === 1 ? 'month' : 'months'));
+  if (days > 0) parts.push(days + (days === 1 ? 'day' : 'days'));
+  if (hours > 0) parts.push(hours + (hours === 1 ? 'hour' : 'hours'));
+  if (minutes > 0) parts.push(minutes + (minutes === 1 ? 'minute' : 'minutes'));
   
   const ageText = parts.join(' ') + ' ' + seconds + 's';
   document.getElementById('age-clock').textContent = ageText;
@@ -244,7 +244,7 @@ window.addEventListener('beforeunload', () => clearInterval(ageInterval));
   let currentIndex = 0;
 
   function getRandomDelay() {
-    return Math.floor(Math.random() * 3000) + 1500;
+    return Math.floor(Math.random() * 1000) + 1500;
   }
 
   function typeWord(element, word) {
@@ -276,7 +276,7 @@ window.addEventListener('beforeunload', () => clearInterval(ageInterval));
           if (i >= 0) {
             textNodes[i].remove();
             i--;
-            setTimeout(del, Math.floor(Math.random() * 93) + 60);
+            setTimeout(del, Math.floor(Math.random() * 31) + 20);
           } else {
             clearInterval(cursorData.interval);
             cursorData.cursor.remove();
