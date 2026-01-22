@@ -108,11 +108,11 @@ const TypingUtil = {
         overlay.classList.add('fade-out');
         bootSequence.classList.add('active');
       }},
-      { time: 200, action: () => {
+      { time: 50, action: () => {
         bootLine1.textContent = '> BOOTING SYSTEM...';
         bootLine1.classList.add('visible');
       }},
-      { time: 800, action: () => {
+      { time: 950, action: () => {
         bootLine2.textContent = '> LOADING PROFILE...';
         bootLine2.classList.add('visible');
       }},
@@ -127,7 +127,7 @@ const TypingUtil = {
       { time: 1800, action: () => {
         document.querySelector('[data-boot="born"]').classList.add('revealed');
       }},
-      { time: 2100, action: () => {
+      { time: 2300, action: () => {
         document.querySelector('[data-boot="age"]').classList.add('revealed');
       }},
       { time: 1900, action: () => {
