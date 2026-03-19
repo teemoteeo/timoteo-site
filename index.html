@@ -1,3 +1,15 @@
+<!-- *********************************************************************** -->
+<!--                                                                         -->
+<!--                                                      :::      ::::::::  -->
+<!-- index.html                                         :+:      :+:    :+:  -->
+<!--                                                  +:+ +:+         +:+    -->
+<!-- By: timoteo <marvin@42.fr>                     +#+  +:+       +#+       -->
+<!--                                              +#+#+#+#+#+   +#+          -->
+<!-- Created: 2026/03/19 19:40:30 by timoteo           #+#    #+#            -->
+<!-- Updated: 2026/03/19 19:40:40 by timoteo          ###   ########.fr      -->
+<!--                                                                         -->
+<!-- *********************************************************************** -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -107,7 +119,7 @@
     .profile-pic-container:hover .profile-pic:not(.profile-pic-hover) { opacity: 0; }
 
     .profile-name {
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 500;
       color: var(--fg);
       text-align: center;
@@ -219,14 +231,17 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       column-gap: 32px;
-      row-gap: 16px;
+      row-gap: 10px;
       margin-bottom: 32px;
     }
 
     .tagline-row {
-      position: relative;
       grid-column: 1 / -1;
       min-height: 156px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      align-items: center;
+      column-gap: 24px;
     }
 
     .tagline {
@@ -235,10 +250,8 @@
       color: var(--fg);
       line-height: 1.35;
       letter-spacing: -0.3px;
-      position: absolute;
-      top: 50%;
-      left: 0;
-      transform: translateY(-50%);
+      max-width: 20ch;
+      white-space: nowrap;
     }
 
     .bio-block { }
@@ -500,19 +513,16 @@
       .tagline {
         position: static;
         transform: none;
+        white-space: normal;
       }
       .sidebar-cube { position: static; transform: none; margin: 0; }
     }
 
     /* ===== SIDEBAR RUBIK'S CUBE ===== */
     .sidebar-cube {
-      position: absolute;
-      top: 50%;
-      left: 44%;
-      transform: translate(-50%, -50%);
       display: flex;
       align-items: center;
-      gap: 12px;
+      justify-self: center;
     }
     .sidebar-cube-controls {
       position: relative;
@@ -520,10 +530,12 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      justify-self: start;
+      min-width: 104px;
     }
     #sb-cube-canvas {
-      width: 150px;
-      height: 150px;
+      width: 170px;
+      height: 170px;
       display: block;
       cursor: grab;
     }
@@ -667,13 +679,13 @@
       <!-- BIO -->
       <section class="bio-header" data-boot="bio">
         <div class="tagline-row">
-          <div class="tagline">tech founder in training<br>hospitality · developer in progress</div>
+          <div class="tagline">Tech Founder in Training<br>Hospitality · Developer in progress</div>
           <div class="sidebar-cube">
             <canvas id="sb-cube-canvas" width="480" height="480"></canvas>
-            <div class="sidebar-cube-controls">
-              <button id="sb-cube-btn">shuffle</button>
-              <div id="sb-cube-label"></div>
-            </div>
+          </div>
+          <div class="sidebar-cube-controls">
+            <button id="sb-cube-btn">shuffle</button>
+            <div id="sb-cube-label"></div>
           </div>
         </div>
 
@@ -1389,8 +1401,20 @@
     const SC = { U:0xffffff, D:0xffd600, F:0xe53935, B:0x1565c0, L:0x43a047, R:0xef6c00 };
     const cubies = [];
     const stickerGeo = new THREE.BoxGeometry(0.8, 0.8, 0.045);
+    const logoGeo = new THREE.PlaneGeometry(0.4, 0.4);
     const bodyGeo = new THREE.BoxGeometry(0.94, 0.94, 0.94);
     const bodyMat = new THREE.MeshBasicMaterial({ color: 0x050505 });
+    const logoTexture = new THREE.TextureLoader().load('rubik-cube-icon.svg');
+    logoTexture.encoding = THREE.sRGBEncoding;
+    logoTexture.minFilter = THREE.LinearFilter;
+    logoTexture.magFilter = THREE.LinearFilter;
+    const logoMat = new THREE.MeshBasicMaterial({
+      map: logoTexture,
+      transparent: true,
+      alphaTest: 0.04,
+      toneMapped: false,
+      side: THREE.DoubleSide
+    });
 
     function createStickerMaterial(color) {
       return new THREE.MeshBasicMaterial({ color });
@@ -1428,6 +1452,14 @@
             }
 
             cubie.add(s);
+
+            if (gx === 0 && gy === 1 && gz === 0 && f.ax === 'y' && f.d === 1) {
+              const logo = new THREE.Mesh(logoGeo, logoMat);
+              logo.position.y = 0.506;
+              logo.rotation.x = -Math.PI / 2;
+              logo.renderOrder = 2;
+              cubie.add(logo);
+            }
           }
 
           cubie.position.set(gx, gy, gz);
