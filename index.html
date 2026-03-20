@@ -239,12 +239,14 @@
       grid-column: 1 / -1;
       min-height: 156px;
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto auto;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
       align-items: center;
-      column-gap: 24px;
+      column-gap: 32px;
     }
 
     .tagline {
+      grid-column: 1;
+      justify-self: start;
       font-size: 22px;
       font-weight: 300;
       color: var(--fg);
@@ -515,6 +517,10 @@
         transform: none;
         white-space: normal;
       }
+      .sidebar-cube-stack {
+        width: auto;
+        justify-self: auto;
+      }
       .sidebar-cube { position: static; transform: none; margin: 0; }
     }
 
@@ -523,6 +529,15 @@
       display: flex;
       align-items: center;
       justify-self: center;
+    }
+    .sidebar-cube-stack {
+      grid-column: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      justify-self: center;
+      gap: 18px;
+      width: auto;
     }
     .sidebar-cube-controls {
       position: relative;
@@ -680,12 +695,14 @@
       <section class="bio-header" data-boot="bio">
         <div class="tagline-row">
           <div class="tagline">Tech Founder in Training<br>Hospitality · Developer in progress</div>
-          <div class="sidebar-cube">
-            <canvas id="sb-cube-canvas" width="480" height="480"></canvas>
-          </div>
-          <div class="sidebar-cube-controls">
-            <button id="sb-cube-btn">shuffle</button>
-            <div id="sb-cube-label"></div>
+          <div class="sidebar-cube-stack">
+            <div class="sidebar-cube">
+              <canvas id="sb-cube-canvas" width="480" height="480"></canvas>
+            </div>
+            <div class="sidebar-cube-controls">
+              <button id="sb-cube-btn">shuffle</button>
+              <div id="sb-cube-label"></div>
+            </div>
           </div>
         </div>
 
@@ -1617,7 +1634,7 @@
         executedMoves = [];
         aborted = false;
         state = 'shuffling'; syncBtn();
-        shuffleTimeout = setTimeout(() => { aborted = true; }, 8000);
+        shuffleTimeout = setTimeout(() => { aborted = true; }, 5000);
         shuffleLoop();
       } else if (state === 'shuffling') {
         aborted = true; // shuffleLoop checks this after current move and transitions to 'shuffled'
