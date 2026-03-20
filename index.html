@@ -6,7 +6,7 @@
 <!-- By: timoteo <marvin@42.fr>                     +#+  +:+       +#+       -->
 <!--                                              +#+#+#+#+#+   +#+          -->
 <!-- Created: 2026/03/19 19:40:30 by timoteo           #+#    #+#            -->
-<!-- Updated: 2026/03/19 19:40:40 by timoteo          ###   ########.fr      -->
+<!-- Updated: 2026/03/20 20:23:00 by timoteo          ###   ########.fr      -->
 <!--                                                                         -->
 <!-- *********************************************************************** -->
 
@@ -126,7 +126,7 @@
       letter-spacing: 0.5px;
     }
     .profile-meta {
-      font-size: 11px;
+      font-size: 13px;
       color: var(--fg-muted);
       text-align: center;
       margin-top: 3px;
@@ -150,7 +150,7 @@
     .sidebar-contacts a {
       color: var(--fg-dim);
       text-decoration: none;
-      font-size: 11px;
+      font-size: 13px;
       transition: color 0.15s;
       display: flex;
       align-items: center;
@@ -184,8 +184,8 @@
       transition: all 0.12s;
     }
     .tree-item:hover { transform: translateX(3px); }
-    .tree-branch { color: var(--fg-muted); font-size: 11px; flex-shrink: 0; }
-    .project-name { color: var(--fg-dim); font-size: 11px; flex: 1; }
+    .tree-branch { color: var(--fg-muted); font-size: 13px; flex-shrink: 0; }
+    .project-name { color: var(--fg-dim); font-size: 13px; flex: 1; }
     .project-name.featured { color: var(--fg); }
     .project-year { color: var(--fg-muted); font-size: 10px; }
     .tree-item:hover .project-name { color: var(--fg); }
@@ -217,6 +217,13 @@
       gap: 48px;
       align-items: flex-start;
     }
+    .content-col {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
     .main-left {
       flex: 1;
       min-width: 0;
@@ -226,26 +233,35 @@
       min-width: 0;
     }
 
-    /* BIO HEADER */
-    .bio-header {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      column-gap: 32px;
-      row-gap: 10px;
+    .hero-copy-shell {
+      min-height: 156px;
+      display: flex;
+      align-items: center;
+      /* Compensate the lower half of the centered shell so the visible gap to the ticker is 32px. */
+      margin-bottom: -12px;
+    }
+
+    .hero-copy {
+      width: 100%;
+    }
+
+    .hero-cube-shell {
+      min-height: 156px;
+      display: flex;
+      align-items: center;
       margin-bottom: 32px;
     }
 
-    .tagline-row {
-      grid-column: 1 / -1;
-      min-height: 156px;
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto auto;
+    .hero-cube {
+      margin-bottom: 16px;
+      width: 100%;
+      display: flex;
       align-items: center;
-      column-gap: 24px;
+      justify-content: center;
     }
 
     .tagline {
-      font-size: 22px;
+      font-size: 31px;
       font-weight: 300;
       color: var(--fg);
       line-height: 1.35;
@@ -253,8 +269,22 @@
       max-width: 20ch;
       white-space: nowrap;
     }
+    .tagline-subtitle {
+      display: block;
+      margin-top: 6px;
+      width: 100%;
+      font-size: 15px;
+      line-height: 1.35;
+      letter-spacing: 0.8px;
+      color: var(--fg-muted);
+      white-space: nowrap;
+    }
+    .tagline-subtitle::before {
+      content: "└─ ";
+      color: var(--fg-dim);
+    }
 
-    .bio-block { }
+    .bio-block { margin-bottom: 32px; }
     .bio-block-label {
       font-size: 9px;
       letter-spacing: 2px;
@@ -273,17 +303,25 @@
 
     /* TICKER */
     .ticker-wrapper {
-      grid-column: 1 / -1;
+      margin-bottom: 32px;
       overflow: hidden;
       min-height: 18px;
       display: flex;
       align-items: center;
       gap: 8px;
     }
-    .ticker-prompt { color: var(--teal); font-size: 11px; flex-shrink: 0; }
-    .interest-list { list-style: none; display: flex; gap: 12px; }
-    .interest-list li { display: none; font-size: 11px; color: var(--fg); }
-    .interest-list li.active { display: block; }
+    .ticker-prompt { color: var(--teal); font-size: 13px; flex-shrink: 0; }
+    .interest-list {
+      list-style: none;
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+    }
+    .interest-list li { display: none; font-size: 13px; color: var(--fg); }
+    .interest-list li.active {
+      display: block;
+      white-space: nowrap;
+    }
 
     /* SECTIONS */
     .section { margin-bottom: 48px; }
@@ -352,7 +390,7 @@
     .entry-title a:hover { color: var(--teal); }
     a.entry { text-decoration: none; color: inherit; display: block; }
     .entry-description {
-      font-size: 11px;
+      font-size: 13px;
       color: var(--fg-dim);
       line-height: 1.9;
     }
@@ -425,7 +463,7 @@
       position: absolute;
       top: 24px; right: 32px;
       color: var(--fg-muted);
-      font-size: 11px;
+      font-size: 13px;
       cursor: pointer;
       letter-spacing: 2px;
       text-transform: uppercase;
@@ -502,23 +540,28 @@
         margin: 0 auto 18px;
       }
       .main-content { padding: 24px 20px; }
-      .bio-header { grid-template-columns: 1fr; }
-      .tagline-row {
-        min-height: auto;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 18px;
-      }
+      .hero-copy-shell,
+      .hero-cube-shell { min-height: auto; }
       .tagline {
         position: static;
         transform: none;
         white-space: normal;
       }
+      .sidebar-cube-stack {
+        width: 100%;
+        justify-content: center;
+      }
       .sidebar-cube { position: static; transform: none; margin: 0; }
     }
 
     /* ===== SIDEBAR RUBIK'S CUBE ===== */
+    .sidebar-cube-stack {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      justify-self: center;
+      gap: 24px;
+    }
     .sidebar-cube {
       display: flex;
       align-items: center;
@@ -676,33 +719,13 @@
     <!-- MAIN -->
     <main class="main-content">
 
-      <!-- BIO -->
-      <section class="bio-header" data-boot="bio">
-        <div class="tagline-row">
-          <div class="tagline">Tech Founder in Training<br>Hospitality · Developer in progress</div>
-          <div class="sidebar-cube">
-            <canvas id="sb-cube-canvas" width="480" height="480"></canvas>
-          </div>
-          <div class="sidebar-cube-controls">
-            <button id="sb-cube-btn">shuffle</button>
-            <div id="sb-cube-label"></div>
+      <div class="sections-body">
+      <div class="main-left content-col">
+        <div class="hero-copy-shell" data-boot="bio">
+          <div class="hero-copy">
+            <div class="tagline">Tech Founder in Training<span class="tagline-subtitle">Acquiring Knowledge & Applying Skills</span></div>
           </div>
         </div>
-
-        <div class="bio-block">
-          <div class="bio-block-label is-spaced">// currently</div>
-          <div class="bio-block-content">
-            At <strong>42 Firenze</strong> — algorithms, low-level thinking, programming from the ground up.
-          </div>
-        </div>
-
-        <div class="bio-block">
-          <div class="bio-block-label is-spaced">// background</div>
-          <div class="bio-block-content is-centered">
-            <strong>Fine dining</strong> front-of-house · <strong>fashion modeling</strong> (runway, shooting) · English Cambridge C2
-          </div>
-        </div>
-
         <div class="ticker-wrapper">
           <span class="ticker-prompt">$&nbsp;</span>
           <ul class="interest-list">
@@ -715,7 +738,7 @@
             <li>waiter & host</li>
             <li>nerd</li>
             <li>learning french</li>
-            <li>mediocre chess (1100 elo)</li>
+            <li>mediocre chess player (1100 elo)</li>
             <li>aspiring tech founder</li>
             <li>traveller</li>
             <li>failed basketball player</li>
@@ -724,111 +747,138 @@
             <li>freak</li>
           </ul>
         </div>
-      </section>
+        <div data-boot="projects">
+          <div class="sections-header-col">
+            <div class="section-title">/// projects</div>
+            <div class="section-line"></div>
+          </div>
+          <section class="section">
+            <div class="entries-grid">
 
-      <!-- HEADERS ROW -->
-      <div class="sections-header-row" data-boot="projects">
-        <div class="sections-header-col">
-          <div class="section-title">/// projects</div>
-          <div class="section-line"></div>
+              <a class="entry featured" href="https://hdgr.eu" target="_blank">
+                <div class="entry-eyebrow">2025 · web · ongoing</div>
+                <div class="entry-title">hdgr</div>
+                <div class="entry-description">
+                  Architecture portfolio site for the Hendigery brothers.<br>
+                  Brutalist aesthetic, 3D transforms, carousel navigation.<br>
+                  Built with vanilla JS, deployed on Vercel → hdgr.eu
+                </div>
+                <span class="entry-tag">live</span>
+              </a>
+
+              <div class="entry">
+                <div class="entry-eyebrow">2024 · product · ongoing</div>
+                <div class="entry-title">chefdotcom</div>
+                <div class="entry-description">
+                  Digitalizing answers to chefs needs.<br>
+                  Network-to-kitchen management platform for culinary professionals.
+                </div>
+                <span class="entry-tag">in progress</span>
+              </div>
+
+              <div class="entry">
+                <div class="entry-eyebrow">2025 · systems</div>
+                <div class="entry-title">42 Firenze — Core Curriculum</div>
+                <div class="entry-description">
+                  Deep dive into algorithms, low-level C, computer science fundamentals.<br>
+                  Shaping my brain for the new world.
+                </div>
+                <span class="entry-tag">ongoing</span>
+              </div>
+
+              <div class="entry">
+                <div class="entry-eyebrow">2024 · tooling</div>
+                <div class="entry-title">AI Productivity Workflows</div>
+                <div class="entry-description">
+                  Learning and experimenting with real-life agentic AI applications.<br>
+                  Automating personalized tasks.
+                </div>
+              </div>
+
+              <div class="entry">
+                <div class="entry-eyebrow">2023 · creative</div>
+                <div class="entry-title">Digital Scriptures</div>
+                <div class="entry-description">
+                  script with a keyboard · scriptures with my hands<br>
+                  <em style="color: var(--fg-muted); font-style: italic">never underestimate what power does to man</em>
+                </div>
+              </div>
+
+              <a class="entry" href="https://models.com/models/timoteo-scala" target="_blank">
+                <div class="entry-eyebrow">ongoing · body</div>
+                <div class="entry-title">Fashion & Modeling</div>
+                <div class="entry-description">
+                  Runway shows and fashion campaigns.<br>
+                  Walked shows and shit.
+                </div>
+              </a>
+
+            </div>
+          </section>
         </div>
-        <div class="sections-header-col display-header">
-          <div class="section-title">/// display</div>
-          <div class="section-line"></div>
-        </div>
-      </div>
-
-      <div class="sections-body">
-      <div class="main-left">
-      <section class="section">
-        <div class="entries-grid">
-
-          <a class="entry featured" href="https://hdgr.eu" target="_blank">
-            <div class="entry-eyebrow">2025 · web · ongoing</div>
-            <div class="entry-title">hdgr</div>
-            <div class="entry-description">
-              Architecture portfolio site for the Hendigery brothers.<br>
-              Brutalist aesthetic, 3D transforms, carousel navigation.<br>
-              Built with vanilla JS, deployed on Vercel → hdgr.eu
-            </div>
-            <span class="entry-tag">live</span>
-          </a>
-
-          <div class="entry">
-            <div class="entry-eyebrow">2024 · product · ongoing</div>
-            <div class="entry-title">chefdotcom</div>
-            <div class="entry-description">
-              Digitalizing answers to chefs needs.<br>
-              Network-to-kitchen management platform for culinary professionals.
-            </div>
-            <span class="entry-tag">in progress</span>
-          </div>
-
-          <div class="entry">
-            <div class="entry-eyebrow">2025 · systems</div>
-            <div class="entry-title">42 Firenze — Core Curriculum</div>
-            <div class="entry-description">
-              Deep dive into algorithms, low-level C, computer science fundamentals.<br>
-              Shaping my brain for the new world.
-            </div>
-            <span class="entry-tag">ongoing</span>
-          </div>
-
-          <div class="entry">
-            <div class="entry-eyebrow">2024 · tooling</div>
-            <div class="entry-title">AI Productivity Workflows</div>
-            <div class="entry-description">
-              Learning and experimenting with real-life agentic AI applications.<br>
-              Automating personalized tasks.
-            </div>
-          </div>
-
-          <div class="entry">
-            <div class="entry-eyebrow">2023 · creative</div>
-            <div class="entry-title">Digital Scriptures</div>
-            <div class="entry-description">
-              script with a keyboard · scriptures with my hands<br>
-              <em style="color: var(--fg-muted); font-style: italic">never underestimate what power does to man</em>
-            </div>
-          </div>
-
-          <div class="entry">
-            <div class="entry-eyebrow">ongoing · body</div>
-            <div class="entry-title"><a href="https://models.com/models/timoteo-scala" target="_blank">Fashion & Modeling</a></div>
-            <div class="entry-description">
-              Runway shows and fashion campaigns.<br>
-              Walked shows and shit.
-            </div>
-          </div>
-
-        </div>
-      </section>
       </div><!-- end main-left -->
 
       <!-- DISPLAY -->
-      <section class="section display-section" data-boot="display">
-        <div class="display-list">
-          <div class="display-item">
-            <div class="display-label">curriculum</div>
-            <div class="display-content">
-              <a href="CURRICULUM.JPG" target="_blank"><strong>Professional Curriculum</strong></a> —
-              Weird mix of tech, fashion and cuisine. Weird is good, right?
-            </div>
-          </div>
-          <div class="display-item">
-            <div class="display-label">status</div>
-            <div class="display-content">
-              <strong>42 Firenze</strong> core curriculum · open to freelance · Firenze
-            </div>
-          </div>
-          <div class="display-item">
-            <div class="display-label">contact</div>
-            <div class="display-content">
-              <a href="mailto:timoteocostantiniscala@gmail.com" class="email-link">timoteocostantiniscala@gmail.com</a>
+      <div class="content-col">
+        <div class="hero-cube-shell" data-boot="bio">
+          <div class="hero-cube">
+            <div class="sidebar-cube-stack">
+              <div class="sidebar-cube">
+                <canvas id="sb-cube-canvas" width="480" height="480"></canvas>
+              </div>
+              <div class="sidebar-cube-controls">
+                <button id="sb-cube-btn">shuffle</button>
+                <div id="sb-cube-label"></div>
+              </div>
             </div>
           </div>
         </div>
-      </section>
+        <div data-boot="display">
+          <div class="bio-block">
+            <div class="bio-block-label is-spaced">// currently</div>
+            <div class="bio-block-content">
+              At <strong>42 Firenze</strong> — algorithms, low-level thinking, programming from the ground up.
+            </div>
+          </div>
+          <div class="sections-header-col display-header">
+            <div class="section-title">// display</div>
+            <div class="section-line"></div>
+          </div>
+          <section class="section display-section">
+            <div class="display-list">
+              <div class="display-item">
+                <div class="display-label">curriculum</div>
+                <div class="display-content">
+                  <a href="CURRICULUM.JPG" target="_blank"><strong>Professional Curriculum</strong></a> —
+                  Weird mix of tech, fashion and cuisine. Weird is good, right?
+                </div>
+              </div>
+              <div class="display-item">
+                <div class="display-label">status</div>
+                <div class="display-content">
+                  <strong>42 Firenze</strong> core curriculum · open to freelance · Firenze
+                </div>
+              </div>
+              <div class="display-item display-item--banner">
+                <div class="tech-track-wrap">
+                  <div class="tech-track" id="tech-track"></div>
+                </div>
+              </div>
+              <div class="display-item">
+                <div class="display-label">contact</div>
+                <div class="display-content">
+                  <a href="mailto:timoteocostantiniscala@gmail.com" class="email-link">timoteocostantiniscala@gmail.com</a>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="tech-grid-section">
+            <div class="section-title">/// tech stack</div>
+            <div class="section-line"></div>
+            <div class="tech-grid" id="tech-grid"></div>
+          </section>
+        </div>
+      </div>
       </div><!-- end sections-body -->
 
     </main>
@@ -886,7 +936,7 @@
         [1500, () => { document.querySelector('[data-boot="profile"]').classList.add('revealed'); }],
         [1650, () => { document.querySelector('[data-boot="contacts"]').classList.add('revealed'); }],
         [1800, () => { document.querySelector('[data-boot="nav"]').classList.add('revealed'); }],
-        [2000, () => { document.querySelector('[data-boot="bio"]').classList.add('revealed'); }],
+        [2000, () => { document.querySelectorAll('[data-boot="bio"]').forEach(el => el.classList.add('revealed')); }],
         [2200, () => { document.querySelector('[data-boot="projects"]').classList.add('revealed'); }],
         [2400, () => { document.querySelector('[data-boot="display"]').classList.add('revealed'); }],
         [3000, () => { overlay.remove(); bootSeq.remove(); }],
@@ -1324,13 +1374,15 @@
       setStatus('shuffled · ' + n + ' moves');
     }
 
+    const SOLVE_TIME_FACTOR = 0.75;
+
     // Human-like timing: random pauses simulating thinking
     function humanDelay(moveIndex, total) {
       const base = 180 + Math.random() * 140;
       const thinkChance = Math.random();
-      if (thinkChance < 0.08) return base + 800 + Math.random() * 1200; // long pause
-      if (thinkChance < 0.22) return base + 300 + Math.random() * 400;  // short pause
-      return base;
+      if (thinkChance < 0.08) return (base + 800 + Math.random() * 1200) * SOLVE_TIME_FACTOR; // long pause
+      if (thinkChance < 0.22) return (base + 300 + Math.random() * 400) * SOLVE_TIME_FACTOR;  // short pause
+      return base * SOLVE_TIME_FACTOR;
     }
 
     function solveCube() {
@@ -1489,6 +1541,10 @@
       "R":"R'","R'":"R","L":"L'","L'":"L"
     };
 
+    const SOLVE_TIME_FACTOR = 0.75;
+    const SHUFFLE_TIME_FACTOR = 0.5;
+    const MAX_SHUFFLE_MS = 4000;
+
     let isMoving = false, autoRotate = true, isDragging = false;
     let lastPX = 0, lastPY = 0;
     let state = 'idle', executedMoves = [], aborted = false;
@@ -1552,6 +1608,10 @@
       return ALL_MOVES[Math.floor(Math.random() * ALL_MOVES.length)];
     }
 
+    function shuffleDur() {
+      return 80 * SHUFFLE_TIME_FACTOR;
+    }
+
     function shuffleLoop() {
       if (aborted) {
         if (shuffleTimeout) { clearTimeout(shuffleTimeout); shuffleTimeout = null; }
@@ -1560,16 +1620,16 @@
       }
       const move = randomMove();
       executedMoves.push(move);
-      doMove(move, () => setTimeout(shuffleLoop, 0));
+      doMove(move, () => setTimeout(shuffleLoop, 0), shuffleDur());
     }
 
     function solveDelay() {
       const r = Math.random();
-      if (r < 0.06) return 1800 + Math.random() * 2000; // lunga riflessione
-      if (r < 0.20) return 400  + Math.random() * 600;  // esitazione
-      return 60 + Math.random() * 40;                    // mossa fluida
+      if (r < 0.06) return (1800 + Math.random() * 2000) * SOLVE_TIME_FACTOR; // lunga riflessione
+      if (r < 0.20) return (400  + Math.random() * 600) * SOLVE_TIME_FACTOR;  // esitazione
+      return (60 + Math.random() * 40) * SOLVE_TIME_FACTOR;                    // mossa fluida
     }
-    function solveDur()   { return 120 + Math.random() * 40; } // 120-160ms animation
+    function solveDur()   { return (120 + Math.random() * 40) * SOLVE_TIME_FACTOR; } // 120-160ms animation
 
     function setCubeButton(label, disabled) {
       btn.disabled = disabled;
@@ -1617,7 +1677,7 @@
         executedMoves = [];
         aborted = false;
         state = 'shuffling'; syncBtn();
-        shuffleTimeout = setTimeout(() => { aborted = true; }, 8000);
+        shuffleTimeout = setTimeout(() => { aborted = true; }, MAX_SHUFFLE_MS);
         shuffleLoop();
       } else if (state === 'shuffling') {
         aborted = true; // shuffleLoop checks this after current move and transitions to 'shuffled'

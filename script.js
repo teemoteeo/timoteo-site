@@ -319,3 +319,80 @@ window.addEventListener('beforeunload', () => clearInterval(ageInterval));
     startTyping();
 }
 })();
+
+(function() {
+  const CDN = 'https://cdn.jsdelivr.net/npm/tech-stack-icons@latest/icons/';
+  const DEV = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/';
+
+  const badges = [
+    { label: 'Claude',     cls: 'tb-claude',   src: CDN + 'claude.svg' },
+    { label: 'C',          cls: 'tb-c',         src: DEV + 'c/c-original.svg' },
+    { label: 'Python',     cls: 'tb-python',    src: CDN + 'python.svg' },
+    { label: 'HTML',       cls: 'tb-html',      src: CDN + 'html5.svg' },
+    { label: 'CSS',        cls: 'tb-css',       src: CDN + 'css3.svg' },
+    { label: 'JavaScript', cls: 'tb-js',        src: CDN + 'js.svg' },
+    { label: 'ChatGPT',    cls: 'tb-chatgpt',   src: CDN + 'openai.svg' },
+    { label: 'Cursor',     cls: 'tb-cursor',    src: 'icons/cursor.svg' },
+    { label: 'Gemini',     cls: 'tb-gemini',    src: CDN + 'gemini.svg' },
+    { label: 'Ollama',     cls: 'tb-ollama',    src: CDN + 'ollama.svg' },
+    { label: 'DeepSeek',   cls: 'tb-deepseek',  src: CDN + 'deepseek.svg' },
+    { label: 'GitHub',     cls: 'tb-github',    src: CDN + 'github.svg' },
+  ];
+
+  const track = document.getElementById('tech-track');
+  if (!track) return;
+
+  [...badges, ...badges].forEach(b => {
+    const el = document.createElement('div');
+    el.className = 'tech-badge ' + b.cls;
+    const img = document.createElement('img');
+    img.src = b.src;
+    img.alt = b.label;
+    const span = document.createElement('span');
+    span.textContent = b.label;
+    el.appendChild(img);
+    el.appendChild(span);
+    track.appendChild(el);
+  });
+})();
+
+(function() {
+  const DEV   = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/';
+  const LOCAL = 'icons/';
+
+  const items = [
+    { label: 'Claude',     src: LOCAL + 'claude.svg' },
+    { label: 'C',          src: DEV   + 'c/c-original.svg' },
+    { label: 'Python',     src: DEV   + 'python/python-original.svg' },
+    { label: 'HTML',       src: DEV   + 'html5/html5-original.svg' },
+    { label: 'CSS',        src: DEV   + 'css3/css3-original.svg' },
+    { label: 'JavaScript', src: DEV   + 'javascript/javascript-original.svg' },
+    { label: 'GitHub',     src: DEV   + 'github/github-original.svg' },
+    { label: 'Go',         src: DEV   + 'go/go-original.svg' },
+    { label: 'Figma',      src: DEV   + 'figma/figma-original.svg' },
+    { label: 'Java',       src: DEV   + 'java/java-original.svg' },
+    { label: 'Neovim',     src: DEV   + 'neovim/neovim-original.svg' },
+    { label: 'ChatGPT',    src: LOCAL + 'openai.svg' },
+    { label: 'Cursor',     src: LOCAL + 'cursor.svg' },
+    { label: 'Gemini',     src: LOCAL + 'gemini.svg' },
+    { label: 'Ollama',     src: LOCAL + 'ollama.svg' },
+    { label: 'DeepSeek',   src: LOCAL + 'deepseek.svg' },
+  ];
+
+  const grid = document.getElementById('tech-grid');
+  if (!grid) return;
+
+  items.forEach(item => {
+    const el = document.createElement('div');
+    el.className = 'tech-grid-item';
+    const img = document.createElement('img');
+    img.src = item.src;
+    img.alt = item.label;
+    img.onerror = () => { img.style.opacity = '0.15'; };
+    const span = document.createElement('span');
+    span.textContent = item.label;
+    el.appendChild(img);
+    el.appendChild(span);
+    grid.appendChild(el);
+  });
+})();
