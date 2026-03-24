@@ -950,7 +950,7 @@
       cubeGroup.add(pivot);
       for (const c of affected) pivot.attach(c);
       const t0 = performance.now(), angle = def.dir * Math.PI / 2;
-      dur = dur || 80;
+      dur = dur || 107;
       function frame(now) {
         const t = Math.min((now - t0) / dur, 1);
         pivot.rotation[def.axis] = angle * ease(t);
@@ -1052,7 +1052,7 @@
         executedMoves = [];
         aborted = false;
         state = 'shuffling'; syncBtn();
-        shuffleTimeout = setTimeout(() => { aborted = true; }, 5000);
+        shuffleTimeout = setTimeout(() => { aborted = true; }, 3500);
         shuffleLoop();
       } else if (state === 'shuffling') {
         aborted = true; // shuffleLoop checks this after current move and transitions to 'shuffled'
