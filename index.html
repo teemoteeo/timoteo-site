@@ -1,3 +1,18 @@
+<<<<<<< HEAD
+=======
+<!-- *********************************************************************** -->
+<!--                                                                         -->
+<!--                                                      :::      ::::::::  -->
+<!-- index.html                                         :+:      :+:    :+:  -->
+<!--                                                  +:+ +:+         +:+    -->
+<!-- By: timoteo <marvin@42.fr>                     +#+  +:+       +#+       -->
+<!--                                              +#+#+#+#+#+   +#+          -->
+<!-- Created: 2026/03/19 19:40:30 by timoteo           #+#    #+#            -->
+<!-- Updated: 2026/03/20 20:23:00 by timoteo          ###   ########.fr      -->
+<!--                                                                         -->
+<!-- *********************************************************************** -->
+
+>>>>>>> e4244ae (vaffanculo nene)
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +22,609 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<<<<<<< HEAD
   <link rel="stylesheet" href="style.css">
+=======
+  <style>
+    :root {
+      --bg:       #0e0d10;
+      --bg2:      #141317;
+      --surface:  #1a191e;
+      --border:   rgba(255,255,255,0.07);
+      --border2:  rgba(255,255,255,0.14);
+      --fg:       #f0ecdd;
+      --fg-dim:   #9b9899;
+      --fg-muted: #6e6c75;
+      --red:      #e06c75;
+      --green:    #87a987;
+      --yellow:   #d4a84b;
+      --blue:     #5b9cf6;
+      --violet:   #8992a7;
+      --teal:     #c8f06e;
+      --orange:   #c8f06e;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg);
+      color: var(--fg);
+      font-size: 12px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ===== INTRO ===== */
+    #intro-overlay {
+      position: fixed; inset: 0;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999; cursor: pointer;
+    }
+    #intro-overlay.gone { display: none; }
+    #intro-text, #intro-cursor {
+      font-size: clamp(20px, 4vw, 38px);
+      color: var(--fg);
+      letter-spacing: 3px;
+      font-weight: 300;
+    }
+    #intro-cursor { animation: blink 1s step-end infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* ===== BOOT ===== */
+    #boot-sequence {
+      position: fixed; inset: 0;
+      background: var(--bg);
+      display: none; flex-direction: column;
+      align-items: center; justify-content: center;
+      z-index: 9998; gap: 6px;
+    }
+    #boot-sequence.active { display: flex; }
+    .boot-line { font-size: 12px; color: var(--fg-dim); display: none; }
+    .boot-line.visible { display: block; animation: glitch-in .12s steps(2); }
+
+    /* ===== LAYOUT ===== */
+    .container { display: none; min-height: 100vh; }
+    .container.visible { display: flex; }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar {
+      width: 300px;
+      min-width: 300px;
+      padding: 36px 24px 36px 32px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border);
+    }
+
+    .profile { margin-bottom: 28px; }
+
+    .profile-pic-container {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      margin: 0 auto 18px;
+    }
+    .profile-pic {
+      width: 100%;
+      height: 100%;
+      border-radius: 4px;
+      object-fit: cover;
+      object-position: center 30%;
+      display: block;
+      position: absolute; top: 0; left: 0;
+      transition: opacity 0.3s ease;
+    }
+    .profile-pic-hover {
+      opacity: 0;
+      object-position: 45% 0%;
+    }
+    .profile-pic-container:hover .profile-pic-hover { opacity: 1; }
+    .profile-pic-container:hover .profile-pic:not(.profile-pic-hover) { opacity: 0; }
+
+    .profile-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--fg);
+      text-align: center;
+      letter-spacing: 0.5px;
+    }
+    .profile-meta {
+      font-size: 13px;
+      color: var(--fg-muted);
+      text-align: center;
+      margin-top: 3px;
+    }
+    .age-clock {
+      font-size: 10px;
+      color: var(--fg-muted);
+      text-align: center;
+      margin-top: 2px;
+      font-weight: 300;
+    }
+
+    /* contacts */
+    .sidebar-contacts {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+    }
+    .sidebar-contacts a {
+      color: var(--fg-dim);
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sidebar-contacts a::before {
+      content: '→';
+      color: var(--fg-muted);
+      font-size: 10px;
+    }
+    .sidebar-contacts a:hover { color: var(--fg); }
+
+    /* nav */
+    .nav-section { margin-bottom: 22px; }
+    .nav-header {
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-list { list-style: none; }
+    .tree-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 0;
+      cursor: pointer;
+      transition: all 0.12s;
+    }
+    .tree-item:hover { transform: translateX(3px); }
+    .tree-branch { color: var(--fg-muted); font-size: 13px; flex-shrink: 0; }
+    .project-name { color: var(--fg-dim); font-size: 13px; flex: 1; }
+    .project-name.featured { color: var(--fg); }
+    .project-year { color: var(--fg-muted); font-size: 10px; }
+    .tree-item:hover .project-name { color: var(--fg); }
+    .tree-item:hover .tree-branch { color: var(--teal); }
+
+    /* ===== MAIN CONTENT ===== */
+    .main-content {
+      flex: 1;
+      padding: 36px 60px;
+      display: flex;
+      flex-direction: column;
+    }
+    .sections-header-row {
+      display: flex;
+      gap: 48px;
+      margin-bottom: 0;
+    }
+    .sections-header-col {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .sections-header-col.display-header { margin-bottom: 16px; }
+    .sections-body {
+      display: flex;
+      gap: 48px;
+      align-items: flex-start;
+    }
+    .content-col {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .main-left {
+      flex: 1;
+      min-width: 0;
+    }
+    .section.display-section {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .hero-copy-shell {
+      min-height: 156px;
+      display: flex;
+      align-items: center;
+      /* Compensate the lower half of the centered shell so the visible gap to the ticker is 32px. */
+      margin-bottom: -12px;
+    }
+
+    .hero-copy {
+      width: 100%;
+    }
+
+    .hero-cube-shell {
+      min-height: 156px;
+      display: flex;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+
+    .hero-cube {
+      margin-bottom: 16px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tagline {
+      font-size: 31px;
+      font-weight: 300;
+      color: var(--fg);
+      line-height: 1.35;
+      letter-spacing: -0.3px;
+      max-width: 20ch;
+      white-space: nowrap;
+    }
+    .tagline-subtitle {
+      display: block;
+      margin-top: 6px;
+      width: 100%;
+      font-size: 15px;
+      line-height: 1.35;
+      letter-spacing: 0.8px;
+      color: var(--fg-muted);
+      white-space: nowrap;
+    }
+    .tagline-subtitle::before {
+      content: "└─ ";
+      color: var(--fg-dim);
+    }
+
+    .bio-block { margin-bottom: 32px; }
+    .bio-block-label {
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+      margin-bottom: 8px;
+    }
+    .bio-block-label.is-spaced { margin-bottom: 16px; }
+    .bio-block-content {
+      font-size: 12px;
+      color: var(--fg-dim);
+      line-height: 1.8;
+    }
+    .bio-block-content.is-centered { text-align: center; }
+    .bio-block-content strong { color: var(--fg); font-weight: 500; }
+
+    /* TICKER */
+    .ticker-wrapper {
+      margin-bottom: 32px;
+      overflow: hidden;
+      min-height: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ticker-prompt { color: var(--teal); font-size: 13px; flex-shrink: 0; }
+    .interest-list {
+      list-style: none;
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+    }
+    .interest-list li { display: none; font-size: 13px; color: var(--fg); }
+    .interest-list li.active {
+      display: block;
+      white-space: nowrap;
+    }
+
+    /* SECTIONS */
+    .section { margin-bottom: 48px; }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .section-title {
+      font-size: 9px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+    }
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ENTRIES */
+    .entries-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .entry {
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      background: var(--surface);
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .entry::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 2px; height: 0;
+      background: var(--orange);
+      transition: height 0.25s ease;
+    }
+    .entry:hover { border-color: var(--border2); background: var(--surface); }
+    .entry:hover::before { height: 100%; }
+    .entry.featured {
+      grid-column: 1 / -1;
+      border-color: var(--border2);
+    }
+    .entry.featured::before { background: var(--yellow); }
+    .entry-eyebrow {
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+      margin-bottom: 8px;
+    }
+    .entry-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--fg);
+      margin-bottom: 8px;
+    }
+    .entry-title a { color: inherit; text-decoration: none; }
+    .entry-title a:hover { color: var(--teal); }
+    a.entry { text-decoration: none; color: inherit; display: block; }
+    .entry-description {
+      font-size: 13px;
+      color: var(--fg-dim);
+      line-height: 1.9;
+    }
+    .entry-tag {
+      display: inline-block;
+      margin-top: 12px;
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+      border: 1px solid var(--border);
+      padding: 2px 7px;
+      border-radius: 2px;
+    }
+    .entry.featured .entry-tag { color: var(--yellow); border-color: rgba(212,168,75,0.3); }
+
+    /* DISPLAY SECTION */
+    .display-list {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      margin-top: 0;
+    }
+    .display-item {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      width: 100%;
+    }
+    .display-item:last-child { border-bottom: none; }
+    .display-label { font-size: 10px; color: var(--fg-muted); }
+    .display-content {
+      font-size: 12px;
+      color: var(--fg-dim);
+      line-height: 1.8;
+      text-align: center;
+    }
+    .display-content strong { color: var(--fg); font-weight: 500; }
+    .display-content a { color: inherit; text-decoration: none; }
+    .display-content a:hover { color: var(--fg); }
+    .display-content a.email-link { color: var(--teal); }
+
+    /* ===== BOOT ANIMATIONS ===== */
+    @keyframes glitch-in {
+      0% { opacity: 0; transform: translateX(-2px); }
+      50% { opacity: 1; transform: translateX(1px); }
+      100% { transform: translateX(0); }
+    }
+    [data-boot] { opacity: 0; visibility: hidden; }
+    [data-boot].revealed {
+      opacity: 1; visibility: visible;
+      animation: glitch-in 0.25s ease-out;
+    }
+
+    /* ===== RUBIK'S EASTER EGG MODAL ===== */
+    #rubik-modal {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(8,7,11,0.97);
+      z-index: 99999;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    #rubik-modal.open { display: flex; }
+    #rubik-close {
+      position: absolute;
+      top: 24px; right: 32px;
+      color: var(--fg-muted);
+      font-size: 13px;
+      cursor: pointer;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: color 0.15s;
+    }
+    #rubik-close:hover { color: var(--fg); }
+    #rubik-title {
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+      margin-bottom: 32px;
+    }
+    #rubik-canvas-wrapper {
+      width: 340px; height: 340px;
+      margin-bottom: 32px;
+    }
+    #rubik-canvas { width: 100%; height: 100%; }
+    #rubik-controls {
+      display: flex; gap: 16px; align-items: center;
+    }
+    .rubik-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      background: none;
+      border: 1px solid var(--border2);
+      color: var(--fg-dim);
+      padding: 8px 20px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .rubik-btn:hover { color: var(--fg); border-color: var(--teal); }
+    .rubik-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    #rubik-status {
+      font-size: 10px;
+      color: var(--fg-muted);
+      letter-spacing: 1px;
+      margin-top: 20px;
+      min-height: 16px;
+    }
+    #konami-hint {
+      position: fixed;
+      bottom: 20px; right: 20px;
+      font-size: 9px;
+      color: var(--fg-muted);
+      opacity: 0;
+      transition: opacity 0.5s;
+      pointer-events: none;
+      letter-spacing: 1px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+      .sidebar { width: 260px; min-width: 260px; }
+      .main-content { padding: 24px 28px; }
+      .sections-header-row { flex-direction: column; gap: 0; }
+      .sections-body { flex-direction: column; }
+      .entries-grid { grid-template-columns: 1fr; }
+      .entry.featured { grid-column: 1; }
+    }
+    @media (max-width: 700px) {
+      .container { flex-direction: column; }
+      .sidebar {
+        position: relative; height: auto;
+        width: 100%; min-width: unset;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 24px 20px;
+      }
+      .profile-pic-container {
+        width: 100%;
+        margin: 0 auto 18px;
+      }
+      .main-content { padding: 24px 20px; }
+      .hero-copy-shell,
+      .hero-cube-shell { min-height: auto; }
+      .tagline {
+        position: static;
+        transform: none;
+        white-space: normal;
+      }
+      .sidebar-cube-stack {
+        width: 100%;
+        justify-content: center;
+      }
+      .sidebar-cube { position: static; transform: none; margin: 0; }
+    }
+
+    /* ===== SIDEBAR RUBIK'S CUBE ===== */
+    .sidebar-cube-stack {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      justify-self: center;
+      gap: 24px;
+    }
+    .sidebar-cube {
+      display: flex;
+      align-items: center;
+      justify-self: center;
+    }
+    .sidebar-cube-controls {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      justify-self: start;
+      min-width: 104px;
+    }
+    #sb-cube-canvas {
+      width: 170px;
+      height: 170px;
+      display: block;
+      cursor: grab;
+    }
+    #sb-cube-canvas:active { cursor: grabbing; }
+    #sb-cube-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      background: none;
+      border: 1px solid var(--border2);
+      color: var(--fg-muted);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7px 0;
+      border-radius: 2px;
+      cursor: pointer;
+      width: 104px;
+      min-height: 30px;
+      text-align: center;
+      white-space: nowrap;
+      transition: color 0.18s ease, border-color 0.18s ease, opacity 0.18s ease, background-color 0.18s ease;
+    }
+    #sb-cube-btn.is-fading { opacity: 0.55; }
+    #sb-cube-btn:hover { color: var(--fg); }
+    #sb-cube-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    #sb-cube-label {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      color: var(--fg-muted);
+      min-height: 14px;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+  </style>
+>>>>>>> e4244ae (vaffanculo nene)
 </head>
 <body>
 
@@ -109,6 +726,7 @@
     <!-- MAIN -->
     <main class="main-content">
 
+<<<<<<< HEAD
       <!-- BIO -->
       <section class="bio-header" data-boot="bio">
         <div class="tagline-row">
@@ -121,23 +739,15 @@
               <button id="sb-cube-btn">shuffle</button>
               <div id="sb-cube-label"></div>
             </div>
+=======
+      <div class="sections-body">
+      <div class="main-left content-col">
+        <div class="hero-copy-shell" data-boot="bio">
+          <div class="hero-copy">
+            <div class="tagline">Tech Founder in Training<span class="tagline-subtitle">Acquiring Knowledge & Applying Skills</span></div>
+>>>>>>> e4244ae (vaffanculo nene)
           </div>
         </div>
-
-        <div class="bio-block">
-          <div class="bio-block-label is-spaced">// currently</div>
-          <div class="bio-block-content">
-            At <strong>42 Firenze</strong> — algorithms, low-level thinking, programming from the ground up.
-          </div>
-        </div>
-
-        <div class="bio-block">
-          <div class="bio-block-label is-spaced">// background</div>
-          <div class="bio-block-content is-centered">
-            <strong>Fine dining</strong> front-of-house · <strong>fashion modeling</strong> (runway, shooting) · English Cambridge C2
-          </div>
-        </div>
-
         <div class="ticker-wrapper">
           <span class="ticker-prompt">$&nbsp;</span>
           <ul class="interest-list">
@@ -150,7 +760,7 @@
             <li>waiter & host</li>
             <li>nerd</li>
             <li>learning french</li>
-            <li>mediocre chess (1100 elo)</li>
+            <li>mediocre chess player (1100 elo)</li>
             <li>aspiring tech founder</li>
             <li>traveller</li>
             <li>failed basketball player</li>
@@ -159,111 +769,138 @@
             <li>freak</li>
           </ul>
         </div>
-      </section>
+        <div data-boot="projects">
+          <div class="sections-header-col">
+            <div class="section-title">/// projects</div>
+            <div class="section-line"></div>
+          </div>
+          <section class="section">
+            <div class="entries-grid">
 
-      <!-- HEADERS ROW -->
-      <div class="sections-header-row" data-boot="projects">
-        <div class="sections-header-col">
-          <div class="section-title">/// projects</div>
-          <div class="section-line"></div>
+              <a class="entry featured" href="https://hdgr.eu" target="_blank">
+                <div class="entry-eyebrow">2025 · web · ongoing</div>
+                <div class="entry-title">hdgr</div>
+                <div class="entry-description">
+                  Architecture portfolio site for the Hendigery brothers.<br>
+                  Brutalist aesthetic, 3D transforms, carousel navigation.<br>
+                  Built with vanilla JS, deployed on Vercel → hdgr.eu
+                </div>
+                <span class="entry-tag">live</span>
+              </a>
+
+              <div class="entry">
+                <div class="entry-eyebrow">2024 · product · ongoing</div>
+                <div class="entry-title">chefdotcom</div>
+                <div class="entry-description">
+                  Digitalizing answers to chefs needs.<br>
+                  Network-to-kitchen management platform for culinary professionals.
+                </div>
+                <span class="entry-tag">in progress</span>
+              </div>
+
+              <div class="entry">
+                <div class="entry-eyebrow">2025 · systems</div>
+                <div class="entry-title">42 Firenze — Core Curriculum</div>
+                <div class="entry-description">
+                  Deep dive into algorithms, low-level C, computer science fundamentals.<br>
+                  Shaping my brain for the new world.
+                </div>
+                <span class="entry-tag">ongoing</span>
+              </div>
+
+              <div class="entry">
+                <div class="entry-eyebrow">2024 · tooling</div>
+                <div class="entry-title">AI Productivity Workflows</div>
+                <div class="entry-description">
+                  Learning and experimenting with real-life agentic AI applications.<br>
+                  Automating personalized tasks.
+                </div>
+              </div>
+
+              <div class="entry">
+                <div class="entry-eyebrow">2023 · creative</div>
+                <div class="entry-title">Digital Scriptures</div>
+                <div class="entry-description">
+                  script with a keyboard · scriptures with my hands<br>
+                  <em style="color: var(--fg-muted); font-style: italic">never underestimate what power does to man</em>
+                </div>
+              </div>
+
+              <a class="entry" href="https://models.com/models/timoteo-scala" target="_blank">
+                <div class="entry-eyebrow">ongoing · body</div>
+                <div class="entry-title">Fashion & Modeling</div>
+                <div class="entry-description">
+                  Runway shows and fashion campaigns.<br>
+                  Walked shows and shit.
+                </div>
+              </a>
+
+            </div>
+          </section>
         </div>
-        <div class="sections-header-col display-header">
-          <div class="section-title">/// display</div>
-          <div class="section-line"></div>
-        </div>
-      </div>
-
-      <div class="sections-body">
-      <div class="main-left">
-      <section class="section">
-        <div class="entries-grid">
-
-          <a class="entry featured" href="https://hdgr.eu" target="_blank">
-            <div class="entry-eyebrow">2025 · web · ongoing</div>
-            <div class="entry-title">hdgr</div>
-            <div class="entry-description">
-              Architecture portfolio site for the Hendigery brothers.<br>
-              Brutalist aesthetic, 3D transforms, carousel navigation.<br>
-              Built with vanilla JS, deployed on Vercel → hdgr.eu
-            </div>
-            <span class="entry-tag">live</span>
-          </a>
-
-          <div class="entry">
-            <div class="entry-eyebrow">2024 · product · ongoing</div>
-            <div class="entry-title">chefdotcom</div>
-            <div class="entry-description">
-              Digitalizing answers to chefs needs.<br>
-              Network-to-kitchen management platform for culinary professionals.
-            </div>
-            <span class="entry-tag">in progress</span>
-          </div>
-
-          <div class="entry">
-            <div class="entry-eyebrow">2025 · systems</div>
-            <div class="entry-title">42 Firenze — Core Curriculum</div>
-            <div class="entry-description">
-              Deep dive into algorithms, low-level C, computer science fundamentals.<br>
-              Shaping my brain for the new world.
-            </div>
-            <span class="entry-tag">ongoing</span>
-          </div>
-
-          <div class="entry">
-            <div class="entry-eyebrow">2024 · tooling</div>
-            <div class="entry-title">AI Productivity Workflows</div>
-            <div class="entry-description">
-              Learning and experimenting with real-life agentic AI applications.<br>
-              Automating personalized tasks.
-            </div>
-          </div>
-
-          <div class="entry">
-            <div class="entry-eyebrow">2023 · creative</div>
-            <div class="entry-title">Digital Scriptures</div>
-            <div class="entry-description">
-              script with a keyboard · scriptures with my hands<br>
-              <em style="color: var(--fg-muted); font-style: italic">never underestimate what power does to man</em>
-            </div>
-          </div>
-
-          <div class="entry">
-            <div class="entry-eyebrow">ongoing · body</div>
-            <div class="entry-title"><a href="https://models.com/models/timoteo-scala" target="_blank">Fashion & Modeling</a></div>
-            <div class="entry-description">
-              Runway shows and fashion campaigns.<br>
-              Walked shows and shit.
-            </div>
-          </div>
-
-        </div>
-      </section>
       </div><!-- end main-left -->
 
       <!-- DISPLAY -->
-      <section class="section display-section" data-boot="display">
-        <div class="display-list">
-          <div class="display-item">
-            <div class="display-label">curriculum</div>
-            <div class="display-content">
-              <a href="CURRICULUM.JPG" target="_blank"><strong>Professional Curriculum</strong></a> —
-              Weird mix of tech, fashion and cuisine. Weird is good, right?
-            </div>
-          </div>
-          <div class="display-item">
-            <div class="display-label">status</div>
-            <div class="display-content">
-              <strong>42 Firenze</strong> core curriculum · open to freelance · Firenze
-            </div>
-          </div>
-          <div class="display-item">
-            <div class="display-label">contact</div>
-            <div class="display-content">
-              <a href="mailto:timoteocostantiniscala@gmail.com" class="email-link">timoteocostantiniscala@gmail.com</a>
+      <div class="content-col">
+        <div class="hero-cube-shell" data-boot="bio">
+          <div class="hero-cube">
+            <div class="sidebar-cube-stack">
+              <div class="sidebar-cube">
+                <canvas id="sb-cube-canvas" width="480" height="480"></canvas>
+              </div>
+              <div class="sidebar-cube-controls">
+                <button id="sb-cube-btn">shuffle</button>
+                <div id="sb-cube-label"></div>
+              </div>
             </div>
           </div>
         </div>
-      </section>
+        <div data-boot="display">
+          <div class="bio-block">
+            <div class="bio-block-label is-spaced">// currently</div>
+            <div class="bio-block-content">
+              At <strong>42 Firenze</strong> — algorithms, low-level thinking, programming from the ground up.
+            </div>
+          </div>
+          <div class="sections-header-col display-header">
+            <div class="section-title">// display</div>
+            <div class="section-line"></div>
+          </div>
+          <section class="section display-section">
+            <div class="display-list">
+              <div class="display-item">
+                <div class="display-label">curriculum</div>
+                <div class="display-content">
+                  <a href="CURRICULUM.JPG" target="_blank"><strong>Professional Curriculum</strong></a> —
+                  Weird mix of tech, fashion and cuisine. Weird is good, right?
+                </div>
+              </div>
+              <div class="display-item">
+                <div class="display-label">status</div>
+                <div class="display-content">
+                  <strong>42 Firenze</strong> core curriculum · open to freelance · Firenze
+                </div>
+              </div>
+              <div class="display-item display-item--banner">
+                <div class="tech-track-wrap">
+                  <div class="tech-track" id="tech-track"></div>
+                </div>
+              </div>
+              <div class="display-item">
+                <div class="display-label">contact</div>
+                <div class="display-content">
+                  <a href="mailto:timoteocostantiniscala@gmail.com" class="email-link">timoteocostantiniscala@gmail.com</a>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="tech-grid-section">
+            <div class="section-title">/// tech stack</div>
+            <div class="section-line"></div>
+            <div class="tech-grid" id="tech-grid"></div>
+          </section>
+        </div>
+      </div>
       </div><!-- end sections-body -->
 
     </main>
@@ -321,7 +958,7 @@
         [1500, () => { document.querySelector('[data-boot="profile"]').classList.add('revealed'); }],
         [1650, () => { document.querySelector('[data-boot="contacts"]').classList.add('revealed'); }],
         [1800, () => { document.querySelector('[data-boot="nav"]').classList.add('revealed'); }],
-        [2000, () => { document.querySelector('[data-boot="bio"]').classList.add('revealed'); }],
+        [2000, () => { document.querySelectorAll('[data-boot="bio"]').forEach(el => el.classList.add('revealed')); }],
         [2200, () => { document.querySelector('[data-boot="projects"]').classList.add('revealed'); }],
         [2400, () => { document.querySelector('[data-boot="display"]').classList.add('revealed'); }],
         [3000, () => { overlay.remove(); bootSeq.remove(); }],
@@ -759,13 +1396,15 @@
       setStatus('shuffled · ' + n + ' moves');
     }
 
+    const SOLVE_TIME_FACTOR = 0.75;
+
     // Human-like timing: random pauses simulating thinking
     function humanDelay(moveIndex, total) {
       const base = 180 + Math.random() * 140;
       const thinkChance = Math.random();
-      if (thinkChance < 0.08) return base + 800 + Math.random() * 1200; // long pause
-      if (thinkChance < 0.22) return base + 300 + Math.random() * 400;  // short pause
-      return base;
+      if (thinkChance < 0.08) return (base + 800 + Math.random() * 1200) * SOLVE_TIME_FACTOR; // long pause
+      if (thinkChance < 0.22) return (base + 300 + Math.random() * 400) * SOLVE_TIME_FACTOR;  // short pause
+      return base * SOLVE_TIME_FACTOR;
     }
 
     function solveCube() {
@@ -924,6 +1563,10 @@
       "R":"R'","R'":"R","L":"L'","L'":"L"
     };
 
+    const SOLVE_TIME_FACTOR = 0.75;
+    const SHUFFLE_TIME_FACTOR = 0.5;
+    const MAX_SHUFFLE_MS = 4000;
+
     let isMoving = false, autoRotate = true, isDragging = false;
     let lastPX = 0, lastPY = 0;
     let state = 'idle', executedMoves = [], aborted = false;
@@ -987,6 +1630,10 @@
       return ALL_MOVES[Math.floor(Math.random() * ALL_MOVES.length)];
     }
 
+    function shuffleDur() {
+      return 80 * SHUFFLE_TIME_FACTOR;
+    }
+
     function shuffleLoop() {
       if (aborted) {
         if (shuffleTimeout) { clearTimeout(shuffleTimeout); shuffleTimeout = null; }
@@ -995,16 +1642,16 @@
       }
       const move = randomMove();
       executedMoves.push(move);
-      doMove(move, () => setTimeout(shuffleLoop, 0));
+      doMove(move, () => setTimeout(shuffleLoop, 0), shuffleDur());
     }
 
     function solveDelay() {
       const r = Math.random();
-      if (r < 0.06) return 1800 + Math.random() * 2000; // lunga riflessione
-      if (r < 0.20) return 400  + Math.random() * 600;  // esitazione
-      return 60 + Math.random() * 40;                    // mossa fluida
+      if (r < 0.06) return (1800 + Math.random() * 2000) * SOLVE_TIME_FACTOR; // lunga riflessione
+      if (r < 0.20) return (400  + Math.random() * 600) * SOLVE_TIME_FACTOR;  // esitazione
+      return (60 + Math.random() * 40) * SOLVE_TIME_FACTOR;                    // mossa fluida
     }
-    function solveDur()   { return 120 + Math.random() * 40; } // 120-160ms animation
+    function solveDur()   { return (120 + Math.random() * 40) * SOLVE_TIME_FACTOR; } // 120-160ms animation
 
     function setCubeButton(label, disabled) {
       btn.disabled = disabled;
@@ -1052,7 +1699,11 @@
         executedMoves = [];
         aborted = false;
         state = 'shuffling'; syncBtn();
+<<<<<<< HEAD
         shuffleTimeout = setTimeout(() => { aborted = true; }, 3500);
+=======
+        shuffleTimeout = setTimeout(() => { aborted = true; }, MAX_SHUFFLE_MS);
+>>>>>>> e4244ae (vaffanculo nene)
         shuffleLoop();
       } else if (state === 'shuffling') {
         aborted = true; // shuffleLoop checks this after current move and transitions to 'shuffled'
