@@ -1543,7 +1543,7 @@
 
     const SOLVE_TIME_FACTOR = 0.75;
     const SHUFFLE_TIME_FACTOR = 0.5;
-    const MAX_SHUFFLE_MS = 4000;
+    const MAX_SHUFFLE_MS = 3000;
 
     let isMoving = false, autoRotate = true, isDragging = false;
     let lastPX = 0, lastPY = 0;
@@ -1598,7 +1598,12 @@
       function next() {
         if (aborted) { onAbort && onAbort(); return; }
         if (i >= moves.length) { onComplete && onComplete(); return; }
-        doMove(moves[i++], () => setTimeout(next, delayFn ? delayFn() : 0), durFn ? durFn() : undefined);
+        const moveIndex = i + 1;
+        doMove(
+          moves[i++],
+          () => setTimeout(next, delayFn ? delayFn(moveIndex, moves.length) : 0),
+          durFn ? durFn(moveIndex, moves.length) : undefined
+        );
       }
       next();
     }
@@ -1623,13 +1628,19 @@
       doMove(move, () => setTimeout(shuffleLoop, 0), shuffleDur());
     }
 
-    function solveDelay() {
+    function solveDelay(moveIndex, totalMoves) {
+      const progress = moveIndex / totalMoves;
+      const openingPause = moveIndex <= 2 ? 70 + Math.random() * 80 : 0;
+      const latePause = progress > 0.78 ? 40 + Math.random() * 70 : 0;
       const r = Math.random();
-      if (r < 0.06) return (1800 + Math.random() * 2000) * SOLVE_TIME_FACTOR; // lunga riflessione
-      if (r < 0.20) return (400  + Math.random() * 600) * SOLVE_TIME_FACTOR;  // esitazione
-      return (60 + Math.random() * 40) * SOLVE_TIME_FACTOR;                    // mossa fluida
+      if (r < 0.05) return (1200 + Math.random() * 700 + openingPause) * SOLVE_TIME_FACTOR; // lunga riflessione
+      if (r < 0.24) return (280  + Math.random() * 220 + openingPause + latePause) * SOLVE_TIME_FACTOR; // esitazione
+      return (100 + Math.random() * 50 + openingPause * 0.4) * SOLVE_TIME_FACTOR; // mossa fluida ma umana
     }
-    function solveDur()   { return (120 + Math.random() * 40) * SOLVE_TIME_FACTOR; } // 120-160ms animation
+    function solveDur(moveIndex, totalMoves) {
+      const settle = moveIndex / totalMoves > 0.82 ? 10 : 0;
+      return (135 + Math.random() * 45 + settle) * SOLVE_TIME_FACTOR;
+    }
 
     function setCubeButton(label, disabled) {
       btn.disabled = disabled;
