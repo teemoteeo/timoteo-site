@@ -24,7 +24,6 @@ body {
   color: var(--fg);
   font-size: 12px;
   line-height: 1.6;
-  overflow-x: hidden;
 }
 
 /* ===== INTRO ===== */
@@ -57,7 +56,7 @@ body {
 .boot-line.visible { display: block; animation: glitch-in .12s steps(2); }
 
 /* ===== LAYOUT ===== */
-.container { display: none; min-height: 100vh; }
+.container { display: none; min-height: 100vh; min-height: 100dvh; }
 .container.visible { display: flex; }
 
 /* ===== BOOT ANIMATIONS ===== */

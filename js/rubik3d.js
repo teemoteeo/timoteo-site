@@ -301,4 +301,7 @@ function initRubikCube() {
   syncBtn();
 }
 
-document.addEventListener('DOMContentLoaded', initRubikCube);
+window.initRubikCube = initRubikCube;
+// puo' essere caricato dinamicamente da cube-loader.js, cioe' a DOM gia' pronto
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initRubikCube);
+else initRubikCube();

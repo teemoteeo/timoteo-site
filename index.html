@@ -17,10 +17,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Timoteo Costantini Scala — Software Developer</title>
   <meta name="description" content="Timoteo Costantini Scala — software developer and 42 Firenze student. C, Python, web.">
+  <meta name="theme-color" content="#0e0d10">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230e0d10'/><rect x='9' y='6' width='14' height='20' fill='%23c8f06e'/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/base.css?v=20260918">
+  <link rel="stylesheet" href="css/layout.css?v=20260918">
+  <link rel="stylesheet" href="css/components.css?v=20260918">
+  <link rel="stylesheet" href="css/cube.css?v=20260918">
 </head>
 <body>
 
@@ -161,11 +166,11 @@
             <li>waiter & host</li>
             <li>nerd</li>
             <li>learning french</li>
-            <li>mediocre chess player (1100 elo)</li>
+            <li>mediocre chess player</li>
             <li>aspiring tech founder</li>
             <li>traveller</li>
-            <li>failed basketball player</li>
-            <li>rap fan</li>
+            <li>ex basketball player</li>
+            <li>hip-hop fan</li>
             <li>son · brother · boyfriend</li>
           </ul>
         </div>
@@ -228,6 +233,7 @@
           <div class="hero-cube">
             <div class="sidebar-cube-stack">
               <div class="sidebar-cube">
+                <svg class="cube-ph" viewBox="0 0 163 192" width="170" height="170" aria-hidden="true" focusable="false"><g stroke="#0e0d10" stroke-width="2.4" stroke-linejoin="round"><g fill="#f0ecdd"><path d="M78.0 6.0 L104.0 21.0 L78.0 36.0 L52.0 21.0Z"/><path d="M52.0 21.0 L78.0 36.0 L52.0 51.0 L26.0 36.0Z"/><path d="M26.0 36.0 L52.0 51.0 L26.0 66.0 L0.1 51.0Z"/><path d="M104.0 21.0 L130.0 36.0 L104.0 51.0 L78.0 36.0Z"/><path d="M78.0 36.0 L104.0 51.0 L78.0 66.0 L52.0 51.0Z"/><path d="M52.0 51.0 L78.0 66.0 L52.0 81.0 L26.0 66.0Z"/><path d="M130.0 36.0 L155.9 51.0 L130.0 66.0 L104.0 51.0Z"/><path d="M104.0 51.0 L130.0 66.0 L104.0 81.0 L78.0 66.0Z"/><path d="M78.0 66.0 L104.0 81.0 L78.0 96.0 L52.0 81.0Z"/></g><g fill="#e06c75"><path d="M0.1 51.0 L26.0 66.0 L26.0 96.0 L0.1 81.0Z"/><path d="M0.1 81.0 L26.0 96.0 L26.0 126.0 L0.1 111.0Z"/><path d="M0.1 111.0 L26.0 126.0 L26.0 156.0 L0.1 141.0Z"/><path d="M26.0 66.0 L52.0 81.0 L52.0 111.0 L26.0 96.0Z"/><path d="M26.0 96.0 L52.0 111.0 L52.0 141.0 L26.0 126.0Z"/><path d="M26.0 126.0 L52.0 141.0 L52.0 171.0 L26.0 156.0Z"/><path d="M52.0 81.0 L78.0 96.0 L78.0 126.0 L52.0 111.0Z"/><path d="M52.0 111.0 L78.0 126.0 L78.0 156.0 L52.0 141.0Z"/><path d="M52.0 141.0 L78.0 156.0 L78.0 186.0 L52.0 171.0Z"/></g><g fill="#a8434c"><path d="M155.9 51.0 L130.0 66.0 L130.0 96.0 L155.9 81.0Z"/><path d="M155.9 81.0 L130.0 96.0 L130.0 126.0 L155.9 111.0Z"/><path d="M155.9 111.0 L130.0 126.0 L130.0 156.0 L155.9 141.0Z"/><path d="M130.0 66.0 L104.0 81.0 L104.0 111.0 L130.0 96.0Z"/><path d="M130.0 96.0 L104.0 111.0 L104.0 141.0 L130.0 126.0Z"/><path d="M130.0 126.0 L104.0 141.0 L104.0 171.0 L130.0 156.0Z"/><path d="M104.0 81.0 L78.0 96.0 L78.0 126.0 L104.0 111.0Z"/><path d="M104.0 111.0 L78.0 126.0 L78.0 156.0 L104.0 141.0Z"/><path d="M104.0 141.0 L78.0 156.0 L78.0 186.0 L104.0 171.0Z"/></g></g></svg>
                 <canvas id="sb-cube-canvas" width="480" height="480"></canvas>
               </div>
               <div class="sidebar-cube-controls">
@@ -237,6 +243,11 @@
             </div>
           </div>
         </div>
+        <figure class="mobile-photo">
+          <!-- foto editoriale mobile: aggiungi timoteo-3.jpg e il blocco appare da solo -->
+          <img data-src="timoteo-3.jpg" alt="Timoteo Costantini Scala" decoding="async">
+          <figcaption>udine &middot; milano &middot; parigi &middot; firenze</figcaption>
+        </figure>
         <div data-boot="display">
           <div class="bio-block">
             <div class="bio-block-label is-spaced">// currently</div>
@@ -300,14 +311,14 @@
     <div id="rubik-status"></div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="js/boot.js"></script>
-  <script src="js/ticker.js"></script>
-  <script src="js/konami.js"></script>
-  <script src="js/rubik2d.js"></script>
-  <script src="js/rubik3d.js"></script>
-  <script src="js/tech.js"></script>
-  <script src="js/tree.js"></script>
+  <script src="js/boot.js?v=20260918"></script>
+  <script src="js/ticker.js?v=20260918"></script>
+  <script src="js/konami.js?v=20260918"></script>
+  <script src="js/rubik2d.js?v=20260918"></script>
+  <script src="js/cube-loader.js?v=20260918"></script>
+  <script src="js/mobile.js?v=20260918"></script>
+  <script src="js/tech.js?v=20260918"></script>
+  <script src="js/tree.js?v=20260918"></script>
 
 </body>
 </html>

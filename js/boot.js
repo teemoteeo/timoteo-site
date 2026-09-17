@@ -8,7 +8,11 @@
   const bootSeq = document.getElementById('boot-sequence');
   const msg = 'click to meet me...';
 
-  if (sessionStorage.getItem('introSeen')) {
+  // Su mobile l'intro non serve: niente tap a vuoto prima del contenuto.
+  const skipIntro = window.matchMedia('(max-width: 900px)').matches
+    || sessionStorage.getItem('introSeen');
+
+  if (skipIntro) {
     overlay.remove(); bootSeq.remove();
     container.classList.add('visible');
     document.querySelectorAll('[data-boot]').forEach(el => el.classList.add('revealed'));

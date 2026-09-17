@@ -46,8 +46,8 @@
 .pl-tags .pl-flag { color: var(--yellow); }
 .pl-meta { display: flex; flex-direction: column; gap: 3px; }
 .pl-year { font-size: 10px; color: var(--fg-muted); white-space: nowrap; }
-@media (max-width: 700px) {
-  .pl-row { grid-template-columns: 1fr; gap: 6px; }
+@media (max-width: 900px) {
+  .pl-row { grid-template-columns: 1fr; gap: 6px; padding: 14px 12px; }
   .pl-meta { flex-direction: row; justify-content: space-between; align-items: baseline; }
 }
 
@@ -267,3 +267,14 @@
   transition: color 0.15s;
 }
 .tech-grid-item:hover span { color: var(--fg); }
+
+/* ===== MOBILE ===== */
+@media (max-width: 900px) {
+  /* 5 colonne fisse sfondavano sotto i 360px */
+  .tech-grid { grid-template-columns: repeat(auto-fit, minmax(84px, 1fr)); }
+  .tech-grid-item { padding: 16px 6px; gap: 8px; }
+
+  .display-item { grid-template-columns: 1fr; gap: 4px; padding: 14px 0; align-items: start; }
+  .display-content { text-align: left; }
+  .display-content a.email-link { overflow-wrap: anywhere; }
+}
