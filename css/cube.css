@@ -141,8 +141,10 @@
 @keyframes cube-in { from { opacity: 0; } to { opacity: 1; } }
 
 @media (max-width: 900px) {
-  #sb-cube-canvas, .cube-ph { width: 150px; height: 150px; }
-  #sb-cube-btn { min-height: 44px; }
+  .sidebar-cube-stack { flex-direction: column; align-items: center; gap: 6px; }
+  #sb-cube-canvas, .cube-ph { width: 110px; height: 110px; }
+  #sb-cube-btn { min-height: 40px; width: 104px; }
+  #sb-cube-label { position: static; transform: none; margin-top: 6px; }
   #rubik-close { top: 16px; right: 18px; }
   #rubik-title { margin-bottom: 22px; }
 }

@@ -73,6 +73,7 @@
   gap: 8px;
 }
 .sidebar-contacts a { overflow-wrap: anywhere; min-width: 0; }
+.sidebar-contacts .c-short { display: none; }
 .sidebar-contacts a::before {
   content: '→';
   color: var(--fg-muted);
@@ -304,15 +305,19 @@
   nav[data-boot="nav"] { display: none; }
 
   /* --- header: foto | claim --- */
+  /* La foto occupa la colonna 1 su due righe: accanto ci stanno il claim
+     (riga 1) e i contatti (riga 2), cosi' i contatti partono subito sotto
+     "Applying Skills" invece di finire sotto la foto. */
   .profile-pic-container {
-    order: 1; grid-column: 1;
+    order: 1; grid-column: 1; grid-row: 1 / span 2;
+    align-self: stretch;
     width: 100%; max-width: 280px;
-    aspect-ratio: 3 / 4;
+    aspect-ratio: auto; min-height: 210px;
     margin: 0;
   }
   .profile-pic { object-position: center 25%; }
   .hero-copy-shell {
-    order: 2; grid-column: 2;
+    order: 2; grid-column: 2; grid-row: 1;
     min-height: 0; margin: 0;
     align-items: flex-start;
   }
@@ -323,32 +328,40 @@
   }
   .tagline-subtitle { font-size: 11.5px; white-space: normal; letter-spacing: 0.4px; }
 
-  .profile-name { order: 3; grid-column: 1 / -1; text-align: left; margin-top: 20px; }
-  .profile-meta { order: 4; grid-column: 1 / -1; text-align: left; font-size: 12px; }
-  .age-clock    { order: 5; grid-column: 1 / -1; text-align: left; }
+  /* blocco identita' in colonna 1, cubo accanto in colonna 2 (stessa riga) */
+  .profile-id   { order: 4; grid-column: 1; grid-row: 3; margin-top: 22px; }
+  .profile-name { text-align: left; line-height: 1.35; }
+  /* in mezza colonna queste due andavano a capo male: una riga sola, piu' piccole */
+  .profile-meta { text-align: left; font-size: 10.5px; white-space: nowrap; margin-top: 5px; }
+  .age-clock    { text-align: left; font-size: 9.5px; white-space: nowrap; }
 
-  /* contatti in alto, subito sotto il blocco nome: su 2 colonne per non
-     spingere giu' il cubo (la mail prende una riga sua, e' troppo lunga) */
+  /* contatti nella colonna di destra, subito sotto "Applying Skills":
+     riempiono lo spazio morto accanto alla foto. La colonna e' ~215px a 390,
+     quindi mail e github usano le etichette brevi. */
   .sidebar-contacts {
-    order: 6; grid-column: 1 / -1;
-    display: grid; grid-template-columns: 1fr 1fr;
-    column-gap: 14px;
-    margin: 16px 0 0; padding: 0; gap: 0 14px;
+    order: 3; grid-column: 2; grid-row: 2;
+    align-self: start;
+    display: flex; flex-direction: column;
+    margin: 14px 0 0; padding: 0; gap: 0;
   }
-  .sidebar-contacts a[href^="mailto"] { grid-column: 1 / -1; grid-row: 2; }
-  /* 12px: e' la misura a cui "github.com/teemoteeo" sta su una riga in mezza colonna */
-  .sidebar-contacts a { font-size: 12px; }
+  .sidebar-contacts .c-full { display: none; }
+  .sidebar-contacts .c-short { display: inline; }
+  .sidebar-contacts a { font-size: 12.5px; min-height: 40px; }
 
-  .ticker-wrapper { order: 7; grid-column: 1 / -1; margin: 16px 0 0; }
+  .ticker-wrapper { order: 7; grid-column: 1 / -1; margin: 22px 0 30px; }
 
   /* --- cubo, subito dopo l'header --- */
   .hero-cube-shell {
-    order: 8; grid-column: 1 / -1;
-    min-height: 0; margin: 28px 0 30px;
-    justify-content: center;
+    order: 5; grid-column: 2; grid-row: 3;
+    align-self: start;
+    min-height: 0; margin: 18px 0 0;
+    justify-content: flex-start;
   }
-  .sidebar-cube-stack { width: 100%; justify-content: center; gap: 20px; }
+  .hero-cube { margin: 0; justify-content: center; }
+  /* stack in verticale (cubo sopra, shuffle sotto): vedi cube.css */
+  .sidebar-cube-stack { width: 100%; }
   .sidebar-cube { position: relative; transform: none; margin: 0; }
+  .sidebar-cube-controls { min-width: 0; }
 
   .bio-block { order: 9; grid-column: 1 / -1; margin-bottom: 28px; }
   [data-boot="projects"] { order: 10; grid-column: 1 / -1; }
@@ -383,6 +396,5 @@
 
 @media (max-width: 380px) {
   .container, .container.visible { column-gap: 14px; padding: 18px 16px 48px; }
-  .sidebar-contacts { grid-template-columns: 1fr; }
-  .sidebar-contacts a[href^="mailto"] { grid-row: auto; }
+  .sidebar-contacts a { font-size: 12px; }
 }
