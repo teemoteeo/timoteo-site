@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>codexion — Timoteo Costantini Scala</title>
+  <meta name="description" content="42 firenze · milestone 3 · c — project by Timoteo Costantini Scala.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/project.css">
+  <style>
+.cdx{display:grid;grid-template-columns:1fr 300px}
+.cdx-table{border-right:1px solid var(--border)}
+.cdx-side{padding:14px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.cdx-h{display:block;font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--fg-muted);margin-bottom:6px}
+.cdx-log{font-size:10.5px;line-height:1.75;color:var(--fg-muted);white-space:pre;overflow:hidden;min-height:170px}
+.cdx-log .now{color:var(--fg)} .cdx-log .bad{color:var(--red)!important}
+.cdx-key{margin-top:auto;display:grid;gap:6px;font-size:10px;color:var(--fg-muted);border-top:1px solid var(--border);padding-top:12px}
+.cdx-key div{display:flex;align-items:center;gap:8px}
+.cdx-key .usb{width:8px;height:13px;border:1.3px solid;border-radius:2px;flex-shrink:0}
+.cdx-key .ln{width:14px;height:3px;border-radius:2px;flex-shrink:0}
+.cdx-key .ring{width:12px;height:12px;border-radius:50%;border:2px solid var(--fg-muted);border-top-color:var(--red);flex-shrink:0}
+.cdx-gantt{border-top:1px solid var(--border);padding:12px 14px 4px}
+.cdx-gantt canvas{display:block;width:100%;cursor:ew-resize;touch-action:none}
+#viz-outcome{font-size:10.5px}
+@media(max-width:760px){.cdx{grid-template-columns:1fr}.cdx-table{border-right:0;border-bottom:1px solid var(--border)}.cdx-log{min-height:0}}
+.cmm{display:grid;grid-template-columns:1fr 280px;grid-template-rows:auto 1fr;min-height:340px}
+.cmm>div{padding:14px}
+.cmm>div>span,.cmm-raw>span{display:block;font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--fg-muted);margin-bottom:8px}
+.cmm-req{grid-column:1/-1;border-bottom:1px solid var(--border);font-size:13px;color:var(--fg)}
+.cmm-out{border-right:1px solid var(--border)}
+.cmm-out pre,.cmm-raw pre{font-family:inherit;font-size:13px;line-height:1.7;white-space:pre-wrap;word-break:break-word;color:var(--fg)}
+.cmm-out .inj{color:var(--violet)} .cmm-out .gen{color:var(--teal)} .cmm-out .cur{background:rgba(200,240,110,.18)}
+.cmm-out .caret{display:inline-block;width:7px;height:14px;background:var(--teal);vertical-align:-2px;animation:blink 1s step-end infinite}
+.cand{display:grid;grid-template-columns:92px 1fr 44px;align-items:center;gap:8px;font-size:11px;margin-bottom:5px}
+.cand code{color:var(--fg);white-space:pre;overflow:hidden;text-overflow:ellipsis;background:var(--surface);padding:0 4px;border-radius:2px}
+.cand .bar{height:6px;background:var(--border2);border-radius:1px}
+.cand .bar i{display:block;height:100%;background:var(--fg-muted)}
+.cand .lg-v{color:var(--fg-muted);text-align:right}
+.cand.ok .bar i{background:var(--fg-dim)} .cand.pick code{color:var(--bg);background:var(--teal)} .cand.pick .bar i{background:var(--teal)}
+.cand.bad code{color:var(--red);text-decoration:line-through;background:transparent} .cand.bad .bar i{background:rgba(224,108,117,.45)}
+.cmm-note{font-size:11px;color:var(--fg-muted);line-height:1.7}
+.cmm-raw{margin-top:14px;border:1px dashed var(--border2);border-radius:4px;padding:12px 14px}
+.cmm-raw pre{color:var(--fg-dim);font-size:12px}
+.cmm-raw pre b{color:var(--red);font-weight:400}
+@media(max-width:760px){.cmm{grid-template-columns:1fr}.cmm-out{border-right:0;border-bottom:1px solid var(--border)}}
+</style>
+</head>
+<body>
+  <main class="pj">
+    <div class="pj-top">
+      <a href="../index.html">← cd ~</a>
+      <span class="pj-crumb">~/42-firenze/<b>codexion</b></span>
+    </div>
+
+    <header class="pj-head">
+      <div class="pj-eyebrow">42 firenze · milestone 3 · c</div>
+      <h1 class="pj-title">codexion</h1>
+      <p class="pj-lead">A concurrency problem in the spirit of the dining philosophers. <strong>N coders</strong> sit around a table with one USB dongle between each pair. A coder needs both neighbouring dongles to compile, and burns out if too much time passes since their last compile. Every coder is a POSIX thread. Every dongle is a mutex with a condition variable, and a hand-written priority queue decides who gets a released dongle first.</p>
+      <div class="pj-tags"><span>c</span><span>pthreads</span><span>mutex / condvar</span><span>min-heap</span><span>fifo / edf</span><span>threadsanitizer</span></div>
+    </header>
+
+    <div class="viz">
+  <div class="viz-bar"><span class="viz-label">replay</span><span id="viz-scn"></span><span class="grow"></span>
+   <span id="viz-outcome"></span><button id="viz-play" class="viz-btn">pause</button></div>
+  <div class="cdx">
+   <div class="cdx-table"><canvas id="viz"></canvas></div>
+   <div class="cdx-side"><span class="cdx-h">log</span><div id="viz-log" class="cdx-log"></div>
+    <div class="cdx-key">
+     <div><i class="usb" style="border-color:var(--fg-muted)"></i>dongle free</div>
+     <div><i class="ln" style="background:var(--yellow)"></i>coder holds it, waiting for the second one</div>
+     <div><i class="ln" style="background:var(--teal)"></i>coder holds both: compiling</div>
+     <div><i class="usb" style="border-color:var(--red)"></i>just released, cooling down</div>
+     <div><i class="ring"></i>coder ring = time since last compile</div>
+    </div>
+   </div>
+  </div>
+  <div class="cdx-gantt"><span class="cdx-h">timeline · click or drag to scrub</span><canvas id="viz-gantt"></canvas></div>
+  <div class="viz-foot"><span class="lg"><i style="background:var(--yellow);opacity:.35"></i>waiting</span><span class="lg"><i style="background:var(--yellow);height:3px"></i>holding one dongle</span><span class="lg"><i style="background:var(--teal)"></i>compiling</span><span class="lg"><i style="background:var(--blue)"></i>debugging</span><span class="lg"><i style="background:var(--violet)"></i>refactoring</span><span class="lg"><i style="background:var(--red);border-radius:50%"></i>burnout</span></div>
+ </div>
+ <p class="viz-note">Two real runs with identical parameters, replayed: <code id="viz-cmd"></code>. With EDF every coder finishes; with FIFO one burns out. Thread timing varies, so every run is different. The log only says "has taken a dongle": the dongle ids come from the code, where coder <i>i</i> owns dongles <i>i</i> and <i>i+1</i> and always locks the lower one first.</p>
+
+    <section class="pj-sec">
+      <h2>how it works</h2>
+      <ul class="pj-points"><li><b>Deadlock:</b> dongles are always acquired in a fixed order, which breaks the circular-wait condition.</li><li><b>Fairness:</b> each dongle has a priority queue, a binary min-heap written from scratch. FIFO orders by arrival time; EDF orders by <code>last_compile + time_to_burnout</code>, so the coder closest to burning out goes first.</li><li><b>Same parameters, different outcome:</b> in the replay above, the FIFO run lets a coder wait behind neighbours who arrived earlier until it burns out. EDF serves the closest deadline first, and everyone finishes.</li><li><b>Burnout detection:</b> a separate monitor thread checks every deadline and, when one is missed, stops the simulation and wakes every waiting thread.</li><li><b>Shared state:</b> dongles and the log are both behind mutexes, so output lines never interleave. The build runs clean under ThreadSanitizer.</li></ul>
+    </section>
+
+    <a class="pj-repo" href="https://github.com/teemoteeo/quarantadue/tree/main/milestone_3/codexion" target="_blank" rel="noopener">
+      <b>view source on github ↗</b><span>teemoteeo/quarantadue/milestone_3/codexion</span>
+    </a>
+
+    <nav class="pj-nav">
+      <a href="fly-in.html">← fly-in</a>
+      <a href="call-me-maybe.html">call-me-maybe →</a>
+    </nav>
+  </main>
+
+  <script src="../js/projects/common.js"></script>
+  <script src="../js/projects/data/codexion.js"></script>
+  <script src="../js/projects/codexion.js"></script>
+</body>
+</html>

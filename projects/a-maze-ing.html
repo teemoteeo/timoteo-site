@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>a-maze-ing — Timoteo Costantini Scala</title>
+  <meta name="description" content="42 firenze · milestone 2 · python · with acentron — project by Timoteo Costantini Scala.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/project.css">
+  <style>
+.cdx{display:grid;grid-template-columns:1fr 300px}
+.cdx-table{border-right:1px solid var(--border)}
+.cdx-side{padding:14px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.cdx-h{display:block;font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--fg-muted);margin-bottom:6px}
+.cdx-log{font-size:10.5px;line-height:1.75;color:var(--fg-muted);white-space:pre;overflow:hidden;min-height:170px}
+.cdx-log .now{color:var(--fg)} .cdx-log .bad{color:var(--red)!important}
+.cdx-key{margin-top:auto;display:grid;gap:6px;font-size:10px;color:var(--fg-muted);border-top:1px solid var(--border);padding-top:12px}
+.cdx-key div{display:flex;align-items:center;gap:8px}
+.cdx-key .usb{width:8px;height:13px;border:1.3px solid;border-radius:2px;flex-shrink:0}
+.cdx-key .ring{width:12px;height:12px;border-radius:50%;border:2px solid var(--fg-muted);border-top-color:var(--red);flex-shrink:0}
+.cdx-gantt{border-top:1px solid var(--border);padding:12px 14px 4px}
+.cdx-gantt canvas{display:block;width:100%;cursor:ew-resize;touch-action:none}
+#viz-outcome{font-size:10.5px}
+@media(max-width:760px){.cdx{grid-template-columns:1fr}.cdx-table{border-right:0;border-bottom:1px solid var(--border)}.cdx-log{min-height:0}}
+.cmm{display:grid;grid-template-columns:1fr 280px;grid-template-rows:auto 1fr;min-height:340px}
+.cmm>div{padding:14px}
+.cmm>div>span,.cmm-raw>span{display:block;font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--fg-muted);margin-bottom:8px}
+.cmm-req{grid-column:1/-1;border-bottom:1px solid var(--border);font-size:13px;color:var(--fg)}
+.cmm-out{border-right:1px solid var(--border)}
+.cmm-out pre,.cmm-raw pre{font-family:inherit;font-size:13px;line-height:1.7;white-space:pre-wrap;word-break:break-word;color:var(--fg)}
+.cmm-out .inj{color:var(--violet)} .cmm-out .gen{color:var(--teal)} .cmm-out .cur{background:rgba(200,240,110,.18)}
+.cmm-out .caret{display:inline-block;width:7px;height:14px;background:var(--teal);vertical-align:-2px;animation:blink 1s step-end infinite}
+.cand{display:grid;grid-template-columns:92px 1fr 44px;align-items:center;gap:8px;font-size:11px;margin-bottom:5px}
+.cand code{color:var(--fg);white-space:pre;overflow:hidden;text-overflow:ellipsis;background:var(--surface);padding:0 4px;border-radius:2px}
+.cand .bar{height:6px;background:var(--border2);border-radius:1px}
+.cand .bar i{display:block;height:100%;background:var(--fg-muted)}
+.cand .lg-v{color:var(--fg-muted);text-align:right}
+.cand.ok .bar i{background:var(--fg-dim)} .cand.pick code{color:var(--bg);background:var(--teal)} .cand.pick .bar i{background:var(--teal)}
+.cand.bad code{color:var(--red);text-decoration:line-through;background:transparent} .cand.bad .bar i{background:rgba(224,108,117,.45)}
+.cmm-note{font-size:11px;color:var(--fg-muted);line-height:1.7}
+.cmm-raw{margin-top:14px;border:1px dashed var(--border2);border-radius:4px;padding:12px 14px}
+.cmm-raw pre{color:var(--fg-dim);font-size:12px}
+.cmm-raw pre b{color:var(--red);font-weight:400}
+@media(max-width:760px){.cmm{grid-template-columns:1fr}.cmm-out{border-right:0;border-bottom:1px solid var(--border)}}
+</style>
+</head>
+<body>
+  <main class="pj">
+    <div class="pj-top">
+      <a href="../index.html">← cd ~</a>
+      <span class="pj-crumb">~/42-firenze/<b>a-maze-ing</b></span>
+    </div>
+
+    <header class="pj-head">
+      <div class="pj-eyebrow">42 firenze · milestone 2 · python · with acentron</div>
+      <h1 class="pj-title">a-maze-ing</h1>
+      <p class="pj-lead">A terminal maze generator and solver. It reads a config file, carves a <strong>perfect maze</strong> with one of three algorithms and solves it with bidirectional BFS, all inside a curses TUI with threaded animations. The generator also ships on its own as the pip-installable <code>mazegen</code> package. Every maze has a "42" drawn in the middle.</p>
+      <div class="pj-tags"><span>python</span><span>dfs</span><span>prim</span><span>kruskal</span><span>bidirectional bfs</span><span>curses</span><span>pip package</span></div>
+    </header>
+
+    <div class="viz">
+  <div class="viz-bar"><span class="viz-label">carve → solve</span><span id="viz-algo"></span><span class="grow"></span>
+   <button id="viz-skip" class="viz-btn">skip</button><button id="viz-play" class="viz-btn">pause</button></div>
+  <div class="viz-stage"><canvas id="viz"></canvas></div>
+  <div class="viz-foot"><span id="viz-phase" style="color:var(--fg-dim)"></span><span class="grow"></span><span class="lg"><i style="background:rgba(91,156,246,.5)"></i>search from entry</span><span class="lg"><i style="background:rgba(224,108,117,.5)"></i>search from exit</span><span class="lg"><i style="background:var(--yellow);opacity:.6"></i>42 pattern</span></div>
+ </div>
+ <p class="viz-note">Steps exported from the project's own <code>generator.py</code> (<code>carve_steps</code>) and <code>solver.py</code> (<code>bfs_bidir_layers</code>): 29×19 grid, seed 42.</p>
+
+    <section class="pj-sec">
+      <h2>how it works</h2>
+      <ul class="pj-points"><li><b>Three carving algorithms:</b> randomized DFS gives long, winding corridors. Prim grows from a frontier and gives many short dead ends. Kruskal merges sets with union-find and path compression.</li><li><b>Solver:</b> BFS from both ends at once, meeting in the middle, so it explores far fewer cells than a one-sided search.</li><li><b>Perfect or not:</b> a perfect maze has exactly one path between any two cells. With <code>PERFECT=FALSE</code> about 15% of the remaining walls are removed to create loops, and fully open 3×3 areas are broken up again.</li><li><b>Output:</b> each cell is a hex nibble (one bit per wall), followed by entry, exit and the shortest path written as N/E/S/W.</li></ul>
+    </section>
+
+    <a class="pj-repo" href="https://github.com/teemoteeo/quarantadue/tree/main/milestone_2/amazeing" target="_blank" rel="noopener">
+      <b>view source on github ↗</b><span>teemoteeo/quarantadue/milestone_2/amazeing</span>
+    </a>
+
+    <nav class="pj-nav">
+      <a href="call-me-maybe.html">← call-me-maybe</a>
+      <a href="fly-in.html">fly-in →</a>
+    </nav>
+  </main>
+
+  <script src="../js/projects/common.js"></script>
+  <script src="../js/projects/data/amazeing.js"></script>
+  <script src="../js/projects/amazeing.js"></script>
+</body>
+</html>
