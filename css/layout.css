@@ -335,26 +335,26 @@
   .profile-meta { text-align: left; font-size: 10.5px; white-space: nowrap; margin-top: 5px; }
   .age-clock    { text-align: left; font-size: 9.5px; white-space: nowrap; }
 
-  /* contatti nella colonna di destra, subito sotto "Applying Skills":
-     riempiono lo spazio morto accanto alla foto. La colonna e' ~215px a 390,
-     quindi mail e github usano le etichette brevi. */
+  /* Contatti sotto "Applying Skills", su due sotto-colonne compatte:
+     in colonna singola occupavano 220px di altezza e allungavano la foto
+     a striscia. Cosi' claim + contatti (~230px) pareggiano la foto 3/4. */
   .sidebar-contacts {
     order: 3; grid-column: 2; grid-row: 2;
     align-self: start;
-    display: flex; flex-direction: column;
-    margin: 14px 0 0; padding: 0; gap: 0;
+    display: grid; grid-template-columns: 1fr 1fr;
+    margin: 14px 0 0; padding: 0; gap: 0 10px;
   }
   .sidebar-contacts .c-full { display: none; }
   .sidebar-contacts .c-short { display: inline; }
-  .sidebar-contacts a { font-size: 12.5px; min-height: 40px; }
+  .sidebar-contacts a { font-size: 12px; min-height: 38px; }
 
-  .ticker-wrapper { order: 7; grid-column: 1 / -1; margin: 22px 0 30px; }
+  .ticker-wrapper { order: 7; grid-column: 1 / -1; margin: 16px 0 28px; }
 
   /* --- cubo, subito dopo l'header --- */
   .hero-cube-shell {
     order: 5; grid-column: 2; grid-row: 3;
     align-self: start;
-    min-height: 0; margin: 18px 0 0;
+    min-height: 0; margin: 14px 0 0;
     justify-content: flex-start;
   }
   .hero-cube { margin: 0; justify-content: center; }
@@ -374,8 +374,7 @@
   .section { margin-bottom: 32px; }
   .display-section { margin-bottom: 10px; }
 
-  /* touch target: 44px senza cambiare l'aspetto */
-  .sidebar-contacts a { min-height: 44px; align-items: center; }
+  .sidebar-contacts a { align-items: center; }
 
   /* l'easter egg della foto: su touch si attiva col tap, non con l'hover */
   .profile-pic-container { cursor: pointer; }
@@ -396,5 +395,6 @@
 
 @media (max-width: 380px) {
   .container, .container.visible { column-gap: 14px; padding: 18px 16px 48px; }
-  .sidebar-contacts a { font-size: 12px; }
+  /* a 320px "instagram" andava a capo nella sotto-colonna */
+  .sidebar-contacts a { font-size: 11px; gap: 6px; }
 }
