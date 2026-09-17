@@ -331,7 +331,7 @@
   /* blocco identita' in colonna 1, cubo accanto in colonna 2 (stessa riga) */
   /* centrato verticalmente nella riga: stessa distanza dalla foto sopra
      e dal ticker sotto (l'altezza della riga la detta il cubo accanto) */
-  .profile-id   { order: 4; grid-column: 1; grid-row: 3; align-self: center; margin: 0; }
+  .profile-id   { order: 4; grid-column: 1; grid-row: 3; align-self: center; margin: 2px 0 0; }
   .profile-name { text-align: left; line-height: 1.35; }
   /* in mezza colonna queste due andavano a capo male: una riga sola, piu' piccole */
   .profile-meta { text-align: left; font-size: 10.5px; white-space: nowrap; margin-top: 5px; }
