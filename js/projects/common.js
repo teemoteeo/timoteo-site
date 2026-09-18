@@ -33,6 +33,8 @@ window.PJ = (function () {
     btns[initial || 0].classList.add('on');
     return btns;
   }
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  return { C, canvas, buttons, reduced };
+  // Le viz partono sempre da sole: prima restavano in pausa quando il sistema
+  // chiedeva movimento ridotto (su iOS "Riduci movimento" e' una preferenza
+  // comune). Si possono comunque fermare col bottone pause.
+  return { C, canvas, buttons };
 })();

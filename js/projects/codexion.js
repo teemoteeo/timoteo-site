@@ -239,6 +239,5 @@
   pb.onclick = () => { playing = !playing; pb.textContent = playing ? 'pause' : 'play'; };
   window.addEventListener('resize', () => { resize(); draw(); });
   load(D.scenarios[0]);
-  if (PJ.reduced) { playing = false; pb.textContent = 'play'; }
   requestAnimationFrame(frame);
 })();

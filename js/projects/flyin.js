@@ -103,6 +103,5 @@
   turnEl.oninput = () => { t = +turnEl.value; draw(); };
   window.addEventListener('resize', () => { fit(); project(); draw(); });
   fit(); project(); draw();
-  if (PJ.reduced) { playing = false; pb.textContent = 'play'; }
   requestAnimationFrame(frame);
 })();

@@ -83,6 +83,5 @@
     playing = false; pb.textContent = 'play'; clearTimeout(timer);
     i = (i + 1) % frames.length; render();
   };
-  if (PJ.reduced) { playing = false; pb.textContent = 'play'; }
   load(D.runs[0]);
 })();

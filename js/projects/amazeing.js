@@ -100,6 +100,5 @@
   };
   window.addEventListener('resize', () => { fit(); draw(); });
   reset(cur); fit(); draw();
-  if (PJ.reduced) { A.carve.forEach(apply); phase = 'done'; playing = false; pb.textContent = 'play'; draw(); }
   requestAnimationFrame(frame);
 })();
