@@ -30,7 +30,8 @@
       for (let i = 0; i < upto; i++) {
         const [side, cells] = A.layers[i];
         ctx.fillStyle = side === 'a' ? 'rgba(91,156,246,0.22)' : 'rgba(224,108,117,0.22)';
-        for (const [x, y] of cells) ctx.fillRect(ox + x * cs + 1, oy + y * cs + 1, cs - 2, cs - 2);
+        const pad = cs * 0.28;
+        for (const [x, y] of cells) ctx.fillRect(ox + x * cs + pad, oy + y * cs + pad, cs - pad * 2, cs - pad * 2);
       }
     }
     for (const k of pat) {
@@ -49,11 +50,10 @@
     }
     ctx.stroke();
     // path
-    if (phase === 'path' || phase === 'done') {
-      const n = phase === 'path' ? step : A.path.length;
+    if (phase === 'done') {
       ctx.strokeStyle = C.teal; ctx.lineWidth = Math.max(2, cs * 0.22); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
       ctx.beginPath();
-      A.path.slice(0, n).forEach(([x, y], i) => {
+      A.path.forEach(([x, y], i) => {
         const px = ox + (x + .5) * cs, py = oy + (y + .5) * cs;
         i ? ctx.lineTo(px, py) : ctx.moveTo(px, py);
       });
@@ -65,22 +65,20 @@
     const labels = {
       carve: `carving · ${step}/${A.carve.length} walls removed`,
       solve: `bidirectional bfs · layer ${step}/${A.layers.length}`,
-      path: `shortest path · ${A.path.length} cells`, done: `shortest path · ${A.path.length} cells`,
+      done: `shortest path · ${A.path.length} cells`,
     };
     phaseEl.textContent = labels[phase];
   }
   function tick(dt) {
     acc += dt;
-    const rate = { carve: 6, solve: 45, path: 18, done: 1800 }[phase];
+    const rate = { carve: 6, solve: 45, done: 1800 }[phase];
     while (acc > rate) {
       acc -= rate;
       if (phase === 'carve') {
         if (step < A.carve.length) { apply(A.carve[step]); step += 1; }
         else { phase = 'solve'; step = 0; }
       } else if (phase === 'solve') {
-        if (step < A.layers.length) step++; else { phase = 'path'; step = 0; }
-      } else if (phase === 'path') {
-        if (step < A.path.length) step++; else { phase = 'done'; }
+        if (step < A.layers.length) step++; else { phase = 'done'; step = A.path.length; }
       } else { reset(cur); }
     }
   }
