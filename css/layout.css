@@ -25,14 +25,7 @@
   object-position: center 30%;
   display: block;
   position: absolute; top: 0; left: 0;
-  transition: opacity 0.3s ease;
 }
-.profile-pic-hover {
-  opacity: 0;
-  object-position: 45% 0%;
-}
-.profile-pic-container:hover .profile-pic-hover { opacity: 1; }
-.profile-pic-container:hover .profile-pic:not(.profile-pic-hover) { opacity: 0; }
 
 .profile-name {
   font-size: 14px;
@@ -377,11 +370,6 @@
   .display-section { margin-bottom: 10px; }
 
   .sidebar-contacts a { align-items: center; }
-
-  /* l'easter egg della foto: su touch si attiva col tap, non con l'hover */
-  .profile-pic-container { cursor: pointer; }
-  .profile-pic-container.is-flipped .profile-pic-hover { opacity: 1; }
-  .profile-pic-container.is-flipped .profile-pic:not(.profile-pic-hover) { opacity: 0; }
 
   .mobile-photo img {
     width: 100%; aspect-ratio: 4 / 5;

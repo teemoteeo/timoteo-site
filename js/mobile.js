@@ -18,12 +18,4 @@
     probe.onerror = function () { fig.remove(); };
     probe.src = img.dataset.src;
   }
-
-  // 2. L'easter egg della foto era :hover -> su touch diventa un tap.
-  const pic = document.querySelector('.profile-pic-container');
-  if (pic) {
-    pic.addEventListener('click', function () {
-      if (mq.matches) pic.classList.toggle('is-flipped');
-    });
-  }
 })();
