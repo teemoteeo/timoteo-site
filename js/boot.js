@@ -36,6 +36,7 @@
       [750, () => { document.querySelector('[data-boot="profile"]').classList.add('revealed'); }],
       [825, () => { document.querySelector('[data-boot="contacts"]').classList.add('revealed'); }],
       [900, () => { document.querySelector('[data-boot="nav"]').classList.add('revealed'); }],
+      [975, () => { document.querySelector('[data-boot="oracle"]').classList.add('revealed'); }],
       [1000, () => { document.querySelectorAll('[data-boot="bio"]').forEach(el => el.classList.add('revealed')); }],
       [1100, () => { document.querySelector('[data-boot="projects"]').classList.add('revealed'); }],
       [1200, () => { document.querySelector('[data-boot="display"]').classList.add('revealed'); }],

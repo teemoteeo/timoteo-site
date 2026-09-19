@@ -22,10 +22,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/base.css?v=20260918c">
-  <link rel="stylesheet" href="css/layout.css?v=20260918c">
-  <link rel="stylesheet" href="css/components.css?v=20260918c">
-  <link rel="stylesheet" href="css/cube.css?v=20260918c">
+  <link rel="stylesheet" href="css/base.css?v=20260919a">
+  <link rel="stylesheet" href="css/layout.css?v=20260919a">
+  <link rel="stylesheet" href="css/components.css?v=20260919a">
+  <link rel="stylesheet" href="css/cube.css?v=20260919a">
+  <link rel="stylesheet" href="css/eightball.css?v=20260919a">
 </head>
 <body>
 
@@ -112,6 +113,25 @@
         </div>
 
       </nav>
+
+      <!-- MAGIC 8-BALL: fuori dal nav apposta, il nav sparisce sotto i 900px -->
+      <div class="oracle" data-boot="oracle">
+        <div class="nav-header">/// ORACLE</div>
+        <div class="oracle-ball" id="eb-ball">
+          <svg class="oracle-ph" viewBox="0 0 160 160" width="160" height="160" aria-hidden="true" focusable="false"><defs><radialGradient id="eb-ph-body" cx="34%" cy="27%" r="80%"><stop offset="0%" stop-color="#2c2a36"/><stop offset="55%" stop-color="#151420"/><stop offset="100%" stop-color="#0a090d"/></radialGradient></defs><circle cx="80" cy="80" r="75" fill="url(#eb-ph-body)"/><circle cx="80" cy="80" r="32" fill="#f0ecdd"/><text x="80" y="81" text-anchor="middle" dominant-baseline="central" font-family="'JetBrains Mono', monospace" font-size="42" font-weight="600" fill="#12111a">8</text><ellipse cx="42" cy="36" rx="14" ry="10" fill="#f0ecdd" opacity="0.09" transform="rotate(-28 42 36)"/></svg>
+          <canvas id="eb-canvas" width="560" height="560" aria-hidden="true"></canvas>
+        </div>
+        <form class="oracle-form" id="eb-form">
+          <label class="oracle-label" for="eb-input">ask the 8-ball</label>
+          <div class="oracle-field">
+            <span class="oracle-prompt" aria-hidden="true">$</span>
+            <input class="oracle-input" id="eb-input" type="text" maxlength="120" autocomplete="off" spellcheck="false" placeholder="will it ship?">
+          </div>
+          <button class="oracle-btn" id="eb-btn" type="submit">ask</button>
+        </form>
+        <p class="oracle-status" id="eb-status" role="status"></p>
+        <p class="oracle-sr" id="eb-answer" aria-live="polite"></p>
+      </div>
 
     </aside>
 
@@ -282,14 +302,15 @@
     <div id="rubik-status"></div>
   </div>
 
-  <script src="js/boot.js?v=20260918c"></script>
-  <script src="js/ticker.js?v=20260918c"></script>
-  <script src="js/konami.js?v=20260918c"></script>
-  <script src="js/rubik2d.js?v=20260918c"></script>
-  <script src="js/cube-loader.js?v=20260918c"></script>
-  <script src="js/mobile.js?v=20260918c"></script>
-  <script src="js/tech.js?v=20260918c"></script>
-  <script src="js/tree.js?v=20260918c"></script>
+  <script src="js/boot.js?v=20260919a"></script>
+  <script src="js/ticker.js?v=20260919a"></script>
+  <script src="js/konami.js?v=20260919a"></script>
+  <script src="js/rubik2d.js?v=20260919a"></script>
+  <script src="js/cube-loader.js?v=20260919a"></script>
+  <script src="js/eightball.js?v=20260919a"></script>
+  <script src="js/mobile.js?v=20260919a"></script>
+  <script src="js/tech.js?v=20260919a"></script>
+  <script src="js/tree.js?v=20260919a"></script>
 
 </body>
 </html>

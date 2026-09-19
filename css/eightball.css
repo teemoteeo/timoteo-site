@@ -1,0 +1,116 @@
+/* ===== MAGIC 8-BALL (sidebar oracle) ===== */
+.oracle { margin-bottom: 22px; }
+
+.oracle-ball {
+  position: relative;
+  width: 236px; height: 236px;
+  margin: 14px auto 12px;
+}
+.oracle-ph, #eb-canvas { width: 236px; height: 236px; display: block; }
+#eb-canvas { display: none; touch-action: none; cursor: grab; }
+#eb-canvas:active { cursor: grabbing; }
+.oracle-ball.is-live .oracle-ph { display: none; }
+.oracle-ball.is-live #eb-canvas { display: block; animation: oracle-in .35s ease-out; }
+@keyframes oracle-in { from { opacity: 0; } to { opacity: 1; } }
+
+.oracle-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.oracle-label {
+  flex: 1 0 100%;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.oracle-field {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 8px;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 2px;
+  transition: border-color 0.18s ease;
+}
+.oracle-field:focus-within { border-color: var(--teal); }
+.oracle.is-nagging .oracle-field { border-color: var(--red); }
+.oracle-prompt { color: var(--teal); font-size: 12px; flex-shrink: 0; }
+.oracle-input {
+  flex: 1;
+  min-width: 0;
+  padding: 7px 0;
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--fg);
+  background: none;
+  border: 0;
+  outline: none;
+}
+.oracle-input::placeholder { color: var(--fg-muted); }
+
+.oracle-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: none;
+  border: 1px solid var(--border2);
+  border-radius: 2px;
+  color: var(--fg-muted);
+  padding: 7px 12px;
+  min-height: 31px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.18s ease, border-color 0.18s ease, opacity 0.18s ease;
+}
+.oracle-btn:hover { color: var(--fg); border-color: var(--teal); }
+.oracle-btn:focus-visible { outline: 1px solid var(--teal); outline-offset: 2px; }
+.oracle-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.oracle-status {
+  margin-top: 9px;
+  min-height: 15px;
+  font-size: 10px;
+  letter-spacing: 1px;
+  line-height: 1.5;
+  color: var(--fg-muted);
+}
+.oracle-status.is-nagging { color: var(--red); }
+/* senza WebGL la risposta vive qui: deve leggersi come output, non come hint */
+.oracle-status.is-answer { color: var(--fg); letter-spacing: 0.5px; font-size: 12px; }
+
+.oracle-sr {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  /* il nav /// CODE e' nascosto sotto i 900px (lo duplica la lista projects):
+     la palla vive fuori dal nav apposta, e qui si riprende il suo slot. */
+  .oracle {
+    order: 15;
+    grid-column: 1 / -1;
+    margin: 28px 0 8px;
+  }
+  .oracle-ball { width: 260px; height: 260px; max-width: 100%; margin: 14px auto 16px; }
+  .oracle-ph, #eb-canvas { width: 100%; height: auto; aspect-ratio: 1; }
+  .oracle-form { max-width: 420px; }
+  /* sotto i 16px iOS zooma sul focus */
+  .oracle-input { font-size: 16px; padding: 9px 0; }
+  .oracle-btn { min-height: 38px; padding: 9px 16px; }
+  .oracle-status { font-size: 11px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oracle-ball.is-live #eb-canvas { animation: none; }
+}
