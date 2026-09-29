@@ -44,6 +44,10 @@
 .cmm-raw pre{color:var(--fg-dim);font-size:12px}
 .cmm-raw pre b{color:var(--red);font-weight:400}
 @media(max-width:760px){.cmm{grid-template-columns:1fr}.cmm-out{border-right:0;border-bottom:1px solid var(--border)}}
+.fly{max-width:860px}
+.viz-note.fly{max-width:860px}
+.viz-sel{font-family:inherit;font-size:11px;color:var(--fg);background:var(--bg);border:1px solid var(--border2);border-radius:2px;padding:4px 8px;max-width:100%}
+.viz-sel:focus{outline:1px solid var(--teal)}
 </style>
 </head>
 <body>
@@ -60,14 +64,14 @@
       <div class="pj-tags"><span>python</span><span>pydantic</span><span>dijkstra</span><span>k-distinct paths</span><span>pytest</span><span>mypy --strict</span></div>
     </header>
 
-    <div class="viz">
-  <div class="viz-bar"><span class="viz-label">hard_01.map · 8 drones</span><span class="grow"></span>
+    <div class="viz fly">
+  <div class="viz-bar"><span class="viz-label">map</span><select id="viz-map" class="viz-sel" aria-label="map"></select><span class="grow"></span>
    <input id="viz-turn" class="range" type="range" min="0" value="0" step="0.01" aria-label="turn"><button id="viz-play" class="viz-btn">pause</button></div>
   <div class="viz-stage"><canvas id="viz"></canvas></div>
-  <div class="viz-foot"><span class="lg"><i style="background:var(--blue)"></i>normal</span><span class="lg"><i style="background:var(--teal)"></i>priority</span><span class="lg"><i style="background:var(--red)"></i>restricted (2 turns)</span><span class="lg"><i style="background:var(--red);border-radius:50%"></i>drone in transit</span><span>×n = zone capacity</span></div>
+  <div class="viz-foot"><span class="lg"><i style="background:var(--blue)"></i>normal</span><span class="lg"><i style="background:var(--teal)"></i>priority</span><span class="lg"><i style="background:var(--red)"></i>restricted (2 turns)</span><span class="lg"><i style="background:var(--muted, #6e6c75)"></i>blocked</span><span class="lg"><i style="background:var(--red);border-radius:50%"></i>drone in transit</span><span>×n = zone capacity</span></div>
   <div class="viz-foot"><code id="viz-line" style="color:var(--fg-dim)"></code></div>
  </div>
- <p class="viz-note">Replay of the real output of <code>python -m src data/maps/hard_01.map</code>: 17 turns, path cost 59.</p>
+ <p class="viz-note fly">Replay of the real output of <code id="viz-cmd"></code>: <span id="viz-stats"></span>. All 12 maps from the repo, from <em>easy</em> to the 250-drone custom labyrinth.</p>
 
     <section class="pj-sec">
       <h2>how it works</h2>
@@ -85,7 +89,7 @@
   </main>
 
   <script src="../js/projects/common.js?v=20260918c"></script>
-  <script src="../js/projects/data/flyin.js?v=20260918c"></script>
-  <script src="../js/projects/flyin.js?v=20260918c"></script>
+  <script src="../js/projects/data/flyin.js?v=20260930a"></script>
+  <script src="../js/projects/flyin.js?v=20260930a"></script>
 </body>
 </html>
