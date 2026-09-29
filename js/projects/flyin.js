@@ -17,10 +17,15 @@
   MAPS.forEach((m, i) => { (groups[m.level] = groups[m.level] || []).push([m, i]); });
   sel.innerHTML = Object.entries(groups).map(([lvl, ms]) =>
     `<optgroup label="${lvl}">${ms.map(([m, i]) => `<option value="${i}">${m.name} · ${m.drones} drones</option>`).join('')}</optgroup>`).join('');
+  // desktop: the same maps as a list in the column on the left
+  const list = document.getElementById('viz-maps');
+  list.innerHTML = Object.entries(groups).map(([lvl, ms]) =>
+    `<span class="lv">${lvl}</span>` + ms.map(([m, i]) => `<button type="button" data-i="${i}">${m.name}<i>${m.drones}</i></button>`).join('')).join('');
+  list.onclick = e => { const b = e.target.closest('button'); if (b) { sel.value = b.dataset.i; load(+b.dataset.i); } };
   const DEFAULT = Math.max(0, MAPS.findIndex(m => m.id === 'hard/01_maze_nightmare'));
 
   function load(i) {
-    D = MAPS[i];
+    D = MAPS[i]; i = +i;
     names = Object.keys(D.hubs);
     const xs = names.map(n => D.hubs[n].x), ys = names.map(n => D.hubs[n].y);
     box = { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys) };
@@ -36,6 +41,8 @@
     }
     total = D.turns.length;
     turnEl.max = total; t = 0;
+    list.querySelectorAll('button').forEach(b => b.classList.toggle('on', +b.dataset.i === i));
+    document.getElementById('viz-name').textContent = `${D.level} · ${D.name} · ${D.drones} drones`;
     noteEl.textContent = `python -m src data/maps/${D.id}.txt`;
     document.getElementById('viz-stats').textContent = `${total} turns, path cost ${D.cost}`;
     ({ ctx, fit } = canvas(el, w => (w < 600 ? Math.max(ratio, 0.6) : ratio)));
@@ -81,7 +88,8 @@
       if (hb.zone === 'blocked') { ctx.beginPath(); ctx.moveTo(x - rr * .6, y - rr * .6); ctx.lineTo(x + rr * .6, y + rr * .6); ctx.stroke(); }
       if (labels || special) {
         ctx.fillStyle = C.muted; ctx.font = '9.5px JetBrains Mono';
-        ctx.fillText(n, x, y - rr - 6);
+        const tw = ctx.measureText(n).width / 2 + 4;   // keep labels inside the canvas
+        ctx.fillText(n, Math.min(w - tw, Math.max(tw, x)), y - rr - 6);
         if (labels && !special && hb.cap > 1) ctx.fillText('×' + hb.cap, x, y + rr + 13);
       }
     }
