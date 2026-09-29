@@ -51,7 +51,10 @@
   const phoneAt = m => {
     const c = dev.filter(d => m >= d.from && m <= d.to && !/MacBook|PlayStation|PC|Linux/.test(d.name));
     c.sort((a, b) => b.n - a.n);
-    return c[0] ? c[0].name.replace(' (model hidden by Spotify)', '') : '—';
+    if (!c[0]) return '—';
+    // Spotify stops logging the model in late 2022; the last phone (iPhone 16, out Sep 2024) is supplied by me
+    if (/hidden/.test(c[0].name)) return m >= '2024-09' ? 'iPhone 16' : 'iPhone (model not logged)';
+    return c[0].name;
   };
 
   // ---------- timeline: map + volume strip ----------
@@ -304,8 +307,8 @@
       claim: 'In 2025 one person became the centre of my messaging.',
       ev: `One thread takes <b>${pct(soc('2025').top_share)}</b> of all my DMs that year. In 2024 no thread was above <b>${pct(soc('2024').top_share, 1)}</b>, and the circle that gets 80% of my messages shrank from <b>${soc('2024').circle80}</b> to <b>${soc('2025').circle80}</b>. It reads like a new relationship. It isn't: the thread is <b>"gooners club"</b>, a group chat. Metadata alone can't tell a partner from a group chat.` + spark },
     { t: 'phones', c: 5, v: 'ok', src: 'spotify · device string on every play',
-      claim: phones.map(p => p.name.replace(' (model hidden by Spotify)', ' ?')).join(' → ') + '.',
-      ev: `Every play logged the device model, so the upgrades are dated to the month. Also: a PlayStation 4 from ${mlabel(ps4.from)} to ${mlabel(ps4.to)}. Then, from ${mlabel((phones.find(p => /hidden/.test(p.name)) || {}).from || '2022-10')}, Spotify stopped writing the model and only says "ios". The last one is an iPhone 16, but that's the only fact on this page I had to supply myself.` },
+      claim: phones.map(p => p.name.replace(' (model hidden by Spotify)', ' 16')).join(' → ') + '.',
+      ev: `Every play logged the device model, so the upgrades are dated to the month. Also: a PlayStation 4 from ${mlabel(ps4.from)} to ${mlabel(ps4.to)}. Then, from ${mlabel((phones.find(p => /hidden/.test(p.name)) || {}).from || '2022-10')}, Spotify stopped writing the model and only says "ios". So the iPhone 16 at the end is the one fact on this page the data couldn't give: I had to supply it myself.` },
     { t: 'learning to code', c: 4, v: 'ok', src: 'youtube topics · spotify clients',
       claim: `Started programming seriously in late 2025.`,
       ev: `Tech & code goes from <b>${pct(yt('2024')['tech & code'], 1)}</b> of my YouTube in 2024 to <b>${pct(yt('2026')['tech & code'], 1)}</b> in 2026. A Linux Spotify client appears in ${mlabel(lin.from)}: school machines.` },
