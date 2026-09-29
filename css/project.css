@@ -7,6 +7,10 @@ body { min-height: 100vh; }
   margin: 0 auto;
   padding: 40px 32px 72px;
 }
+/* hanging headings: title and section labels stick out to the left of the text column */
+.pj { --hang: clamp(0px, calc((100vw - 980px) / 2 + 12px), 110px); }
+.pj-head .pj-eyebrow, .pj-head .pj-title { margin-left: calc(-1 * var(--hang)); }
+.pj-sec h2 { margin-left: calc(-1 * var(--hang)); }
 .pj-top {
   display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
   font-size: 11px; color: var(--fg-muted);
@@ -105,7 +109,7 @@ body { min-height: 100vh; }
 .pj-nav a:hover { color: var(--teal); }
 
 @media (max-width: 700px) {
-  .pj { padding: 24px 18px 56px; }
+  .pj { padding: 24px 18px 56px; --hang: 0px; }
   /* i controlli a 10.5px erano illeggibili e difficili da centrare col dito */
   .viz-bar { gap: 8px 10px; padding: 10px 12px; }
   .viz-btn { font-size: 11.5px; padding: 8px 12px; min-height: 36px; }
