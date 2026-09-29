@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>the non-ownership of data — Timoteo Costantini Scala</title>
+  <meta name="description" content="In 2023 I wrote an essay on the non-ownership of data. In 2026 I asked Spotify, Instagram and Google for mine. What a stranger could infer from eleven years of it.">
+  <meta name="theme-color" content="#0e0d10">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/project.css?v=20260929b">
+  <style>
+.pj{max-width:1180px}
+.pj-lead{max-width:none;font-size:15px;line-height:1.85}
+.fp-text{font-size:13.5px;line-height:1.9;color:var(--fg-dim);margin-bottom:18px}
+.fp-text strong{color:var(--fg);font-weight:500}
+.fp-text a{color:var(--fg);text-decoration:underline;text-decoration-color:var(--border2);text-underline-offset:3px}
+.fp-text a:hover{color:var(--teal)}
+
+/* essay quotes */
+.fp-quote{margin:30px 0 6px;padding:22px 0 22px 24px;border-left:2px solid var(--teal)}
+.fp-quote p{font-size:clamp(15px,2vw,21px);font-weight:500;line-height:1.45;color:var(--fg);letter-spacing:.5px;text-transform:uppercase}
+.fp-quote .it{margin-top:12px;font-size:11.5px;font-weight:400;font-style:normal;text-transform:uppercase;color:var(--fg-muted);line-height:1.7;letter-spacing:.8px}
+.fp-quote cite{display:block;margin-top:10px;font-style:normal;font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--fg-muted)}
+.fp-shout{font-size:clamp(15px,2vw,21px);font-weight:500;letter-spacing:.5px;line-height:1.45;color:var(--fg);margin:6px 0 18px}
+
+/* chapter headings */
+.pj-sec{margin-top:64px}
+.pj-sec h2 .num{color:var(--teal)}
+
+/* stat rows: full width, lines not boxes */
+.fp-stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--border2);border-bottom:1px solid var(--border2);margin-top:30px}
+.fp-stats div{padding:18px 18px 16px 0}
+.fp-stats div+div{padding-left:18px;border-left:1px solid var(--border)}
+.fp-stats b{display:block;font-size:clamp(22px,3vw,34px);font-weight:300;color:var(--fg);letter-spacing:-.5px;line-height:1.1}
+.fp-stats span{display:block;margin-top:6px;font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--fg-muted);line-height:1.6}
+
+/* timeline: map + strip */
+.mp{position:relative;border-bottom:1px solid var(--border);background:#0b0a0d}
+.mp canvas{display:block;width:100%}
+.mp-hud{position:absolute;left:22px;top:18px;pointer-events:none}
+.mp-month{font-size:clamp(26px,4.4vw,54px);font-weight:300;letter-spacing:-1px;color:var(--fg);line-height:1}
+.mp-city{margin-top:8px;font-size:clamp(15px,2vw,22px);color:var(--teal);letter-spacing:.5px}
+.mp-read{position:absolute;right:18px;top:18px;width:290px;font-size:11px;line-height:1.85;color:var(--fg-dim);
+  background:rgba(14,13,16,.72);border:1px solid var(--border);border-radius:3px;padding:10px 12px;backdrop-filter:blur(3px)}
+.mp-read .k{color:var(--fg-muted);display:inline-block;min-width:74px}
+.mp-read .v{color:var(--fg)}
+.mp-read .d{color:var(--fg-muted)}
+.mp-note{position:absolute;left:22px;bottom:12px;font-size:9.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--fg-muted);pointer-events:none}
+.mp-else{padding:9px 18px;border-bottom:1px solid var(--border);font-size:10.5px;line-height:1.7;color:var(--fg-muted)}
+.mp-else b{color:var(--fg-dim);font-weight:400}
+.mp-strip canvas{display:block;width:100%;cursor:ew-resize;touch-action:none;outline:none}
+.mp-strip canvas:focus-visible{box-shadow:inset 0 0 0 1px var(--teal)}
+.fp-h{display:block;font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--fg-muted);margin-bottom:8px}
+
+/* inference ledger: full-width rows */
+.led{border-top:1px solid var(--border2)}
+.led-row{display:grid;grid-template-columns:44px minmax(0,1.05fr) minmax(0,1.35fr) 190px;gap:22px;padding:20px 0;border-bottom:1px solid var(--border);align-items:start}
+.led-row:hover{background:linear-gradient(90deg,transparent,rgba(255,255,255,.015),transparent)}
+.led-n{font-size:11px;color:var(--teal);padding-top:3px}
+.led-t{display:block;font-size:9.5px;letter-spacing:1.8px;text-transform:uppercase;color:var(--fg-muted);margin-bottom:6px}
+.led-claim{font-size:15.5px;line-height:1.5;color:var(--fg)}
+.led-ev{font-size:11.5px;line-height:1.8;color:var(--fg-dim);padding-top:19px}
+.led-ev b{color:var(--fg);font-weight:500}
+.led-meta{display:flex;flex-direction:column;align-items:flex-end;gap:7px;text-align:right;font-size:10px;color:var(--fg-muted);padding-top:21px}
+.inf-conf i{display:inline-block;width:6px;height:6px;border-radius:1px;margin-left:2px;background:var(--border2)}
+.inf-conf i.on{background:var(--teal)}
+.inf-verdict.ok{color:var(--teal)}
+.inf-verdict.no{color:var(--yellow)}
+.inf-verdict.x{color:var(--red)}
+.inf-spark{display:block;width:100%;max-width:220px;height:auto;margin-top:10px}
+.rd{background:var(--fg);color:transparent;border-radius:1px;padding:0 2px;user-select:none;-webkit-user-select:none;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.rd::selection{background:var(--fg);color:transparent}
+
+/* meta's view */
+.ma{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:36px;margin-top:26px}
+.ma-adv{font-size:12.5px;line-height:2.1;color:var(--fg-dim);overflow-wrap:anywhere}
+.ma-adv i{font-style:normal;color:var(--fg-muted);margin:0 7px}
+.ma-adv span{white-space:nowrap}
+.ma-adv .hot{color:var(--fg)}
+.ma-adv .more{color:var(--teal)}
+.ma-cat{list-style:none;columns:1;font-size:12px;line-height:1.95;color:var(--fg-dim)}
+.ma-cat li::before{content:'▸ ';color:var(--fg-muted)}
+.facts{border-top:1px solid var(--border2);margin-top:28px}
+.facts div{display:grid;grid-template-columns:220px 1fr;gap:22px;padding:14px 0;border-bottom:1px solid var(--border);font-size:12px;line-height:1.8;color:var(--fg-dim)}
+.facts div>span:first-child{color:var(--fg);font-size:10px;letter-spacing:1.6px;text-transform:uppercase;padding-top:2px}
+.facts div.warn>span:first-child{color:var(--yellow)}
+.facts b{color:var(--fg);font-weight:500}
+
+/* others */
+.big{display:grid;grid-template-columns:auto 1fr;gap:10px 36px;align-items:baseline;border-top:1px solid var(--border2);border-bottom:1px solid var(--border2);padding:22px 0;margin-bottom:22px}
+.big b{font-size:clamp(34px,6vw,64px);font-weight:300;letter-spacing:-1.5px;color:var(--fg);line-height:1}
+.big span{font-size:13px;color:var(--fg-dim);line-height:1.8}
+
+/* rhythm */
+.rh{display:grid;grid-template-columns:1fr 1fr}
+.rh>div{padding:14px;min-width:0}
+.rh>div:first-child{border-right:1px solid var(--border)}
+.rh canvas{display:block;width:100%}
+
+/* taste */
+.mu{width:100%;border-collapse:collapse;font-size:11px}
+.mu td,.mu th{padding:7px 10px;border-bottom:1px solid var(--border);text-align:left;vertical-align:middle}
+.mu th{font-weight:400;font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--fg-muted)}
+.mu td{color:var(--fg-dim)}
+.mu td.y{color:var(--fg);width:44px}
+.mu .bar{height:6px;background:var(--border);border-radius:1px;min-width:60px}
+.mu .bar i{display:block;height:100%;border-radius:1px}
+.mu .num{color:var(--fg-muted);font-size:10px}
+.mu .art{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:0;width:44%}
+.yt-row{display:grid;grid-template-columns:44px 1fr 56px;align-items:center;gap:10px;font-size:11px;margin-bottom:8px}
+.yt-row .stack{display:flex;height:16px;border-radius:2px;overflow:hidden;background:var(--border)}
+.yt-row .stack i{display:block;height:100%}
+.yt-row .n{color:var(--fg-muted);font-size:10px;text-align:right}
+
+/* method */
+.pipe{font-size:11px;line-height:1.9;color:var(--fg-dim);white-space:pre;overflow-x:auto;border:1px solid var(--border2);border-radius:4px;background:var(--bg2);padding:14px 16px;margin-top:22px}
+.pipe .c{color:var(--fg-muted)} .pipe .t{color:var(--teal)} .pipe .x{color:var(--red)}
+
+@media(max-width:860px){
+  .led-row{grid-template-columns:32px minmax(0,1fr);gap:8px 14px}
+  .led-ev,.led-meta{grid-column:2;padding-top:0}
+  .led-meta{flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:6px 14px;text-align:left}
+  .ma{grid-template-columns:minmax(0,1fr);gap:22px}
+  .ma>div{min-width:0}
+  .facts div{grid-template-columns:1fr;gap:4px}
+}
+@media(max-width:760px){
+  .pj-lead{font-size:14px}
+  .fp-stats{grid-template-columns:repeat(2,1fr)}
+  .fp-stats div:nth-child(3){padding-left:0;border-left:0}
+  .fp-stats div:nth-child(-n+2){border-bottom:1px solid var(--border)}
+  .mp-read{position:static;width:auto;border:0;border-top:1px solid var(--border);border-radius:0;background:transparent;backdrop-filter:none;padding:12px 14px}
+  .mp-hud{left:14px;top:12px}
+  .mp-note{display:none}
+  .mp-else{padding:9px 14px}
+  .rh{grid-template-columns:1fr}
+  .rh>div:first-child{border-right:0;border-bottom:1px solid var(--border)}
+  .mu .hide-s{display:none}
+  .big{grid-template-columns:1fr}
+  .fp-quote{padding-left:16px}
+}
+</style>
+</head>
+<body>
+  <main class="pj">
+    <div class="pj-top">
+      <a href="../index.html">← cd ~</a>
+      <span class="pj-crumb">~/research/<b>the non-ownership of data</b></span>
+    </div>
+
+    <header class="pj-head">
+      <div class="pj-eyebrow">personal research · privacy · milan 2023 → florence 2026</div>
+      <h1 class="pj-title">the non-ownership of data</h1>
+      <p class="pj-lead">In May 2023, for a digital-products law exam at the University of Milan, I wrote an essay called <strong>The non-ownership of data</strong>. The argument was simple: what we produce online stops being ours the moment it is recorded. Platforms collect it, keep it, process it and sell access to it. The GDPR was the first real attempt to give some of that control back. Three years later I tested it. I asked <strong>Spotify, Instagram and Google</strong> for everything they had on me, merged it into one timeline of <strong id="fp-events">605,610 events</strong> over eleven years, and asked the question the essay only asked in theory: <strong>how much can someone work out about a person from their traces alone?</strong></p>
+
+      <blockquote class="fp-quote">
+        <p>These traces, once aggregated, are used by third parties to pursue their own interests.</p>
+        <cite>— my essay, Milan, 2023</cite>
+      </blockquote>
+
+      <div class="fp-stats" id="fp-stats"></div>
+    </header>
+
+    <!-- 01 EXPLICIT / IMPLICIT -->
+    <section class="pj-sec">
+      <h2><span class="num">01</span> · explicit and implicit data</h2>
+      <p class="fp-text">The essay separated two kinds of data. <strong>Explicit data</strong> is what you hand over yourself: name, birthday, email. <strong>Implicit data</strong> is what gets recorded while they watch what you do: every song, like, search, map view and message timestamp. My explicit data would fit on a business card. This is the implicit part, month by month.</p>
+      <div class="viz">
+        <div class="viz-bar"><span class="viz-label">where my phone pointed · 2015 → 2026</span><span class="grow"></span>
+          <button id="tl-play" class="viz-btn">play</button></div>
+        <div class="mp">
+          <canvas id="mp" aria-label="map of Google Maps activity on a 5 km grid, month by month"></canvas>
+          <div class="mp-hud"><div class="mp-month" id="mp-month"></div><div class="mp-city" id="mp-city"></div></div>
+          <div class="mp-read" id="tl-read"></div>
+          <div class="mp-note">5 km grid · blurred on purpose</div>
+        </div>
+        <div class="mp-else" id="mp-else"></div>
+        <div class="mp-strip"><canvas id="tl" tabindex="0" aria-label="events per month; drag or use arrow keys to move through time"></canvas></div>
+        <div class="viz-foot" id="tl-legend"></div>
+      </div>
+      <p class="viz-note">Every square is a 5 km cell where Google Maps recorded activity. Bright ones are the last few months, dim ones are everywhere the data has ever pointed. The strip underneath is the volume of everything logged, by source, with the four phases a changepoint algorithm found <em>without being told anything about my life</em>. Drag it to move through time.</p>
+    </section>
+
+    <!-- 02 INFERENCES -->
+    <section class="pj-sec">
+      <h2><span class="num">02</span> · what can be inferred</h2>
+      <p class="fp-text">In the essay, profiling was something platforms did to us. Here I did it to myself, with Python and a few evenings. Every line below comes from the data alone. Where an inference identifies another person, it is <span class="rd">redacted</span>. Everything about me stays readable: that's the point.</p>
+      <div class="led" id="inf"></div>
+    </section>
+
+    <!-- 03 PRODUCT -->
+    <section class="pj-sec">
+      <h2><span class="num">03</span> · you are the product</h2>
+      <blockquote class="fp-quote" style="margin-top:0">
+        <p>If you're not paying for it, you're not the customer, you are the product being sold.</p>
+        <cite>— quoted in my essay, Milan, 2023</cite>
+      </blockquote>
+      <p class="fp-text" style="margin-top:22px">I quoted that line in 2023. The Instagram export shows what it looks like from the inside. Meta doesn't only keep my activity. It also keeps the list of companies it has sold me to, and the labels it used to do it.</p>
+      <div class="fp-stats" id="ma-stats" style="margin-top:6px"></div>
+      <div class="ma">
+        <div><span class="fp-h">some of the advertisers holding me in an audience</span><div class="ma-adv" id="ma-adv"></div></div>
+        <div><span class="fp-h">the labels Meta sells me under</span><ul class="ma-cat" id="ma-cat"></ul></div>
+      </div>
+      <div class="facts">
+        <div><span>they got some right</span><span>Prada in four regional accounts, Dior, Chanel and Zegna had me on their lists. I've modelled for Prada and Zegna. Whether that's why I'm on their lists, the export doesn't say. "Frequent travelers", "food and restaurants" (I was a waiter for years), "friends of recently moved".</span></div>
+        <div><span>and some wrong</span><span>Meta still says my profile is based in <b id="ma-based">Udine</b>. I moved away in 2021. Being wrong doesn't make the profile harmless: I'm still sold under those labels.</span></div>
+        <div class="warn"><span>consent</span><span>My consent for "processing by advertising partners" dates back to <b id="ma-consent">April 2018</b>, five weeks before the GDPR came into force. The banners of that spring were designed to be clicked through, which was one of the essay's complaints.</span></div>
+        <div class="warn"><span>the price of not being the product</span><span>Since late 2023 Meta has offered EU users a paid subscription with no ads. In the export its status is <b>not active</b>. I still don't pay for it, so the quote still applies to me.</span></div>
+      </div>
+      <p class="viz-note">Source: <code>ads_information/</code> in the Instagram export. Ads and videos per day are measured over the only week Meta includes. Advertisers shown are a sample of recognisable brands out of the full list.</p>
+    </section>
+
+    <!-- 04 OTHERS -->
+    <section class="pj-sec">
+      <h2><span class="num">04</span> · other people's data</h2>
+      <p class="fp-text">The part of the essay I think about most is <strong>Cambridge Analytica</strong>. The quiz didn't only collect the data of whoever took it. It collected their friends' data too, and 87 million people ended up in a dataset they never agreed to. My own export has the same problem, on a small scale.</p>
+      <div class="big"><b id="ot-msgs">84,220</b><span>messages in my Instagram export were written by other people, across <strong style="color:var(--fg)"><span id="ot-people">811</span> conversations</strong>. None of those people asked for a copy of their words to end up in my zip file, and none of them could stop it.</span></div>
+      <p class="fp-text">That is why no name of anyone else appears on this page, and why the analysis only uses the <em>shape</em> of conversations: when, how often, with how many people. Never what was said. That shape is revealing, and it can also be wrong: see the relationship line in section 02.</p>
+    </section>
+
+    <!-- 05 RHYTHM -->
+    <section class="pj-sec">
+      <h2><span class="num">05</span> · when I'm awake</h2>
+      <div class="viz">
+        <div class="viz-bar"><span class="viz-label">activity · weekday × hour</span><span class="grow"></span><span id="rh-btns"></span></div>
+        <div class="rh">
+          <div><span class="fp-h" id="rh-title">heatmap</span><canvas id="rh-heat"></canvas></div>
+          <div><span class="fp-h">quietest 6 hours of the day, per year</span><canvas id="rh-sleep"></canvas></div>
+        </div>
+        <div class="viz-foot"><span>local time (Italy/France)</span><span class="grow"></span><span>brighter = more events</span></div>
+      </div>
+      <p class="viz-note">Nobody logs their sleep on Instagram, and they don't need to. The 6-hour window with the least activity is a good proxy for sleep, and mine moved <span id="rh-shift">three hours later</span> over the decade.</p>
+    </section>
+
+    <!-- 06 TASTE / SOFT POWER -->
+    <section class="pj-sec">
+      <h2><span class="num">06</span> · did I choose this?</h2>
+      <p class="fp-text">The essay's biggest worry wasn't privacy. It was <strong>soft power</strong>: feeds decide what we see, what we see shapes what we think, and what we think feeds the algorithm again. My data shows my taste changing a lot. Italian rap goes from almost nothing to a third of my listening, and YouTube drifts toward streamers, podcasts and "money" content. <strong>The data can't tell whether I chose that or it was chosen for me.</strong> That's exactly the problem.</p>
+      <div class="viz">
+        <div class="viz-bar"><span class="viz-label">spotify · per year</span></div>
+        <table class="mu" id="mu"></table>
+      </div>
+      <p class="viz-note">Italian share is based on my own labels for the top 350 artists, who cover 95% of all plays. The rest counts as non-Italian, so the share is a lower bound.</p>
+      <div class="viz" style="margin-top:18px">
+        <div class="viz-bar"><span class="viz-label">youtube · what the watch history is about</span></div>
+        <div style="padding:14px" id="yt"></div>
+        <div class="viz-foot" id="yt-legend"></div>
+      </div>
+      <p class="viz-note">Labelled by channel and keyword rules. The grey part is the long tail no rule matched. Google only kept my full watch history from 2023 on.</p>
+    </section>
+
+    <!-- 07 LIES -->
+    <section class="pj-sec">
+      <h2><span class="num">07</span> · where the data lies</h2>
+      <p class="fp-text">A profile doesn't have to be true to be used. These are the places where the data would have fooled me if I hadn't lived it.</p>
+      <div class="facts" style="margin-top:0">
+        <div class="warn"><span>my attention span didn't collapse</span><span>Spotify's skip rate jumps from 0% to 58% between 2021 and 2023. My listening didn't change, the field did: before 2022 the export doesn't record skips at all. A naive analysis would have written a story about TikTok.</span></div>
+        <div class="warn"><span>I lived in Paris</span><span>Spotify's connection country puts me in Italy for almost all of 2025, while Maps puts me in Paris. The reason is roaming: an Italian SIM gets an Italian IP.</span></div>
+        <div class="warn"><span>looking is not being</span><span>A map view means I looked at a place, not that I was there. Cities only count when they dominate a month.</span></div>
+        <div class="warn"><span>gaps look like silence</span><span>2015–2016 is almost empty because my first phone and old accounts logged little, not because I was offline. Missing data is missing, not zero.</span></div>
+      </div>
+    </section>
+
+    <!-- 08 GDPR -->
+    <section class="pj-sec">
+      <h2><span class="num">08</span> · the right I wrote about</h2>
+      <p class="fp-text">In 2023 I listed the rights the GDPR introduced. This project exists because of two of them. It also shows where they fall short.</p>
+      <div class="facts" style="margin-top:0">
+        <div><span>art. 15 · access</span><span>Anyone can ask any company what it holds about them. It worked: three requests, three exports, gigabytes in total. No lawyer needed.</span></div>
+        <div><span>art. 20 · portability</span><span>The law asks for a "structured, commonly used and machine-readable format". In practice I got JSON, CSV, HTML pages and an mbox. Instagram's JSON even garbles Italian accents (<b>più</b> becomes <b>piÃ¹</b>). Machine-readable, but only with some work.</span></div>
+        <div><span>what the export doesn't say</span><span>I got back the <em>inputs</em>: what I did. In my exports, only Meta's included any of the <em>outputs</em>, meaning the labels and audiences, and only a small part of them. What they're actually used for stays on their side, and that was the essay's point about accountability.</span></div>
+        <div><span>fines as a cost of doing business</span><span>In 2023 Meta was fined €1.2 billion over transfers of EU data to the US. That's a lot of money, but a small share of its revenue. The fines are real; whether they change anything is less clear.</span></div>
+      </div>
+      <div class="pipe"><span class="c"># how this page was built</span>
+<span class="c"># 1 · parse: each export has its own format</span>
+spotify/*.json  instagram/**  google takeout/**  →  <span class="t">timeline.csv</span>   <span class="c">605k rows: ts, source, type, actor, payload</span>
+<span class="c"># 2 · features: one row per month, behaviour only, no content</span>
+events per source · night share · weekend share · artist entropy · novelty · thread churn · dominant city
+<span class="c"># 3 · phases: changepoint detection on the standardised monthly features</span>
+→ breaks at <span class="t">2017-04 · 2019-04 · 2022-11</span>
+<span class="c"># 4 · public export: aggregates only, the file this page loads</span>
+gigabytes  →  <span class="t">25 KB</span>
+<span class="x">✕ no message text  ✕ no search queries  ✕ no names of other people  ✕ no coordinates</span></div>
+    </section>
+
+    <!-- CLOSING -->
+    <section class="pj-sec">
+      <h2><span class="num">09</span> · considerations</h2>
+      <blockquote class="fp-quote" style="margin-top:0">
+        <p>It isn't only about writing better laws or building safer technology. Above all it's about building a society that is more aware and more responsible.</p>
+        <cite>— my essay, Milan, 2023</cite>
+      </blockquote>
+      <p class="fp-text" style="margin-top:22px">In 2023 I ended the essay optimistic, but without an answer. Three years later I still don't have one. What I have is this page: the same argument, made with my own data instead of other people's scandals. If you want to see yours, ask for it: <a href="https://takeout.google.com" target="_blank" rel="noopener">Google Takeout</a>, <a href="https://www.spotify.com/account/privacy/" target="_blank" rel="noopener">Spotify</a> (ask for the extended streaming history), and Instagram under Accounts Center → Your information and permissions. It takes from a few hours to 30 days.</p>
+    </section>
+
+    <nav class="pj-nav">
+      <a href="a-maze-ing.html">← a-maze-ing</a>
+      <a href="../index.html">cd ~ →</a>
+    </nav>
+  </main>
+
+  <script src="../js/projects/common.js?v=20260929b"></script>
+  <script src="../js/projects/data/footprint.js?v=20260929c"></script>
+  <script src="../js/projects/data/footprint-map.js?v=20260929d"></script>
+  <script src="../js/projects/footprint.js?v=20260929c"></script>
+</body>
+</html>
