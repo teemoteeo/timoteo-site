@@ -3,12 +3,12 @@
 /* project pages render immediately: no boot gate */
 body { min-height: 100vh; }
 .pj {
-  max-width: 980px;
+  max-width: 1180px;
   margin: 0 auto;
   padding: 40px 32px 72px;
 }
 /* hanging headings: title and section labels stick out to the left of the text column */
-.pj { --hang: clamp(0px, calc((100vw - 980px) / 2 + 12px), 110px); }
+.pj { --hang: clamp(0px, calc((100vw - 1180px) / 2 + 12px), 110px); }
 .pj-head .pj-eyebrow, .pj-head .pj-title { margin-left: calc(-1 * var(--hang)); }
 .pj-sec h2 { margin-left: calc(-1 * var(--hang)); }
 .pj-top {
@@ -32,7 +32,7 @@ body { min-height: 100vh; }
 }
 .pj-title::after { content: '█'; color: var(--teal); margin-left: 6px; animation: blink 1s step-end infinite; font-size: .7em; vertical-align: 2px; }
 .pj-lead {
-  margin-top: 18px; max-width: 68ch;
+  margin-top: 18px; max-width: none;
   font-size: 13.5px; line-height: 1.85; color: var(--fg-dim);
 }
 .pj-lead strong { color: var(--fg); font-weight: 500; }
