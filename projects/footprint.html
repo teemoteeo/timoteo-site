@@ -27,7 +27,52 @@
 
 /* chapter headings */
 .pj-sec{margin-top:64px}
-.pj-sec h2 .num{color:var(--teal)}
+
+/* chapters: clearer separation */
+.pj-sec.fp-ch{margin-top:0;padding-top:0;scroll-margin-top:56px;
+  --hang:clamp(0px, calc((100vw - 1180px) / 2 + 12px), 110px)}
+.pj-sec.fp-ch h2{margin-left:calc(-1 * var(--hang)) !important;padding-top:28px !important;border-top:1px solid var(--border2) !important}
+.pj-sec.fp-ch h2{display:grid;grid-template-columns:auto 1fr;column-gap:18px;align-items:baseline;border:0;padding:0;margin:0 0 26px;
+  text-transform:none;letter-spacing:0;color:var(--fg)}
+.pj-sec.fp-ch h2::before{content:none}
+.pj-sec.fp-ch{padding-bottom:28px}
+.pj-sec.fp-ch h2 .num{grid-row:1/3;font-size:clamp(34px,5vw,56px);font-weight:300;color:var(--teal);letter-spacing:-1px;line-height:1}
+.pj-sec.fp-ch h2 .tt{font-size:clamp(20px,2.8vw,30px);font-weight:300;letter-spacing:-.3px;line-height:1.2}
+.pj-sec.fp-ch h2 .sub{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--fg-muted);margin-top:6px}
+
+/* index */
+.fp-toc{margin-top:40px}
+.fp-toc ol{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--border2)}
+.fp-toc li{border-bottom:1px solid var(--border)}
+.fp-toc li:not(:nth-child(3n+1)){border-left:1px solid var(--border)}
+.fp-toc a{display:grid;grid-template-columns:30px 1fr;gap:2px 10px;padding:14px 16px 14px 0;text-decoration:none;color:var(--fg);transition:background .15s}
+.fp-toc li:not(:nth-child(3n+1)) a{padding-left:16px}
+.fp-toc a:hover{background:var(--surface)}
+.fp-toc a:hover .t{color:var(--teal)}
+.fp-toc .n{grid-row:1/3;color:var(--teal);font-size:12px;padding-top:1px}
+.fp-toc .t{font-size:13px}
+.fp-toc .s{font-size:10.5px;color:var(--fg-muted)}
+
+/* sticky chapter bar */
+.fp-bar{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;gap:2px;padding:8px max(16px,calc((100vw - 1180px)/2 + 32px));
+  background:rgba(14,13,16,.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--border);
+  transform:translateY(-100%);transition:transform .2s;overflow-x:auto;scrollbar-width:none}
+.fp-bar::-webkit-scrollbar{display:none}
+.fp-bar.on{transform:none}
+.fp-bar a{flex:none;font-size:11px;color:var(--fg-muted);text-decoration:none;padding:4px 7px;border-radius:2px}
+.fp-bar a:hover{color:var(--fg)}
+.fp-bar a.cur{color:var(--bg);background:var(--teal)}
+.fp-bar .fp-bar-top{margin-right:6px}
+.fp-bar-t{margin-left:12px;font-size:11px;color:var(--fg-dim);white-space:nowrap}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media(max-width:760px){
+  .fp-toc ol{grid-template-columns:1fr}
+  .fp-toc li:not(:nth-child(3n+1)){border-left:0}
+  .fp-toc li:not(:nth-child(3n+1)) a{padding-left:0}
+  .pj-sec.fp-ch{margin-top:0;--hang:0px}
+  .fp-bar-t{display:none}
+}
 
 /* stat rows: full width, lines not boxes */
 .fp-stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--border2);border-bottom:1px solid var(--border2);margin-top:30px}
@@ -143,7 +188,20 @@
 }
 </style>
 </head>
-<body>
+<body id="top">
+  <nav class="fp-bar" id="fp-bar" aria-label="chapter navigation">
+    <a class="fp-bar-top" href="#top">↑</a>
+    <a href="#c01" title="Explicit and Implicit Data">01</a>
+    <a href="#c02" title="What Can Be Inferred">02</a>
+    <a href="#c03" title="You Are the Product">03</a>
+    <a href="#c04" title="Other People's Data">04</a>
+    <a href="#c05" title="When I'm Awake">05</a>
+    <a href="#c06" title="Did I Choose This?">06</a>
+    <a href="#c07" title="Where the Data Lies">07</a>
+    <a href="#c08" title="The Right I Wrote About">08</a>
+    <a href="#c09" title="Considerations">09</a>
+    <span class="fp-bar-t" id="fp-bar-t"></span>
+  </nav>
   <main class="pj">
     <div class="pj-top">
       <a href="../index.html">← cd ~</a>
@@ -163,9 +221,24 @@
       <div class="fp-stats" id="fp-stats"></div>
     </header>
 
+    <nav class="fp-toc" aria-label="chapters">
+      <span class="fp-h">index</span>
+      <ol>
+        <li><a href="#c01"><span class="n">01</span><span class="t">Explicit and Implicit Data</span><span class="s">the map of where my phone pointed</span></a></li>
+        <li><a href="#c02"><span class="n">02</span><span class="t">What Can Be Inferred</span><span class="s">eleven conclusions, one of them wrong</span></a></li>
+        <li><a href="#c03"><span class="n">03</span><span class="t">You Are the Product</span><span class="s">Meta's own profile of me</span></a></li>
+        <li><a href="#c04"><span class="n">04</span><span class="t">Other People's Data</span><span class="s">Cambridge Analytica, at home</span></a></li>
+        <li><a href="#c05"><span class="n">05</span><span class="t">When I'm Awake</span><span class="s">daily rhythm and sleep</span></a></li>
+        <li><a href="#c06"><span class="n">06</span><span class="t">Did I Choose This?</span><span class="s">me or the feed</span></a></li>
+        <li><a href="#c07"><span class="n">07</span><span class="t">Where the Data Lies</span><span class="s">errors a naive reading would make</span></a></li>
+        <li><a href="#c08"><span class="n">08</span><span class="t">The Right I Wrote About</span><span class="s">the GDPR in practice</span></a></li>
+        <li><a href="#c09"><span class="n">09</span><span class="t">Considerations</span><span class="s">what's left</span></a></li>
+      </ol>
+    </nav>
+
     <!-- 01 EXPLICIT / IMPLICIT -->
-    <section class="pj-sec">
-      <h2><span class="num">01</span> · explicit and implicit data</h2>
+    <section class="pj-sec fp-ch" id="c01">
+      <h2><span class="num">01</span><span class="tt">Explicit and Implicit Data</span><span class="sub">the map of where my phone pointed</span></h2>
       <p class="fp-text">The essay separated two kinds of data. <strong>Explicit data</strong> is what you hand over yourself: name, birthday, email. <strong>Implicit data</strong> is what gets recorded while they watch what you do: every song, like, search, map view and message timestamp. My explicit data would fit on a business card. This is the implicit part, month by month.</p>
       <div class="viz">
         <div class="viz-bar"><span class="viz-label">where my phone pointed · 2015 → 2026</span><span class="grow"></span>
@@ -184,15 +257,15 @@
     </section>
 
     <!-- 02 INFERENCES -->
-    <section class="pj-sec">
-      <h2><span class="num">02</span> · what can be inferred</h2>
-      <p class="fp-text">In the essay, profiling was something platforms did to us. Here I did it to myself, with Python and a few evenings. Every line below comes from the data alone. Where an inference identifies another person, it is <span class="rd">redacted</span>. Everything about me stays readable: that's the point.</p>
+    <section class="pj-sec fp-ch" id="c02">
+      <h2><span class="num">02</span><span class="tt">What Can Be Inferred</span><span class="sub">eleven conclusions, one of them wrong</span></h2>
+      <p class="fp-text">In the essay, profiling was something platforms did to us. Here I did it to myself, with Python and a few evenings. Every line below comes from the data alone.</p>
       <div class="led" id="inf"></div>
     </section>
 
     <!-- 03 PRODUCT -->
-    <section class="pj-sec">
-      <h2><span class="num">03</span> · you are the product</h2>
+    <section class="pj-sec fp-ch" id="c03">
+      <h2><span class="num">03</span><span class="tt">You Are the Product</span><span class="sub">Meta's own profile of me</span></h2>
       <blockquote class="fp-quote" style="margin-top:0">
         <p>If you're not paying for it, you're not the customer, you are the product being sold.</p>
         <cite>— quoted in my essay, Milan, 2023</cite>
@@ -213,16 +286,16 @@
     </section>
 
     <!-- 04 OTHERS -->
-    <section class="pj-sec">
-      <h2><span class="num">04</span> · other people's data</h2>
+    <section class="pj-sec fp-ch" id="c04">
+      <h2><span class="num">04</span><span class="tt">Other People's Data</span><span class="sub">Cambridge Analytica, at home</span></h2>
       <p class="fp-text">The part of the essay I think about most is <strong>Cambridge Analytica</strong>. The quiz didn't only collect the data of whoever took it. It collected their friends' data too, and 87 million people ended up in a dataset they never agreed to. My own export has the same problem, on a small scale.</p>
       <div class="big"><b id="ot-msgs">84,220</b><span>messages in my Instagram export were written by other people, across <strong style="color:var(--fg)"><span id="ot-people">811</span> conversations</strong>. None of those people asked for a copy of their words to end up in my zip file, and none of them could stop it.</span></div>
       <p class="fp-text">That is why no name of anyone else appears on this page, and why the analysis only uses the <em>shape</em> of conversations: when, how often, with how many people. Never what was said. That shape is revealing, and it can also be wrong: see the relationship line in section 02.</p>
     </section>
 
     <!-- 05 RHYTHM -->
-    <section class="pj-sec">
-      <h2><span class="num">05</span> · when I'm awake</h2>
+    <section class="pj-sec fp-ch" id="c05">
+      <h2><span class="num">05</span><span class="tt">When I'm Awake</span><span class="sub">daily rhythm and sleep</span></h2>
       <div class="viz">
         <div class="viz-bar"><span class="viz-label">activity · weekday × hour</span><span class="grow"></span><span id="rh-btns"></span></div>
         <div class="rh">
@@ -235,9 +308,23 @@
     </section>
 
     <!-- 06 TASTE / SOFT POWER -->
-    <section class="pj-sec">
-      <h2><span class="num">06</span> · did I choose this?</h2>
-      <p class="fp-text">The essay's biggest worry wasn't privacy. It was <strong>soft power</strong>: feeds decide what we see, what we see shapes what we think, and what we think feeds the algorithm again. My data shows my taste changing a lot. Italian rap goes from almost nothing to a third of my listening, and YouTube drifts toward streamers, podcasts and "money" content. <strong>The data can't tell whether I chose that or it was chosen for me.</strong> That's exactly the problem.</p>
+    <section class="pj-sec fp-ch" id="c06">
+      <h2><span class="num">06</span><span class="tt">Did I Choose This?</span><span class="sub">me or the feed</span></h2>
+      <p class="fp-text">The essay's biggest worry wasn't privacy. It was <strong>soft power</strong>: feeds decide what we see, what we see shapes what we think, and what we think feeds the algorithm again. My data shows my taste changing a lot. Italian rap goes from almost nothing to a third of my listening, and YouTube drifts toward streamers, podcasts and "money" content. So I checked <strong>who actually picked each video and each song</strong>: me, or the feed.</p>
+      <div class="big"><b id="pk-big">96%</b><span id="pk-big-t"></span></div>
+      <div class="viz">
+        <div class="viz-bar"><span class="viz-label">who picked it · youtube</span></div>
+        <div style="padding:14px" id="pk-yt"></div>
+        <div class="viz-foot" id="pk-yt-legend"></div>
+      </div>
+      <p class="viz-note">A video counts as <em>searched</em> if I searched YouTube or Google for matching words in the 30 minutes before, and as <em>subscribed</em> if it comes from one of the <span id="pk-subs">53</span> channels I follow today. Everything else came from the home feed, Shorts, autoplay or a link someone sent me. Ads are the entries Google itself marks as "from Google Ads". Only 2024 onwards: before that the history is too sparse.</p>
+      <div class="viz" style="margin-top:18px">
+        <div class="viz-bar"><span class="viz-label">who picked it · spotify</span></div>
+        <div style="padding:14px" id="pk-sp"></div>
+        <div class="viz-foot" id="pk-sp-legend"></div>
+      </div>
+      <p class="viz-note">From Spotify's <code>reason_start</code> field: <em>picked</em> means I tapped the song, <em>queue</em> means it started because the previous one ended or I skipped forward. The queue can be my own playlist or Spotify's radio; the export doesn't say which, so "queue" is not all algorithm.</p>
+      <p class="fp-text" style="margin-top:22px" id="pk-after"></p>
       <div class="viz">
         <div class="viz-bar"><span class="viz-label">spotify · per year</span></div>
         <table class="mu" id="mu"></table>
@@ -252,8 +339,8 @@
     </section>
 
     <!-- 07 LIES -->
-    <section class="pj-sec">
-      <h2><span class="num">07</span> · where the data lies</h2>
+    <section class="pj-sec fp-ch" id="c07">
+      <h2><span class="num">07</span><span class="tt">Where the Data Lies</span><span class="sub">errors a naive reading would make</span></h2>
       <p class="fp-text">A profile doesn't have to be true to be used. These are the places where the data would have fooled me if I hadn't lived it.</p>
       <div class="facts" style="margin-top:0">
         <div class="warn"><span>my attention span didn't collapse</span><span>Spotify's skip rate jumps from 0% to 58% between 2021 and 2023. My listening didn't change, the field did: before 2022 the export doesn't record skips at all. A naive analysis would have written a story about TikTok.</span></div>
@@ -264,8 +351,8 @@
     </section>
 
     <!-- 08 GDPR -->
-    <section class="pj-sec">
-      <h2><span class="num">08</span> · the right I wrote about</h2>
+    <section class="pj-sec fp-ch" id="c08">
+      <h2><span class="num">08</span><span class="tt">The Right I Wrote About</span><span class="sub">the GDPR in practice</span></h2>
       <p class="fp-text">In 2023 I listed the rights the GDPR introduced. This project exists because of two of them. It also shows where they fall short.</p>
       <div class="facts" style="margin-top:0">
         <div><span>art. 15 · access</span><span>Anyone can ask any company what it holds about them. It worked: three requests, three exports, gigabytes in total. No lawyer needed.</span></div>
@@ -281,13 +368,13 @@ events per source · night share · weekend share · artist entropy · novelty �
 <span class="c"># 3 · phases: changepoint detection on the standardised monthly features</span>
 → breaks at <span class="t">2017-04 · 2019-04 · 2022-11</span>
 <span class="c"># 4 · public export: aggregates only, the file this page loads</span>
-gigabytes  →  <span class="t">25 KB</span>
-<span class="x">✕ no message text  ✕ no search queries  ✕ no names of other people  ✕ no coordinates</span></div>
+gigabytes  →  <span class="t">81 KB</span>   <span class="c">+ 176 KB of country outlines for the map</span>
+<span class="x">✕ no message text  ✕ no search queries  ✕ no names of other people  ✕ no location finer than 5 km, except one address, on purpose</span></div>
     </section>
 
     <!-- CLOSING -->
-    <section class="pj-sec">
-      <h2><span class="num">09</span> · considerations</h2>
+    <section class="pj-sec fp-ch" id="c09">
+      <h2><span class="num">09</span><span class="tt">Considerations</span><span class="sub">what's left</span></h2>
       <blockquote class="fp-quote" style="margin-top:0">
         <p>It isn't only about writing better laws or building safer technology. Above all it's about building a society that is more aware and more responsible.</p>
         <cite>— my essay, Milan, 2023</cite>
@@ -302,8 +389,24 @@ gigabytes  →  <span class="t">25 KB</span>
   </main>
 
   <script src="../js/projects/common.js?v=20260929b"></script>
-  <script src="../js/projects/data/footprint.js?v=20260929c"></script>
+  <script src="../js/projects/data/footprint.js?v=20260930a"></script>
   <script src="../js/projects/data/footprint-map.js?v=20260929d"></script>
-  <script src="../js/projects/footprint.js?v=20260929c"></script>
+  <script src="../js/projects/footprint.js?v=20260930a"></script>
+  <script>
+  // chapter bar: shows after the index, highlights the chapter in view
+  (function () {
+    const bar = document.getElementById('fp-bar'), label = document.getElementById('fp-bar-t');
+    const toc = document.querySelector('.fp-toc'), links = [...bar.querySelectorAll('a[href^="#c"]')];
+    const secs = links.map(a => document.querySelector(a.getAttribute('href')));
+    function upd() {
+      bar.classList.toggle('on', toc.getBoundingClientRect().bottom < 0);
+      let i = -1; secs.forEach((s, k) => { if (s.getBoundingClientRect().top < window.innerHeight * .35) i = k; });
+      links.forEach((a, k) => a.classList.toggle('cur', k === i));
+      label.textContent = i >= 0 ? secs[i].querySelector('.tt').textContent : '';
+      if (i >= 0) { const a = links[i]; if (a.offsetLeft < bar.scrollLeft || a.offsetLeft > bar.scrollLeft + bar.clientWidth - 40) bar.scrollLeft = a.offsetLeft - 60; }
+    }
+    addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); upd();
+  })();
+  </script>
 </body>
 </html>

@@ -251,7 +251,7 @@
   function play() {
     if (cur >= M.length - 1) setCur(0);
     $('tl-play').textContent = 'pause';
-    timer = setInterval(() => { if (cur >= M.length - 1) stop(); else setCur(cur + 1); }, 110);
+    timer = setInterval(() => { if (cur >= M.length - 1) stop(); else setCur(cur + 1); }, 170);   // ms per month: ~23 s from 2015 to today
   }
   $('tl-play').onclick = () => (timer ? stop() : play());
   // plays once by itself the first time the map scrolls into view
@@ -303,9 +303,9 @@
     { t: 'relationship', c: 3, v: 'x', src: 'instagram dms · metadata only',
       claim: 'In 2025 one person became the centre of my messaging.',
       ev: `One thread takes <b>${pct(soc('2025').top_share)}</b> of all my DMs that year. In 2024 no thread was above <b>${pct(soc('2024').top_share, 1)}</b>, and the circle that gets 80% of my messages shrank from <b>${soc('2024').circle80}</b> to <b>${soc('2025').circle80}</b>. It reads like a new relationship. It isn't: the thread is <b>"gooners club"</b>, a group chat. Metadata alone can't tell a partner from a group chat.` + spark },
-    { t: 'phones', c: 5, v: '', src: 'spotify · device string on every play',
-      claim: phones.map(p => p.name.replace(' (model hidden by Spotify)', '')).join(' → ') + '.',
-      ev: `Every play logs the device model, so I know when I upgraded, to the month. Also: a PlayStation 4 from ${mlabel(ps4.from)} to ${mlabel(ps4.to)}.` },
+    { t: 'phones', c: 5, v: 'ok', src: 'spotify · device string on every play',
+      claim: phones.map(p => p.name.replace(' (model hidden by Spotify)', ' ?')).join(' → ') + '.',
+      ev: `Every play logged the device model, so the upgrades are dated to the month. Also: a PlayStation 4 from ${mlabel(ps4.from)} to ${mlabel(ps4.to)}. Then, from ${mlabel((phones.find(p => /hidden/.test(p.name)) || {}).from || '2022-10')}, Spotify stopped writing the model and only says "ios". The last one is an iPhone 16, but that's the only fact on this page I had to supply myself.` },
     { t: 'learning to code', c: 4, v: 'ok', src: 'youtube topics · spotify clients',
       claim: `Started programming seriously in late 2025.`,
       ev: `Tech & code goes from <b>${pct(yt('2024')['tech & code'], 1)}</b> of my YouTube in 2024 to <b>${pct(yt('2026')['tech & code'], 1)}</b> in 2026. A Linux Spotify client appears in ${mlabel(lin.from)}: school machines.` },
@@ -401,6 +401,29 @@
   PJ.buttons($('rh-btns'), D.phases.map((p, i) => ({ label: '0' + (i + 1), i })), it => { phase = it.i; drawHeat(); }, phase);
   const s0 = sl('2017'), s1 = sl('2026'), shift = ((s1.start - s0.start) + 24) % 24;
   $('rh-shift').textContent = `${shift} hours later (${hh(s0.start)} → ${hh(s1.start)})`;
+
+  // ---------- who picked it ----------
+  if (D.picked) {
+    const PY = D.picked.youtube.filter(r => r.n > 5000), PS = D.picked.spotify;
+    const stackRows = (rows, keys, cols) => rows.map(r => `<div class="yt-row"><span>${r.y}</span><div class="stack">${
+      keys.map((k, i) => `<i title="${k} ${pct(r[k], 1)}" style="width:${r[k] * 100}%;background:${cols[i]}"></i>`).join('')
+    }</div><span class="n">${pct(keys.slice(0, 2).reduce((a, k) => a + r[k], 0))}</span></div>`).join('');
+    const legend = (keys, cols, names) => keys.map((k, i) => `<span class="lg"><i style="background:${cols[i]}"></i>${names[i]}</span>`).join('');
+    const YK = ['searched', 'subscribed', 'served', 'ad'], YC = [C.teal, C.green, 'rgba(255,255,255,0.16)', C.red];
+    $('pk-yt').innerHTML = stackRows(PY, YK, YC) + '<div class="yt-row" style="margin:0"><span></span><span style="font-size:10px;color:var(--fg-muted)">share of videos in my watch history</span><span class="n">chosen</span></div>';
+    $('pk-yt-legend').innerHTML = legend(YK, YC, ['searched for it', 'channel I follow', 'feed / autoplay / links', 'ads']);
+    const SK = ['picked', 'queue', 'other'], SC = [C.teal, 'rgba(255,255,255,0.16)', 'rgba(255,255,255,0.06)'];
+    $('pk-sp').innerHTML = stackRows(PS.map(r => ({ ...r, _: 0 })), ['picked', '_', 'queue', 'other'], [C.teal, C.teal, SC[1], SC[2]])
+      + '<div class="yt-row" style="margin:0"><span></span><span style="font-size:10px;color:var(--fg-muted)">share of plays</span><span class="n">picked</span></div>';
+    $('pk-sp-legend').innerHTML = legend(SK, SC, ['I tapped the song', 'queue: previous ended or skip', 'other']);
+    const last = PY[PY.length - 1], notMine = last.served + last.ad;
+    $('pk-big').textContent = pct(notMine);
+    $('pk-big-t').innerHTML = `of what YouTube logged as "watched" in ${last.y} I never searched for and don't subscribe to: <strong style="color:var(--fg)">${pct(last.served)}</strong> came from the feed, <strong style="color:var(--fg)">${pct(last.ad)}</strong> were ads.`;
+    $('pk-subs').textContent = D.picked.subs;
+    const s0 = PS.find(r => r.y === '2019'), s1 = PS[PS.length - 1];
+    const yc = last.searched + last.subscribed;
+    $('pk-after').innerHTML = `Music is a different story. On Spotify I tap the song myself <strong>${pct(s1.picked)}</strong> of the time in ${s1.y}, up from <strong>${pct(s0.picked)}</strong> in 2019, and most of the rest plays from queues and playlists, some mine and some Spotify's. On YouTube I pick <strong>${pct(yc)}</strong>. The shift to Italian rap has my fingerprints on it. The drift on YouTube mostly doesn't.`;
+  }
 
   // ---------- taste ----------
   const hMax = Math.max(...mus.map(m => m.hours));
