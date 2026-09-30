@@ -90,10 +90,10 @@ html .nav-header, html .section-title, html .pl-label, html .bio-block-label,
 html .pj-eyebrow, html .pj-sec:not(.fp-ch) h2, html .viz-label, html .fp-h, html .led-t,
 html .fp-stats span, html .pj-sec.fp-ch h2 .sub, html .facts div > span:first-child, html .fly-list .lv,
 html .fp-toc .s {
-  font-family: 'Doto', 'JetBrains Mono', monospace; font-weight: 800; font-size: 13px; letter-spacing: 1.5px;
+  font-family: 'Doto', 'JetBrains Mono', monospace; font-weight: 800; font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase;
 }
 html .pl-year, html .age-clock, html .project-year {
-  font-family: 'Doto', 'JetBrains Mono', monospace; font-weight: 800; font-size: 13px; letter-spacing: .5px;
+  font-family: 'Doto', 'JetBrains Mono', monospace; font-weight: 800; font-size: 13px; letter-spacing: .5px; text-transform: uppercase;
 }
 html .tagline-subtitle { font-family: 'Doto', 'JetBrains Mono', monospace; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; }
 html .tagline-subtitle::before { font-family: 'JetBrains Mono', monospace; font-weight: 400; letter-spacing: 0; }
