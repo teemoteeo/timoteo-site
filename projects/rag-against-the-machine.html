@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RAG Against the Machine — Timoteo Costantini Scala</title>
+  <meta name="description" content="42 firenze · milestone 4 · python · rag — project by Timoteo Costantini Scala.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Doto:wght@800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/project.css?v=20260930n">
+  <style>
+.rag>div{min-width:0}
+.rag-h{display:block;font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--fg-muted);margin-bottom:8px}
+.rag-q{padding:14px;border-bottom:1px solid var(--border)}
+.rag-text{font-size:16px;color:var(--fg);min-height:26px;line-height:1.75}
+.qw{border-radius:2px;transition:color .35s,opacity .35s,background-color .15s,text-decoration-color .35s}
+.qw.split{text-decoration:underline dashed;text-decoration-color:var(--fg-muted);text-underline-offset:5px;text-decoration-thickness:1px}
+.struck .qw.stop{opacity:.3;text-decoration:line-through;text-decoration-color:var(--red)}
+.qw.done{color:color-mix(in srgb,var(--fg) calc(var(--w,1)*100%),var(--fg-muted))}
+.qw.fire{color:var(--bg);background:var(--teal);text-decoration-color:var(--bg)}
+.caret{display:inline-block;width:7px;height:14px;background:var(--teal);vertical-align:-2px;margin-left:1px;animation:blink 1s step-end infinite}
+.rag-mid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)}
+.rag-map{padding:14px;position:relative;display:flex;flex-direction:column}
+.rag-right{border-left:1px solid var(--border);align-self:stretch}
+.rag-chead{display:flex;justify-content:space-between;gap:12px;align-items:baseline;flex-wrap:wrap}
+#rag-count{font-size:10.5px;color:var(--fg-muted);margin-bottom:8px}
+#rag-count b{color:var(--fg);font-weight:500} #rag-count b.t{color:var(--teal)}
+#rag-pack{display:block;width:100%;max-width:540px;height:auto;margin:auto}
+#rag-pack .lf{transition:fill-opacity .35s,fill .35s}
+#rag-pack .dl text{fill:var(--fg-dim);font:11px 'JetBrains Mono',monospace;pointer-events:none}
+#rag-pack .ring{opacity:0;transition:opacity .4s;transition-delay:calc(var(--i)*150ms)}
+#rag-pack.ranked .ring{opacity:1}
+#rag-pack .ring circle{fill:none;stroke:var(--teal);stroke-width:1.4}
+#rag-pack .ring text{fill:var(--teal);font:500 11px 'JetBrains Mono',monospace}
+.rag-tip{position:absolute;pointer-events:none;background:var(--surface);border:1px solid var(--border2);padding:3px 7px;font-size:10.5px;color:var(--fg);border-radius:2px;max-width:320px;word-break:break-all;z-index:3}
+.rag-right{display:flex;flex-direction:column;min-width:0}
+.rag-top{padding:11px 14px}
+#rag-ansp{padding:11px 14px;border-bottom:1px solid var(--border);min-height:98px}
+.rag-top{display:flex;flex-direction:column}
+.rag-src{padding:11px 14px;border-top:1px solid var(--border)}
+.viz-auto{all:unset;font-size:10.5px;color:var(--fg-muted);cursor:pointer;white-space:nowrap}
+.viz-auto:hover{color:var(--teal)}
+.viz-auto:empty{display:none}
+.qsel{display:inline-flex;gap:6px;align-items:center;min-width:0}
+.viz-sel{font-family:inherit;font-size:11px;color:var(--fg);background:var(--bg2);border:1px solid var(--border2);border-radius:2px;padding:4px 8px;max-width:260px;min-width:0;cursor:pointer;color-scheme:dark}
+.viz-sel:hover{border-color:var(--fg-muted)}
+.viz-sel:focus-visible,.viz-btn:focus-visible{outline:1px solid var(--teal);outline-offset:2px}
+.rr{border-bottom:1px solid var(--border);opacity:.12;transition:opacity .3s;transition-delay:calc(var(--i)*150ms)}
+.rr:last-child{border-bottom:0}
+#rag-list.on .rr{opacity:1}
+.rr-head{all:unset;box-sizing:border-box;width:100%;display:grid;grid-template-columns:16px minmax(0,1fr) 38px 14px;gap:10px;align-items:start;padding:6px 0;cursor:pointer}
+.rr-head:focus-visible{outline:1px solid var(--teal);outline-offset:2px}
+.rr-head:hover .rp{color:var(--teal)}
+.rk{font-size:11px;color:var(--teal);font-weight:500;line-height:16px}
+.rm{min-width:0;display:block}
+.rp{display:block;font-size:11px;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:16px}
+.rp span{color:var(--fg-muted)}
+.rf{display:block;position:relative;height:5px;background:var(--border2);border-radius:1px;margin-top:5px}
+.rf i{position:absolute;top:0;bottom:0;background:var(--teal);min-width:2px}
+.rs{font-size:10.5px;color:var(--fg-dim);text-align:right;line-height:16px;font-variant-numeric:tabular-nums}
+.gt{font-size:12px;color:var(--teal);opacity:0;transition:opacity .4s;line-height:16px}
+#rag-list.gt-on .rr.hit .gt{opacity:1}
+.rx{display:none;padding:2px 0 12px 26px}
+.rr.open .rx{display:block}
+.rr.open .rk::after{content:''}
+.xb{display:flex;height:10px;background:var(--surface);border-radius:1px;overflow:hidden}
+.xb i{display:block;height:100%;border-right:1px solid var(--bg2)}
+.xl{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:8px;font-size:10.5px;color:var(--fg-dim)}
+.xl i{display:inline-block;width:8px;height:8px;border-radius:1px;margin-right:5px}
+.xl em{font-style:normal;color:var(--fg-muted);font-variant-numeric:tabular-nums}
+.rag-hint{font-size:10px;color:var(--fg-muted);margin-top:6px}
+#rag-out{font-size:12.5px;line-height:1.65;color:var(--fg);white-space:pre-wrap;word-break:break-word}
+#rag-out code{color:var(--bg);background:var(--teal);padding:0 4px;border-radius:2px}
+#rag-out code.blk{display:block;padding:6px 8px;margin:4px 0;background:var(--surface);color:var(--fg-dim);font-size:11px;white-space:pre-wrap}
+#rag-out sup{color:var(--teal);font-size:9px;margin-left:2px}
+#rag-out b{font-weight:500}
+.rag-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+#rag-srcp{font-size:10.5px;color:var(--fg-dim);margin-bottom:6px;word-break:break-all;min-height:16px}
+#rag-src{font-family:inherit;font-size:11px;line-height:1.6;color:var(--fg-muted);white-space:pre-wrap;word-break:break-word;height:150px;overflow:auto;margin:0}
+#rag-src,#rag-out,#rag-list{scrollbar-width:thin;scrollbar-color:var(--teal) transparent}
+#rag-src,#rag-out{padding-right:10px}
+#rag-src::-webkit-scrollbar,#rag-out::-webkit-scrollbar,#rag-list::-webkit-scrollbar{width:3px;height:3px}
+#rag-src::-webkit-scrollbar-track,#rag-out::-webkit-scrollbar-track,#rag-list::-webkit-scrollbar-track{background:var(--border)}
+#rag-src::-webkit-scrollbar-thumb,#rag-out::-webkit-scrollbar-thumb,#rag-list::-webkit-scrollbar-thumb{background:var(--teal)}
+#rag-src mark.t{background:none;color:var(--fg);border-bottom:1px solid var(--teal)}
+#rag-src mark.a{background:var(--teal);color:var(--bg);border-radius:2px;padding:0 2px}
+.lg .ln{width:14px;height:0;border-top:1px solid var(--red);border-radius:0}
+@media(max-width:760px){.rag-mid{grid-template-columns:1fr}.rag-map{position:relative;border-bottom:1px solid var(--border)}.rag-right{border-left:0}.viz-sel{font-size:12px;padding:8px;flex:1}.qsel{flex:1 1 100%}.rr-head{grid-template-columns:14px minmax(0,1fr) 34px 12px;gap:8px}.rx{padding-left:22px}}
+</style>
+</head>
+<body>
+  <main class="pj">
+    <div class="pj-top">
+      <a href="../index.html">← cd ~</a>
+      <span class="pj-crumb">~/42-firenze/<b>rag-against-the-machine</b></span>
+    </div>
+
+    <header class="pj-head">
+      <div class="pj-eyebrow">42 firenze · milestone 4 · python · rag</div>
+      <h1 class="pj-title">RAG Against the Machine</h1>
+      <p class="pj-lead">A <strong>retrieval-augmented generation (RAG) system</strong>, built end to end, that answers questions about the <strong>vLLM 0.10.1</strong> codebase. It retrieves the most relevant passages from 13,885 code-aware chunks with BM25, then has <strong>Qwen3-0.6B</strong> answer from those five passages only, so every answer points back to the exact lines it came from. The right source lands in the top 5 for <strong>86%</strong> of documentation questions and <strong>83%</strong> of code questions. No embeddings and no GPU: the whole repo is indexed in about 3 seconds.</p>
+      <div class="pj-tags"><span>rag</span><span>python</span><span>bm25</span><span>qwen3-0.6b</span><span>ast</span><span>transformers</span><span>pydantic</span></div>
+    </header>
+
+    <div class="viz">
+      <div class="viz-bar"><span class="viz-label">retrieval trace</span><span class="qsel"><button id="viz-prev" class="viz-btn" aria-label="previous question">←</button><select id="viz-sel" class="viz-sel" aria-label="question"></select><button id="viz-next" class="viz-btn" aria-label="next question">→</button></span><span class="grow"></span>
+        <button id="viz-auto" class="viz-auto" type="button"></button><button id="viz-play" class="viz-btn">pause</button><button id="viz-skip" class="viz-btn">next question →</button></div>
+      <div class="viz-stage rag">
+        <div class="rag-q"><span class="rag-h">question</span><div id="rag-text" class="rag-text"></div></div>
+        <div class="rag-mid">
+          <div class="rag-map">
+            <div class="rag-chead"><span class="rag-h">vllm 0.10.1 · one circle per file</span><span id="rag-count"></span></div>
+            <svg id="rag-pack" role="img" aria-label="The vLLM repository as nested circles, lit by BM25 score"></svg>
+            <div id="rag-tip" class="rag-tip" hidden></div>
+          </div>
+          <div class="rag-right">
+            <div id="rag-ansp"><span class="rag-h">answer · qwen3-0.6b</span><div id="rag-out"></div></div>
+            <div class="rag-top"><span class="rag-h">top 5 · span in file · bm25</span><div id="rag-list"></div>
+              <div class="rag-hint">click a result to see its score split by term</div></div>
+            <div class="rag-src"><span class="rag-h">source</span><div class="rag-tabs" id="rag-tabs"></div><div id="rag-srcp"></div><pre id="rag-src"></pre></div>
+          </div>
+        </div>
+      </div>
+      <div class="viz-foot">
+        <span class="lg"><i style="height:0;border-radius:0;border-top:1px dashed var(--fg-muted)"></i>identifier kept whole + split</span>
+        <span class="lg"><i class="ln"></i>stopword dropped</span>
+        <span class="lg"><i style="background:linear-gradient(90deg,var(--fg-muted),var(--fg))"></i>brighter term = weighs more in bm25</span>
+        <span class="lg"><i style="background:var(--teal)"></i>files matching the current term</span>
+        <span class="lg"><i style="background:var(--fg)"></i>brighter = higher score</span>
+        <span class="lg"><span style="color:var(--teal)">✓</span>ground-truth source</span>
+        <span class="lg"><mark style="background:var(--teal);color:var(--bg);padding:0 3px;border-radius:2px;font-size:10px">abc</mark>answer text found in the source</span>
+      </div>
+    </div>
+    <p class="viz-note">16 real runs, including a rank-2 hit (metrics) and a wrong answer (multi-model serving): scores, rankings and answers come from the project's own index and Qwen3-0.6B, on questions from the public dataset. Circle area = number of chunks in the file. Layout after GitHub Next's repo visualizer.</p>
+
+    <section class="pj-sec">
+      <h2>how it works</h2>
+      <ul class="pj-points">
+        <li><b>Chunks follow the code:</b> Python is split on top-level statements from <code>ast</code> (a decorator starts its function), Markdown on headers. Neighbouring pieces are packed up to 2,000 chars, so every chunk is a contiguous, exact <code>file[first:last]</code> span.</li>
+        <li><b>Identifiers, twice:</b> <code>get_kv_cache_spec</code> is indexed whole and as <code>get · kv · cache · spec</code>, so a question can quote the code or paraphrase it. That one choice is worth about 19 points of code recall.</li>
+        <li><b>The path is text too:</b> each chunk is indexed with its file path in front. <code>docs/features/lora.md</code> is the best summary of what's inside it.</li>
+        <li><b>A happy accident, kept:</b> <code>vllm</code> is a stopword, but the filter runs after splitting, so <code>vLLM</code> still yields <code>v</code> and <code>llm</code> (they light up most of the repo in the trace above). Mixed-case "vLLM" lives mostly in the docs, so those two terms nudge ranking toward documentation: removing them costs 2 points of docs recall.</li>
+        <li><b>A tiny index:</b> only <code>(path, first, last)</code> plus BM25 statistics are pickled (16 MB). Text is re-read from disk only for the five spans that go into the prompt.</li>
+        <li><b>CPU-friendly generation:</b> Qwen3 runs in float32 with thinking disabled. bfloat16 matmuls took ~65 s per answer on CPU; float32 takes ~5 s.</li>
+      </ul>
+    </section>
+
+    <a class="pj-repo" href="https://github.com/teemoteeo/quarantadue/tree/main/milestone_4/RAG_against_the_machine" target="_blank" rel="noopener">
+      <b>view source on github ↗</b><span>teemoteeo/quarantadue/milestone_4/RAG_against_the_machine</span>
+    </a>
+
+    <nav class="pj-nav">
+      <a href="a-maze-ing.html">← a-maze-ing</a>
+      <a href="fly-in.html">fly-in →</a>
+    </nav>
+  </main>
+
+  <script src="../js/projects/common.js?v=20260918c"></script>
+  <script src="../js/projects/data/rag.js?v=20260930c"></script>
+  <script src="../js/projects/rag.js?v=20260930j"></script>
+  
+</body>
+</html>
