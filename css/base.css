@@ -92,7 +92,7 @@ html .fp-stats span, html .pj-sec.fp-ch h2 .sub, html .facts div > span:first-ch
 html .fp-toc .s {
   font-family: 'Doto', 'JetBrains Mono', monospace; font-weight: 800; font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase;
 }
-html .pl-year, html .age-clock, html .project-year {
+html .pl-year, html .age-clock, html .project-year, html .profile-meta {
   font-family: 'Doto', 'JetBrains Mono', monospace; font-weight: 800; font-size: 13px; letter-spacing: .5px; text-transform: uppercase;
 }
 html .tagline-subtitle { font-family: 'Doto', 'JetBrains Mono', monospace; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; }
