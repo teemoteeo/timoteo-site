@@ -95,4 +95,5 @@ html .fp-toc .s {
 html .pl-year, html .age-clock, html .project-year {
   font-family: 'Doto', 'JetBrains Mono', monospace; font-weight: 800; font-size: 13px; letter-spacing: .5px;
 }
-html .tagline-subtitle .amp { font-family: 'Doto', 'JetBrains Mono', monospace; font-weight: 800; }
+html .tagline-subtitle { font-family: 'Doto', 'JetBrains Mono', monospace; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; }
+html .tagline-subtitle::before { font-family: 'JetBrains Mono', monospace; font-weight: 400; letter-spacing: 0; }
