@@ -123,6 +123,8 @@
     if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); ask(); }   // Enter still asks, no new lines
   });
   input.addEventListener('input', grow);
+  grow(); window.addEventListener('resize', grow);   // the placeholder can wrap too
+  if (document.fonts) document.fonts.ready.then(grow);
   input.addEventListener('input', function () {
     if (input.value.trim() && status.classList.contains('is-nagging')) setStatus('');
     if (!busy && presenter.hasAnswer) { presenter.reset(); srOut.textContent = ''; }
