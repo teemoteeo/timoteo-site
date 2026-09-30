@@ -117,6 +117,12 @@
 
   form.addEventListener('submit', function (e) { e.preventDefault(); ask(); });
 
+  // the question wraps and the box grows with it, so a long one stays readable
+  function grow() { input.style.height = 'auto'; input.style.height = input.scrollHeight + 'px'; }
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); ask(); }   // Enter still asks, no new lines
+  });
+  input.addEventListener('input', grow);
   input.addEventListener('input', function () {
     if (input.value.trim() && status.classList.contains('is-nagging')) setStatus('');
     if (!busy && presenter.hasAnswer) { presenter.reset(); srOut.textContent = ''; }

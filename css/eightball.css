@@ -16,7 +16,7 @@
 .oracle-form {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
 }
 .oracle-label {
@@ -30,7 +30,7 @@
   flex: 1;
   min-width: 0;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 7px;
   padding: 0 8px;
   background: var(--bg2);
@@ -40,7 +40,7 @@
 }
 .oracle-field:focus-within { border-color: var(--teal); }
 .oracle.is-nagging .oracle-field { border-color: var(--red); }
-.oracle-prompt { color: var(--teal); font-size: 12px; flex-shrink: 0; }
+.oracle-prompt { color: var(--teal); font-size: 12px; line-height: 1.4; padding-top: 7px; flex-shrink: 0; }
 .oracle-input {
   flex: 1;
   min-width: 0;
@@ -51,6 +51,12 @@
   background: none;
   border: 0;
   outline: none;
+  resize: none;
+  overflow: hidden;
+  display: block;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 .oracle-input::placeholder { color: var(--fg-muted); }
 
@@ -107,6 +113,7 @@
   .oracle-form { max-width: 420px; }
   /* sotto i 16px iOS zooma sul focus */
   .oracle-input { font-size: 16px; padding: 9px 0; }
+  .oracle-prompt { font-size: 16px; padding-top: 9px; }
   .oracle-btn { min-height: 38px; padding: 9px 16px; }
   .oracle-status { font-size: 11px; }
 }
