@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Doto:wght@800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/project.css?v=20260930f">
+  <link rel="stylesheet" href="../css/project.css?v=20260930g">
   <style>
 .pj{max-width:1180px;--hang:clamp(0px, calc((100vw - 1180px) / 2 + 12px), 110px)}
 .pj-lead{max-width:none;font-size:15px;line-height:1.85}
@@ -75,7 +75,7 @@ html{scroll-behavior:smooth}
 }
 
 /* stat rows: full width, lines not boxes */
-.fp-stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--border2);border-bottom:1px solid var(--border2);margin-top:30px}
+.fp-stats{display:grid;grid-template-columns:repeat(4,1fr);margin-top:30px}
 .fp-stats div{padding:18px 18px 16px 0}
 .fp-stats div+div{padding-left:18px;border-left:1px solid var(--border)}
 .fp-stats b{display:block;font-size:clamp(22px,3vw,34px);font-weight:300;color:var(--fg);letter-spacing:-.5px;line-height:1.1}
@@ -134,7 +134,7 @@ html{scroll-behavior:smooth}
 .facts b{color:var(--fg);font-weight:500}
 
 /* others */
-.big{display:grid;grid-template-columns:auto 1fr;gap:10px 36px;align-items:baseline;border-top:1px solid var(--border2);border-bottom:1px solid var(--border2);padding:22px 0;margin-bottom:22px}
+.big{display:grid;grid-template-columns:auto 1fr;gap:10px 36px;align-items:baseline;padding:22px 0;margin-bottom:22px}
 .big b{font-size:clamp(34px,6vw,64px);font-weight:300;letter-spacing:-1.5px;color:var(--fg);line-height:1}
 .big span{font-size:13px;color:var(--fg-dim);line-height:1.8}
 
@@ -175,7 +175,6 @@ html{scroll-behavior:smooth}
   .pj-lead{font-size:14px}
   .fp-stats{grid-template-columns:repeat(2,1fr)}
   .fp-stats div:nth-child(3){padding-left:0;border-left:0}
-  .fp-stats div:nth-child(-n+2){border-bottom:1px solid var(--border)}
   .mp-read{position:static;width:auto;border:0;border-top:1px solid var(--border);border-radius:0;background:transparent;backdrop-filter:none;padding:12px 14px}
   .mp-hud{left:14px;top:12px}
   .mp-note{display:none}

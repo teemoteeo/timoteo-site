@@ -3,7 +3,6 @@
 .pl-head {
   display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px;
   padding: 0 12px 8px;
-  border-bottom: 1px solid var(--border);
 }
 .pl-label {
   white-space: nowrap;
@@ -64,7 +63,6 @@
   align-items: center;
   gap: 16px;
   padding: 14px 0;
-  border-bottom: 1px solid var(--border);
   width: 100%;
 }
 .display-item:last-child { border-bottom: none; }
@@ -86,8 +84,6 @@
   overflow: hidden;
   margin-bottom: 32px;
   padding: 16px 0;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
   position: relative;
 }
 .tech-banner::before,
@@ -152,7 +148,6 @@
   padding: 14px 0;
   overflow: hidden;
   position: relative;
-  border-bottom: 1px solid var(--border);
 }
 .display-item--banner::before,
 .display-item--banner::after {
@@ -228,9 +223,7 @@
   margin-bottom: 10px;
 }
 .tech-grid-section .section-line {
-  height: 1px;
-  background: var(--border);
-  margin-bottom: 16px;
+  display: none;
 }
 .tech-grid {
   background: var(--surface);

@@ -1,4 +1,4 @@
-@import './base.css?v=20260930d';
+@import './base.css?v=20260930g';
 
 /* project pages render immediately: no boot gate */
 body { min-height: 100vh; }
@@ -80,8 +80,7 @@ body { min-height: 100vh; }
 .pj-sec { margin-top: 40px; }
 .pj-sec h2 {
   font-size: 10px; font-weight: 400; letter-spacing: 2.5px; text-transform: uppercase;
-  color: var(--fg-muted); padding-bottom: 8px; margin-bottom: 14px;
-  border-bottom: 1px solid var(--border);
+  color: var(--fg-muted); margin-bottom: 14px;
 }
 .pj-sec h2::before { content: '/// '; }
 .pj-points { list-style: none; display: grid; gap: 10px; }

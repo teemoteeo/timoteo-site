@@ -82,8 +82,6 @@
   text-transform: uppercase;
   color: var(--fg-muted);
   margin-bottom: 10px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid var(--border);
 }
 .nav-list { list-style: none; }
 .tree-item {
@@ -259,9 +257,7 @@
   color: var(--fg-muted);
 }
 .section-line {
-  flex: 1;
-  height: 1px;
-  background: var(--border);
+  display: none;   /* le linee dopo i titoli di sezione: tolte, basta lo spazio */
 }
 
 /* ===== RESPONSIVE ===== */
