@@ -29,6 +29,7 @@
   width: 2px; background: var(--teal);
   transform: scaleY(0); transition: transform .2s ease;
 }
+.pl-row:last-child { border-bottom: none; }
 .pl-row:hover { background: var(--surface); }
 .pl-row:hover::before { transform: scaleY(1); }
 .pl-name { font-size: 13px; font-weight: 500; color: var(--fg); white-space: nowrap; }
