@@ -118,7 +118,9 @@
   form.addEventListener('submit', function (e) { e.preventDefault(); ask(); });
 
   // the question wraps and the box grows with it, so a long one stays readable
-  function grow() { input.style.height = 'auto'; input.style.height = input.scrollHeight + 'px'; }
+  function grow() {
+    input.style.height = 'auto'; input.style.height = input.scrollHeight + 'px';
+  }
   input.addEventListener('keydown', function (e) {
     if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); ask(); }   // Enter still asks, no new lines
   });
