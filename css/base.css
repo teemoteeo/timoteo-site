@@ -70,3 +70,30 @@ body {
   opacity: 1; visibility: visible;
   animation: glitch-in 0.25s ease-out;
 }
+
+/* ===== DOT MATRIX (dalla griglia di nothing.tech) =====
+   livello fisso a 32px dai bordi, 12 colonne (4 sotto i 640px),
+   punto bianco da 1px al 30% in mix-blend-difference. */
+:root { --dm-cell: calc((100vw - 64px) / 12); }
+@media (max-width: 639px) { :root { --dm-cell: calc((100vw - 64px) / 4); } }
+body::before {
+  content: ''; position: fixed; inset: 31px; z-index: 0; pointer-events: none;
+  opacity: .3; mix-blend-mode: difference;
+  background-image: radial-gradient(circle, #fff 1px, transparent 1.5px);
+  background-size: var(--dm-cell) var(--dm-cell);
+  background-position: calc(1px - var(--dm-cell) / 2) calc(1px - var(--dm-cell) / 2);
+}
+.container, .pj { position: relative; z-index: 1; }
+
+/* ===== ETICHETTE E SOTTOTITOLI IN DOTO ===== */
+html .nav-header, html .section-title, html .pl-label, html .bio-block-label,
+html .pj-eyebrow, html .pj-sec:not(.fp-ch) h2, html .viz-label, html .fp-h, html .led-t,
+html .fp-stats span, html .pj-sec.fp-ch h2 .sub, html .facts div > span:first-child, html .fly-list .lv,
+html .fp-toc .s {
+  font-family: 'Doto', 'JetBrains Mono', monospace; font-weight: 800; font-size: 13px; letter-spacing: 1.5px;
+}
+html .pl-year, html .age-clock, html .project-year {
+  font-family: 'Doto', 'JetBrains Mono', monospace; font-weight: 800; font-size: 13px; letter-spacing: .5px;
+}
+html .tagline-subtitle { font-family: 'Doto', 'JetBrains Mono', monospace; font-weight: 800; }
+html .tagline-subtitle::before { font-family: 'JetBrains Mono', monospace; font-weight: 400; }

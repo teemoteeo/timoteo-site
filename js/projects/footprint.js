@@ -443,6 +443,20 @@
   }).join('') + '<div class="yt-row" style="margin:0"><span></span><span style="font-size:10px;color:var(--fg-muted)">share of videos watched</span><span class="n">videos</span></div>';
   $('yt-legend').innerHTML = cats.map((k, i) => `<span class="lg"><i style="background:${TC[i]};opacity:.8"></i>${k}</span>`).join('') + '<span class="lg"><i style="background:var(--border)"></i>unlabelled</span>';
 
+
+  // ---------- side rail: one square per chapter, green = where you are ----------
+  {
+    const blocks = [document.querySelector('.pj-head'), ...document.querySelectorAll('.pj-sec.fp-ch')].filter(Boolean);
+    const rail = document.createElement('nav'); rail.className = 'fp-rail'; rail.setAttribute('aria-label', 'chapters');
+    rail.innerHTML = blocks.map((b, i) => {
+      const t = i ? b.querySelector('h2 .num').textContent + ' ' + b.querySelector('h2 .tt').textContent : 'top';
+      return `<a href="#${b.id || 'top'}" data-t="${t.replace(/"/g, '')}" aria-label="${t.replace(/"/g, '')}"></a>`;
+    }).join('');
+    document.body.appendChild(rail);
+    const links = [...rail.querySelectorAll('a')];
+    const mark = () => { let cur = 0; blocks.forEach((b, i) => { if (b.getBoundingClientRect().top < innerHeight * .4) cur = i; }); links.forEach((a, i) => a.classList.toggle('on', i === cur)); };
+    addEventListener('scroll', mark, { passive: true }); mark();
+  }
   // ---------- boot ----------
   function all() { drawTL(); drawMap(); drawRead(); drawHeat(); drawSleep(); }
   let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(all, 120); });
