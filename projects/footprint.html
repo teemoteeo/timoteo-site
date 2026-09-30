@@ -102,6 +102,7 @@ html{scroll-behavior:smooth}
 /* inference ledger: full-width rows */
 .led{border-top:1px solid var(--border2)}
 .led-row{display:grid;grid-template-columns:44px minmax(0,1.05fr) minmax(0,1.35fr) 190px;gap:22px;padding:20px 0;border-bottom:1px solid var(--border);align-items:start}
+.led-row:last-child{border-bottom:none}
 .led-row:hover{background:linear-gradient(90deg,transparent,rgba(255,255,255,.015),transparent)}
 .led-n{font-size:11px;color:var(--teal);padding-top:3px}
 .led-t{display:block;font-size:9.5px;letter-spacing:1.8px;text-transform:uppercase;color:var(--fg-muted);margin-bottom:6px}
