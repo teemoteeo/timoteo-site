@@ -1,6 +1,7 @@
 /* PROJECT LIST */
 .proj-list { display: flex; flex-direction: column; gap: 26px; }
-.pl-group + .pl-group { border-top: 1px solid var(--border); padding-top: 22px; }
+/* a line running on from each group's label: ~/CLIENT WORK ──────── */
+.pl-head::after { content: ''; flex: 1 1 24px; height: 1px; background: var(--border); align-self: center; }
 .pl-head {
   display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px;
   padding: 0 12px 8px;
