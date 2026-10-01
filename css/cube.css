@@ -156,3 +156,10 @@
   #rubik-close { top: 16px; right: 18px; }
   #rubik-title { margin-bottom: 22px; }
 }
+
+/* medium desktop: cube above its button, a bit smaller, so the right
+   column never gets wider than the window */
+@media (min-width: 901px) and (max-width: 1279px) {
+  .sidebar-cube-stack { flex-direction: column; gap: 10px; }
+  #sb-cube-canvas, .cube-ph { width: 140px; height: 140px; }
+}

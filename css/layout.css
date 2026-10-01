@@ -264,6 +264,17 @@
 }
 
 /* ===== RESPONSIVE ===== */
+/* Medium desktop (901-1279px): sidebar + two content columns stay, but
+   everything that had a fixed width (nowrap tagline, cube beside its
+   button, wide paddings) used to push the page wider than the window. */
+@media (min-width: 901px) and (max-width: 1279px) {
+  .sidebar { width: 260px; min-width: 260px; padding: 32px 20px 32px 24px; }
+  .main-content { padding: 32px 32px; }
+  .sections-body { gap: 32px; }
+  .tagline { font-size: clamp(24px, 2.5vw, 31px); white-space: normal; max-width: none; }
+  .tagline-subtitle { font-size: 12.5px; letter-spacing: 0.5px; white-space: normal; }
+}
+
 /*
   Sotto 900px il layout desktop (sidebar + main) viene APPIATTITO: i wrapper
   diventano display:contents, quindi ogni blocco diventa figlio diretto della
@@ -362,6 +373,7 @@
   .sections-header-col.display-header { order: 11; grid-column: 1 / -1; }
   .display-section { order: 12; grid-column: 1 / -1; }
   .tech-grid-section { order: 13; grid-column: 1 / -1; margin-top: 4px; }
+  .other-section { order: 13; grid-column: 1 / -1; }
   .mobile-photo { order: 14; grid-column: 1 / -1; margin: 36px 0 28px; }
   .mobile-photo.is-ready { display: block; }
 

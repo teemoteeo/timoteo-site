@@ -68,7 +68,7 @@
 }
 .pl-ms-rows { min-width: 0; padding-left: 4px; }
 .pl-ms-rows .pl-row:last-child { border-bottom: none; }
-@media (max-width: 900px) {
+@media (max-width: 1099px) {
   .pl-row { grid-template-columns: 1fr; gap: 6px; padding: 14px 12px; }
   .pl-meta { flex-direction: row; flex-wrap: wrap; column-gap: 12px; justify-content: space-between; align-items: baseline; }
 }
