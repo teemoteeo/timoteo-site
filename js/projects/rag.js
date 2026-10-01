@@ -158,8 +158,8 @@
   // ---- timeline ----
   let run, T = 0, last = 0, P = null, runIdx = 0, pick = -1;
   // after a question ends, wait HOLD ms before the next one.
-  // one flag freezes both the animation and that countdown: the pause
-  // button toggles it, clicking a result or a source sets it
+  // one flag freezes both the animation and that countdown: only the
+  // pause button toggles it
   const HOLD = 15000;
   let wait = 0, paused = false;
   function phases(r) {
@@ -291,12 +291,10 @@
   }
   pb.onclick = () => setPaused(!paused);
   $('viz-skip').onclick = () => load((runIdx + 1) % D.runs.length);
-  // clicking a result or a source shows the full answer and pauses
-  const hold = () => { if (T < P.ans) T = P.ans; setPaused(true); };
+  // clicking a result or a source only changes what is shown:
+  // the animation and the next-question countdown keep running
   const autoEl = $('viz-auto');
   autoEl.onclick = () => load((runIdx + 1) % D.runs.length);
-  listEl.addEventListener('click', hold);
-  tabsEl.addEventListener('click', hold);
   load(0);
   requestAnimationFrame(frame);
 })();
