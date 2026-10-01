@@ -62,8 +62,7 @@
 }
 .pl-ms-l {
   writing-mode: vertical-rl; transform: rotate(180deg);
-  justify-self: center; align-self: start;
-  padding: 12px 0 0;
+  justify-self: center; align-self: center;
   font-size: 9px; letter-spacing: 2px; text-transform: uppercase; white-space: nowrap;
   color: var(--fg-muted);
 }
@@ -295,3 +294,6 @@
   .display-content { text-align: left; }
   .display-content a.email-link { overflow-wrap: anywhere; }
 }
+
+/* "other" sits under the tech stack */
+.other-section { margin-top: 32px; }
