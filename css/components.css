@@ -48,13 +48,24 @@
 .pl-tags .pl-flag { color: var(--yellow); }
 .pl-meta { display: flex; flex-direction: column; gap: 3px; }
 .pl-year { font-size: 10px; color: var(--fg-muted); white-space: nowrap; }
-/* 42 projects grouped by milestone: a quiet label, no lines or boxes */
+/* 42 projects grouped by milestone: a vertical label beside the names */
 .pl-ms {
-  padding: 14px 12px 0;
-  font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
-  color: var(--fg-muted); opacity: .7;
+  display: grid; grid-template-columns: 12px minmax(0, 1fr);
+  border-bottom: 1px solid var(--border);
 }
-.pl-head + .pl-ms { padding-top: 2px; }
+.pl-ms:last-child { border-bottom: none; }
+.pl-ms-l {
+  writing-mode: vertical-rl; transform: rotate(180deg);
+  justify-self: end; align-self: start;
+  padding: 12px 0 6px;
+  font-size: 9px; letter-spacing: 2px; text-transform: uppercase; white-space: nowrap;
+  color: var(--fg-muted); opacity: .75;
+}
+.pl-ms-rows { min-width: 0; }
+.pl-ms-rows .pl-row:last-child { border-bottom: none; }
+/* the label takes the rows' left padding, so names stay aligned with the other groups */
+.pl-ms-rows .pl-row { padding-left: 0; }
+.pl-ms-rows .pl-row::before { left: -12px; }
 @media (max-width: 900px) {
   .pl-row { grid-template-columns: 1fr; gap: 6px; padding: 14px 12px; }
   .pl-meta { flex-direction: row; justify-content: space-between; align-items: baseline; }
