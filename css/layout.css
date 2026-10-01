@@ -116,6 +116,7 @@
 /* ===== MAIN CONTENT ===== */
 .main-content {
   flex: 1;
+  min-width: 0;  /* senza, il contenuto spingeva la pagina oltre la finestra fino a ~1000px */
   padding: 36px 60px;
   display: flex;
   flex-direction: column;
@@ -289,6 +290,9 @@
   .container.visible {
     display: grid;
     grid-template-columns: minmax(0, 42%) minmax(0, 1fr);
+    /* la foto 3:4 occupa righe 1-2: l'altezza in piu' va alla riga 2,
+       cosi' i contatti restano attaccati al claim invece di staccarsene */
+    grid-template-rows: auto 1fr;
     align-items: start;
     column-gap: 18px;
     padding: 22px 20px 56px;
@@ -311,11 +315,13 @@
   /* La foto occupa la colonna 1 su due righe: accanto ci stanno il claim
      (riga 1) e i contatti (riga 2), cosi' i contatti partono subito sotto
      "Applying Skills" invece di finire sotto la foto. */
+  /* proporzione fissa 3:4: prima la cornice si stirava sull'altezza della
+     riga accanto e cambiava forma a ogni larghezza della finestra */
   .profile-pic-container {
     order: 1; grid-column: 1; grid-row: 1 / span 2;
-    align-self: stretch;
+    align-self: start;
     width: 100%; max-width: 280px;
-    aspect-ratio: auto; min-height: 210px;
+    aspect-ratio: 3 / 4;
     margin: 0;
   }
   .profile-pic { object-position: center 25%; }

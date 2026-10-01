@@ -297,3 +297,7 @@
 
 /* "other" sits under the tech stack */
 .other-section { margin-top: 32px; }
+
+/* l'indirizzo email è una parola sola: tra 901 e 950px sforava la colonna */
+.display-content { min-width: 0; }
+.display-content a.email-link { overflow-wrap: anywhere; }
