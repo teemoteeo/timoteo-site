@@ -48,27 +48,30 @@
 .pl-tags .pl-flag { color: var(--yellow); }
 .pl-meta { display: flex; flex-direction: column; gap: 3px; }
 .pl-year { font-size: 10px; color: var(--fg-muted); white-space: nowrap; }
-/* 42 projects grouped by milestone: a vertical label beside the names */
+/* 42 projects grouped by milestone: vertical label + a thin rule that
+   spans every project of that milestone, like a bracket */
 .pl-ms {
-  display: grid; grid-template-columns: 12px minmax(0, 1fr);
+  position: relative;
+  display: grid; grid-template-columns: 16px minmax(0, 1fr);
   border-bottom: 1px solid var(--border);
 }
 .pl-ms:last-child { border-bottom: none; }
+.pl-ms::before {
+  content: ''; position: absolute; left: 16px; top: 12px; bottom: 12px;
+  width: 1px; background: var(--border2);
+}
 .pl-ms-l {
   writing-mode: vertical-rl; transform: rotate(180deg);
-  justify-self: end; align-self: start;
-  padding: 12px 0 6px;
+  justify-self: center; align-self: start;
+  padding: 12px 0 0;
   font-size: 9px; letter-spacing: 2px; text-transform: uppercase; white-space: nowrap;
-  color: var(--fg-muted); opacity: .75;
+  color: var(--fg-muted);
 }
-.pl-ms-rows { min-width: 0; }
+.pl-ms-rows { min-width: 0; padding-left: 4px; }
 .pl-ms-rows .pl-row:last-child { border-bottom: none; }
-/* the label takes the rows' left padding, so names stay aligned with the other groups */
-.pl-ms-rows .pl-row { padding-left: 0; }
-.pl-ms-rows .pl-row::before { left: -12px; }
 @media (max-width: 900px) {
   .pl-row { grid-template-columns: 1fr; gap: 6px; padding: 14px 12px; }
-  .pl-meta { flex-direction: row; justify-content: space-between; align-items: baseline; }
+  .pl-meta { flex-direction: row; flex-wrap: wrap; column-gap: 12px; justify-content: space-between; align-items: baseline; }
 }
 
 /* DISPLAY SECTION */
