@@ -400,6 +400,21 @@
   }
 }
 
+/* Telefono: la foto quadrata e' piu' bassa di claim + contatti, e la colonna
+   sinistra restava vuota per ~120px. Qui la foto sta accanto al solo claim
+   e i contatti passano su una riga intera sotto. */
+@media (max-width: 600px) {
+  .container, .container.visible { grid-template-rows: auto auto; }
+  .profile-pic-container { grid-row: 1; }
+  .hero-copy-shell { grid-row: 1; align-self: center; }
+  .sidebar-contacts {
+    grid-column: 1 / -1; grid-row: 2;
+    display: flex; flex-direction: row; flex-wrap: wrap; gap: 0 18px;
+    margin: 16px 0 0;
+  }
+  .sidebar-contacts a { min-height: 36px; }
+}
+
 @media (max-width: 380px) {
   .container, .container.visible { column-gap: 14px; padding: 18px 16px 48px; }
   /* a 320px "instagram" andava a capo nella sotto-colonna */
