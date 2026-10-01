@@ -315,9 +315,8 @@
   /* La foto occupa la colonna 1 su due righe: accanto ci stanno il claim
      (riga 1) e i contatti (riga 2), cosi' i contatti partono subito sotto
      "Applying Skills" invece di finire sotto la foto. */
-  /* proporzione fissa: 1:1 qui (finestra desktop stretta, tablet), 3:4 sui
-     telefoni (sotto). Prima la cornice si stirava sull'altezza della riga
-     accanto e cambiava forma a ogni larghezza della finestra */
+  /* sempre 1:1, come su desktop: prima la cornice si stirava sull'altezza
+     della riga accanto e cambiava forma a ogni larghezza della finestra */
   .profile-pic-container {
     order: 1; grid-column: 1; grid-row: 1 / span 2;
     align-self: start;
@@ -399,10 +398,6 @@
     font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
     color: var(--fg-muted);
   }
-}
-
-@media (max-width: 600px) {
-  .profile-pic-container { aspect-ratio: 3 / 4; }
 }
 
 @media (max-width: 380px) {
