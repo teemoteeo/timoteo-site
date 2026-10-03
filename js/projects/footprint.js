@@ -356,7 +356,6 @@
       <div class="ad-split"><table class="ad-t">${S.cats.map((c, i) => `<tr data-i="${i}"><td><i style="background:${acol(c, i)}"></i>${c.c}</td>
         <td class="n">${c.n}</td><td class="n">${pct(c.n / S.n)}</td></tr>`).join('')}</table><div class="ad-det" id="ad-det"></div></div>`;
     // pick a segment of the bar: it and its row light up, the panel lists who paid for those ads
-    let adSel = 0;
     function adShow(i) {
       const c = S.cats[i];
       $('ad-cats').classList.add('pick');
@@ -365,13 +364,11 @@
         <div class="ad-chips">${c.adv.map(([a, k]) => `<span${k >= 4 ? ' class="big2"' : ''}>${esc(nm(a))}<b>${k}</b></span>`).join('')}</div>
         ${c.hidden ? `<p>+ ${c.hidden} ads from private accounts or services I'm not naming here</p>` : ''}`;
     }
-    // only the bar drives the panel; the table rows just light up along with it
-    const stack = $('ad-cats').querySelector('.ad-stack');
-    stack.querySelectorAll('button').forEach(el => {
-      el.addEventListener('click', () => adShow(adSel = +el.dataset.i));
+    // only the bar drives the panel; the last segment hovered or clicked stays selected
+    $('ad-cats').querySelectorAll('.ad-stack button').forEach(el => {
+      el.addEventListener('click', () => adShow(+el.dataset.i));
       el.addEventListener('mouseenter', () => adShow(+el.dataset.i));
     });
-    stack.addEventListener('mouseleave', () => adShow(adSel));
     adShow(0);
     const cn = k => S.cats.find(c => c.c === k).n;
     $('ad-read').innerHTML = `Read without knowing me, that's someone who works with software and AI (<strong>${cn('AI & software')}</strong> ads), is weighing a master, a bootcamp or a new job (<strong>${cn('career & study')}</strong>), has some savings to put somewhere (<strong>${cn('money & investing')}</strong>), spends on clothes and watches (<strong>${cn('fashion, watches & luxury')}</strong>) and travels. Only <strong>${pct(cn('everything else') / S.n)}</strong> of the ads fell outside those groups. I never filled in a form saying any of this: it was all inferred from what I do.`;
