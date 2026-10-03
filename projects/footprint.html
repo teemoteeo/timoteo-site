@@ -120,18 +120,56 @@ html{scroll-behavior:smooth}
 .rd::selection{background:var(--fg);color:transparent}
 
 /* meta's view */
-.ma{display:grid;grid-template-columns:minmax(0,1fr);gap:26px;margin-top:26px}
-.ma-adv{font-size:12.5px;line-height:2.1;color:var(--fg-dim);overflow-wrap:anywhere}
-.ma-adv i{font-style:normal;color:var(--fg-muted);margin:0 7px}
-.ma-adv span{white-space:nowrap}
-.ma-adv .hot{color:var(--fg)}
-.ma-adv .more{color:var(--teal)}
-.ma-cat{list-style:none;columns:3;column-gap:28px;font-size:12px;line-height:1.95;color:var(--fg-dim)}
-.ma-cat li{break-inside:avoid}
-@media(max-width:1100px){.ma-cat{columns:2}}
-.ma-cat li::before{content:'▸ ';color:var(--fg-muted)}
+.cl-az{display:flex;gap:1px;padding:8px 14px 0;overflow-x:auto;scrollbar-width:none}
+.cl-az::-webkit-scrollbar{display:none}
+.cl-az button{flex:1 0 auto;min-width:20px;font:inherit;font-size:10.5px;color:var(--fg-dim);background:none;border:0;border-radius:2px;padding:3px 4px;cursor:pointer}
+.cl-az button:hover{color:var(--fg);background:var(--surface)}
+.cl-az button.on{color:var(--bg);background:var(--teal)}
+.cl-az button:disabled{color:var(--border2);cursor:default;background:none}
+.cl-box{position:relative;overflow-x:auto;overflow-y:hidden;padding:10px 14px 12px;scrollbar-width:thin;overscroll-behavior-x:contain;
+  -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 60px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 60px),transparent)}
+.cl-box.end{-webkit-mask-image:none;mask-image:none}
+.cl{list-style:none;display:grid;grid-template-rows:repeat(8,auto);grid-auto-flow:column;grid-auto-columns:200px;column-gap:22px;font-size:11.5px;line-height:1.9;color:var(--fg-dim)}
+.cl li{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cl li.hot{color:var(--fg)}
+.cl li.s{color:var(--teal)}
+.cl-q{font:inherit;font-size:11px;width:150px;color:var(--fg);background:var(--bg);border:1px solid var(--border2);border-radius:2px;padding:3px 7px;outline:none}
+.cl-q:focus{border-color:var(--teal)}
+@media(max-width:760px){.cl{grid-auto-columns:150px;column-gap:16px}.cl-q{width:100px}}
+.ma-h{margin:44px 0 14px;font-size:10px;font-weight:400;letter-spacing:2px;text-transform:uppercase;color:var(--teal)}
+.ad-stack{display:flex;height:26px;margin:16px 14px 4px;gap:2px}
+.ad-stack button{display:block;height:100%;border:0;padding:0;cursor:pointer;font:inherit;font-size:10px;color:#0e0d10;overflow:hidden;white-space:nowrap;transition:opacity .15s,transform .15s}
+.ad-stack button:first-child{border-radius:2px 0 0 2px}.ad-stack button:last-child{border-radius:0 2px 2px 0}
+.ad-cats.pick .ad-stack button:not(.on){opacity:.3}
+.ad-stack button.on{transform:scaleY(1.18)}
+.ad-split{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:0 22px;padding:8px 14px 12px}
+.ad-t{width:100%;border-collapse:collapse;font-size:11.5px;align-self:start}
+.ad-t tr{cursor:pointer}
+.ad-t td{padding:7px 8px 7px 0;border-bottom:1px solid var(--border);color:var(--fg-dim);white-space:nowrap;transition:color .15s}
+.ad-t tr:last-child td{border-bottom:0}
+.ad-t tr:hover td,.ad-t tr.on td{color:var(--fg)}
+.ad-t tr.on td:first-child{box-shadow:inset 2px 0 0 var(--teal)}
+.ad-t td:first-child{padding-left:8px}
+.ad-t td i{display:inline-block;width:8px;height:8px;border-radius:1px;margin-right:9px}
+.ad-t .n{text-align:right;width:40px}
+/* the panel takes the table's height and scrolls inside, so the box never resizes */
+.ad-det{border-left:1px solid var(--border);padding:4px 0 0 22px;min-width:0;contain:size;display:flex;flex-direction:column}
+.ad-det h4{font-weight:400;font-size:12.5px;color:var(--fg);margin-bottom:12px}
+.ad-det h4 span{color:var(--fg-muted);font-size:11px;margin-left:8px}
+.ad-chips{display:flex;flex-wrap:wrap;align-content:flex-start;gap:5px;flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin}
+.ad-chips span{font-size:11px;color:var(--fg-dim);border:1px solid var(--border);border-radius:2px;padding:2px 7px;white-space:nowrap}
+.ad-chips b{font-weight:400;color:var(--fg-muted);margin-left:6px}
+.ad-chips .big2{color:var(--fg);border-color:var(--border2)}
+.ad-det p{margin-top:10px;font-size:10.5px;color:var(--fg-muted)}
+.ad-hours{display:grid;grid-template-columns:repeat(24,1fr);gap:3px;align-items:end;height:130px;padding:14px 14px 0}
+.ad-hours i{display:block;background:var(--border2);border-radius:1px 1px 0 0;min-height:1px}
+.ad-hours i.on{background:var(--teal)}
+.ad-hours-x{display:grid;grid-template-columns:repeat(24,1fr);gap:3px;padding:6px 14px 10px;font-size:9.5px;color:var(--fg-muted)}
 .facts{border-top:1px solid var(--border2);margin-top:28px}
 .facts div{display:grid;grid-template-columns:220px 1fr;gap:22px;padding:14px 0;border-bottom:1px solid var(--border);font-size:12px;line-height:1.8;color:var(--fg-dim)}
+.facts.two{display:grid;grid-template-columns:1fr 1fr;column-gap:32px;border-top:0}
+.facts.two div:nth-last-child(-n+2){border-bottom:0}
+.facts.two div{grid-template-columns:1fr;gap:4px;align-content:start}
 .facts div>span:first-child{color:var(--fg);font-size:10px;letter-spacing:1.6px;text-transform:uppercase;padding-top:2px}
 .facts div.warn>span:first-child{color:var(--yellow)}
 .facts b{color:var(--fg);font-weight:500}
@@ -170,10 +208,11 @@ html{scroll-behavior:smooth}
   .led-row{grid-template-columns:32px minmax(0,1fr);gap:8px 14px}
   .led-ev,.led-meta{grid-column:2;padding-top:0}
   .led-meta{flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:6px 14px;text-align:left}
-  .ma{grid-template-columns:minmax(0,1fr);gap:22px}
-  .ma-cat{columns:1}
-  .ma>div{min-width:0}
   .facts div{grid-template-columns:1fr;gap:4px}
+  .facts.two{grid-template-columns:1fr}
+  .facts.two div:nth-last-child(2){border-bottom:1px solid var(--border)}
+  .ad-split{grid-template-columns:minmax(0,1fr)}
+  .ad-det{border-left:0;border-top:1px solid var(--border);padding:14px 0 0;margin-top:6px;contain:none;height:240px}
 }
 @media(max-width:760px){
   .pj-lead{font-size:14px}
@@ -208,7 +247,7 @@ html{scroll-behavior:smooth}
     <a href="#c04" title="Other People's Data">04</a>
     <a href="#c05" title="When I'm Awake">05</a>
     <a href="#c06" title="Did I Choose This?">06</a>
-    <a href="#c07" title="Where the Data Lies">07</a>
+    <a href="#c07" title="Even Data Lies">07</a>
     <a href="#c08" title="The Right I Wrote About">08</a>
     <a href="#c09" title="Considerations">09</a>
     <span class="fp-bar-t" id="fp-bar-t"></span>
@@ -241,7 +280,7 @@ html{scroll-behavior:smooth}
         <li><a href="#c04"><span class="n">04</span><span class="t">Other People's Data</span><span class="s">Cambridge Analytica, at home</span></a></li>
         <li><a href="#c05"><span class="n">05</span><span class="t">When I'm Awake</span><span class="s">daily rhythm and sleep</span></a></li>
         <li><a href="#c06"><span class="n">06</span><span class="t">Did I Choose This?</span><span class="s">me or the feed</span></a></li>
-        <li><a href="#c07"><span class="n">07</span><span class="t">Where the Data Lies</span><span class="s">errors a naive reading would make</span></a></li>
+        <li><a href="#c07"><span class="n">07</span><span class="t">Even Data Lies</span><span class="s">errors a naive reading would make</span></a></li>
         <li><a href="#c08"><span class="n">08</span><span class="t">The Right I Wrote About</span><span class="s">the GDPR in practice</span></a></li>
         <li><a href="#c09"><span class="n">09</span><span class="t">Considerations</span><span class="s">what's left</span></a></li>
       </ol>
@@ -281,19 +320,39 @@ html{scroll-behavior:smooth}
         <p>If you're not paying for it, you're not the customer, you are the product being sold.</p>
         <cite>— quoted in my essay, Milan, 2023</cite>
       </blockquote>
-      <p class="fp-text" style="margin-top:22px">I quoted that line in 2023. The Instagram export shows what it looks like from the inside. Meta doesn't only keep my activity. It also keeps the list of companies it has sold me to, and the labels it used to do it.</p>
+      <p class="fp-text" style="margin-top:22px">I quoted that line in 2023. The Instagram export shows what it looks like from the inside, in two parts. The first is <strong>the list</strong>: every company that holds me in an audience. The second is <strong>the feed</strong>: every ad it actually put in front of me during the last week before the export. Reading them side by side shows what I'm being sold as, and how little of the reasoning I get to see.</p>
       <div class="fp-stats" id="ma-stats" style="margin-top:6px"></div>
-      <div class="ma">
-        <div><span class="fp-h">some of the advertisers holding me in an audience</span><div class="ma-adv" id="ma-adv"></div></div>
-        <div><span class="fp-h">the labels Meta sells me under</span><ul class="ma-cat" id="ma-cat"></ul></div>
+
+      <h3 class="ma-h">the list</h3>
+      <p class="fp-text"><strong id="ma-lists">902</strong> companies uploaded a file of their own (emails, phone numbers, past customers) and my profile matched a line in it. To them I'm not just an audience, I'm a line in their own files. Below is every one of them, as Meta lists it. The other <span id="ma-act">2,425</span> built an audience out of people who visited their site, used their app or interacted with them on Instagram.</p>
+      <div class="viz">
+        <div class="viz-bar"><span class="viz-label">audience list</span><span class="grow"></span><input class="cl-q" id="cl-q" type="search" placeholder="filter" aria-label="filter the list"></div>
+        <div class="cl-az" id="cl-az" aria-label="jump to letter"></div>
+        <div class="cl-box" id="cl-box"><ul class="cl" id="cl"></ul></div>
+        <div class="viz-foot" id="cl-foot"></div>
       </div>
+
+      <h3 class="ma-h">the feed</h3>
+      <p class="fp-text" id="ma-feed"></p>
+      <div class="viz">
+        <div class="viz-bar"><span class="viz-label">what they sold me · one week of instagram ads</span></div>
+        <div class="ad-cats" id="ad-cats"></div>
+        <div class="viz-foot"><span>grouped by advertiser and caption · click a category to see who paid</span></div>
+      </div>
+      <p class="fp-text" style="margin-top:22px" id="ad-read"></p>
+      <div class="viz">
+        <div class="viz-bar"><span class="viz-label">when the ads arrive · hour of day</span></div>
+        <div class="ad-hours" id="ad-hours"></div>
+        <div class="viz-foot" id="ad-hours-foot"></div>
+      </div>
+
       <div class="facts">
         <div><span>they got some right</span><span>Prada in four regional accounts, Dior, Chanel and Zegna had me on their lists. I've modelled for Prada and Zegna. Whether that's why I'm on their lists, the export doesn't say. "Frequent travelers", "food and restaurants" (I was a waiter for years), "friends of recently moved".</span></div>
-        <div><span>and some wrong</span><span>Meta still says my profile is based in <b id="ma-based">Udine</b>. I moved away in 2021. Being wrong doesn't make the profile harmless: I'm still sold under those labels.</span></div>
+        <div><span>and some wrong</span><span>Meta still says my profile is based in <b id="ma-based">Udine</b>. I moved away in 2021. Being wrong doesn't make the profile harmless: I'm still sold on that profile.</span></div>
         <div class="warn"><span>consent</span><span>My consent for "processing by advertising partners" dates back to <b id="ma-consent">April 2018</b>, five weeks before the GDPR came into force. The banners of that spring were designed to be clicked through, which was one of the essay's complaints.</span></div>
         <div class="warn"><span>the price of not being the product</span><span>Since late 2023 Meta has offered EU users a paid subscription with no ads. In the export its status is <b>not active</b>. I still don't pay for it, so the quote still applies to me.</span></div>
       </div>
-      <p class="viz-note">Source: <code>ads_information/</code> in the Instagram export. Ads and videos per day are measured over the only week Meta includes. Advertisers shown are a sample of recognisable brands out of the full list.</p>
+      <p class="viz-note">Source: <code>ads_information/</code> in the Instagram export. Ads and videos are measured over the only week Meta includes (11–18 September 2026). Ads are grouped by keyword rules on the advertiser's name and caption; examples are brands only, never private accounts. Advertisers in the list are a sample of recognisable brands out of the full list.</p>
     </section>
 
     <!-- 04 OTHERS -->
@@ -351,7 +410,7 @@ html{scroll-behavior:smooth}
 
     <!-- 07 LIES -->
     <section class="pj-sec fp-ch" id="c07">
-      <h2><span class="num">07</span><span class="tt">Where the Data Lies</span><span class="sub">errors a naive reading would make</span></h2>
+      <h2><span class="num">07</span><span class="tt">Even Data Lies</span><span class="sub">errors a naive reading would make</span></h2>
       <p class="fp-text">A profile doesn't have to be true to be used. These are the places where the data would have fooled me if I hadn't lived it.</p>
       <div class="facts" style="margin-top:0">
         <div class="warn"><span>my attention span didn't collapse</span><span>Spotify's skip rate jumps from 0% to 58% between 2021 and 2023. My listening didn't change, the field did: before 2022 the export doesn't record skips at all. A naive analysis would have written a story about TikTok.</span></div>
@@ -364,22 +423,18 @@ html{scroll-behavior:smooth}
     <!-- 08 GDPR -->
     <section class="pj-sec fp-ch" id="c08">
       <h2><span class="num">08</span><span class="tt">The Right I Wrote About</span><span class="sub">the GDPR in practice</span></h2>
-      <p class="fp-text">In 2023 I listed the rights the GDPR introduced. This project exists because of two of them. It also shows where they fall short.</p>
-      <div class="facts" style="margin-top:0">
-        <div><span>art. 15 · access</span><span>Anyone can ask any company what it holds about them. It worked: three requests, three exports, gigabytes in total. No lawyer needed.</span></div>
-        <div><span>art. 20 · portability</span><span>The law asks for a "structured, commonly used and machine-readable format". In practice I got JSON, CSV, HTML pages and an mbox. Instagram's JSON even garbles Italian accents (<b>più</b> becomes <b>piÃ¹</b>). Machine-readable, but only with some work.</span></div>
-        <div><span>what the export doesn't say</span><span>I got back the <em>inputs</em>: what I did. In my exports, only Meta's included any of the <em>outputs</em>, meaning the labels and audiences, and only a small part of them. What they're actually used for stays on their side, and that was the essay's point about accountability.</span></div>
-        <div><span>fines as a cost of doing business</span><span>In 2023 Meta was fined €1.2 billion over transfers of EU data to the US. That's a lot of money, but a small share of its revenue. The fines are real; whether they change anything is less clear.</span></div>
+      <p class="fp-text">This project exists because of two rights the GDPR introduced, the ones I listed in 2023. It also shows where they fall short.</p>
+      <div class="facts two" style="margin-top:0">
+        <div><span>art. 15 · access</span><span>Anyone can ask any company what it holds on them. Three requests, three exports, gigabytes of data, no lawyer.</span></div>
+        <div><span>art. 20 · portability</span><span>"Machine-readable", says the law. I got JSON, CSV, HTML and an mbox, and Instagram's JSON turns <b>più</b> into <b>piÃ¹</b>. Readable, with some work.</span></div>
+        <div><span>what the export doesn't say</span><span>I got back the <em>inputs</em>: what I did. Only Meta included any <em>outputs</em>, the labels and audiences, and only a sliver. What they're used for stays on their side.</span></div>
+        <div><span>fines as a cost of doing business</span><span>Meta's €1.2 billion fine in 2023, over EU data sent to the US, is a small share of its revenue. The fines are real. Their effect is less clear.</span></div>
       </div>
       <div class="pipe"><span class="c"># how this page was built</span>
-<span class="c"># 1 · parse: each export has its own format</span>
-spotify/*.json  instagram/**  google takeout/**  →  <span class="t">timeline.csv</span>   <span class="c">605k rows: ts, source, type, actor, payload</span>
-<span class="c"># 2 · features: one row per month, behaviour only, no content</span>
-events per source · night share · weekend share · artist entropy · novelty · thread churn · dominant city
-<span class="c"># 3 · phases: changepoint detection on the standardised monthly features</span>
-→ breaks at <span class="t">2017-04 · 2019-04 · 2022-11</span>
-<span class="c"># 4 · public export: aggregates only, the file this page loads</span>
-gigabytes  →  <span class="t">81 KB</span>   <span class="c">+ 176 KB of country outlines for the map</span>
+<span class="t">1 parse   </span> spotify/*.json · instagram/** · takeout/**  →  timeline.csv, 605k rows
+<span class="t">2 features</span> one row per month, behaviour only: volume, night and weekend share, novelty, dominant city
+<span class="t">3 phases  </span> changepoint detection  →  breaks at 2017-04 · 2019-04 · 2022-11
+<span class="t">4 export  </span> gigabytes  →  97 KB of aggregates, the file this page loads <span class="c">(+ 172 KB of map outlines)</span>
 <span class="x">✕ no message text  ✕ no search queries  ✕ no names of other people  ✕ no location finer than 5 km, except one address, on purpose</span></div>
     </section>
 
@@ -400,9 +455,9 @@ gigabytes  →  <span class="t">81 KB</span>   <span class="c">+ 176 KB of count
   </main>
 
   <script src="../js/projects/common.js?v=20260929b"></script>
-  <script src="../js/projects/data/footprint.js?v=20260930a"></script>
+  <script src="../js/projects/data/footprint.js?v=20261003k"></script>
   <script src="../js/projects/data/footprint-map.js?v=20260929d"></script>
-  <script src="../js/projects/footprint.js?v=20260930d"></script>
+  <script src="../js/projects/footprint.js?v=20261003n"></script>
   <script>
   // chapter bar: shows after the index, highlights the chapter in view
   (function () {

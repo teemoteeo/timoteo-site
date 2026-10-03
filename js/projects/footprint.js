@@ -305,7 +305,7 @@
       ev: `Before I moved there, Paris only shows up as my city in <b>${fw}</b>, year after year. Those are the months of Paris Men's Fashion Week. (I was walking in it.)` },
     { t: 'relationship', c: 3, v: 'x', src: 'instagram dms · metadata only',
       claim: 'In 2025 one person became the centre of my messaging.',
-      ev: `One thread takes <b>${pct(soc('2025').top_share)}</b> of all my DMs that year. In 2024 no thread was above <b>${pct(soc('2024').top_share, 1)}</b>, and the circle that gets 80% of my messages shrank from <b>${soc('2024').circle80}</b> to <b>${soc('2025').circle80}</b>. It reads like a new relationship. It isn't: the thread is <b>"gooners club"</b>, a group chat. Metadata alone can't tell a partner from a group chat.` + spark },
+      ev: `One thread takes <b>${pct(soc('2025').top_share)}</b> of all my DMs that year. In 2024 no thread was above <b>${pct(soc('2024').top_share, 1)}</b>, and the circle that gets 80% of my messages shrank from <b>${soc('2024').circle80}</b> to <b>${soc('2025').circle80}</b>. It reads like a new relationship. It isn't: the thread is ${rd("", 12)}, a group chat. Metadata alone can't tell a partner from a group chat.` + spark },
     { t: 'phones', c: 5, v: 'ok', src: 'spotify · device string on every play',
       claim: phones.map(p => p.name.replace(' (model hidden by Spotify)', ' 16')).join(' → ') + '.',
       ev: `Every play logged the device model, so the upgrades are dated to the month. Also: a PlayStation 4 from ${mlabel(ps4.from)} to ${mlabel(ps4.to)}. Then, from ${mlabel((phones.find(p => /hidden/.test(p.name)) || {}).from || '2022-10')}, Spotify stopped writing the model and only says "ios". So the iPhone 16 at the end is the one fact on this page the data couldn't give: I had to supply it myself.` },
@@ -339,21 +339,88 @@
   // ---------- meta's own profile of me ----------
   const MA = D.meta_ads;
   if (MA) {
-    const TR = {
-      'Cambiamento recente di rete o dispositivo mobile': 'Recently changed network or device',
-      'Potenziale cambiamento di rete o dispositivo mobile': 'Likely to change network or device',
-      'Uso di reti Wi-Fi': 'Wi-Fi users',
-      'Utenti di reti o dispositivi mobili': 'Mobile network users',
-    };
+    const S = MA.shown, esc = t => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
     $('ma-stats').innerHTML = [
-      [fmt(MA.adv_total), 'advertisers that hold me in an audience'],
-      [fmt(MA.adv_lists), 'of them uploaded a customer list my profile matched'],
-      [MA.ads_per_day, 'ads a day, measured over the last week of the export'],
-      [MA.videos_per_day, 'videos a day in the same week'],
+      [fmt(MA.adv_total), 'advertisers hold me in an audience'],
+      [fmt(S.n), `ads shown to me in ${MA.ads_window_days} days, ${MA.ads_per_day} a day`],
+      [S.advertisers, 'different advertisers paid for them'],
+      ['1 / ' + Math.round(MA.videos_per_day / MA.ads_per_day), 'one ad for every this many videos I watched'],
     ].map(([b, t]) => `<div><b>${b}</b><span>${t}</span></div>`).join('');
-    $('ma-adv').innerHTML = MA.sample.map(a => `<span${/prada|dior|chanel|zegna/i.test(a) ? ' class="hot"' : ''}>${a}</span>`).join('<i>·</i>')
-      + `<i>·</i><span class="more">+ ${fmt(MA.adv_total - MA.sample.length)} more</span>`;
-    $('ma-cat').innerHTML = MA.categories.map(c => `<li>${TR[c] || c}</li>`).join('');
+    $('ma-lists').textContent = fmt(MA.adv_lists);
+
+    // the feed: what one week of ads was selling, and when
+    S.cats.sort((a, b) => (a.c === 'everything else') - (b.c === 'everything else'));  // the leftovers go last
+    const AC = [C.teal, C.yellow, C.blue, C.red, C.violet, C.green], acol = (c, i) => c.c === 'everything else' ? 'rgba(255,255,255,0.16)' : AC[i % AC.length];
+    const nm = a => a.normalize('NFKC').split(' | ')[0];
+    $('ad-cats').innerHTML = `<div class="ad-stack">${S.cats.map((c, i) => `<button type="button" data-i="${i}" aria-label="${c.c}: ${c.n} ads" style="flex:${c.n};background:${acol(c, i)}${c.c === 'everything else' ? ';color:var(--fg-dim)' : ''}">${pct(c.n / S.n)}</button>`).join('')}</div>
+      <div class="ad-split"><table class="ad-t">${S.cats.map((c, i) => `<tr data-i="${i}"><td><i style="background:${acol(c, i)}"></i>${c.c}</td>
+        <td class="n">${c.n}</td><td class="n">${pct(c.n / S.n)}</td></tr>`).join('')}</table><div class="ad-det" id="ad-det"></div></div>`;
+    // pick a category: bar segment and row light up, the panel lists who paid for those ads
+    let adSel = 0;
+    function adShow(i) {
+      const c = S.cats[i];
+      $('ad-cats').classList.add('pick');
+      $('ad-cats').querySelectorAll('[data-i]').forEach(el => el.classList.toggle('on', +el.dataset.i === i));
+      $('ad-det').innerHTML = `<h4>${c.c}<span>${c.n} ads · ${c.adv.length + (c.hidden ? '+' : '')} advertisers</span></h4>
+        <div class="ad-chips">${c.adv.map(([a, k]) => `<span${k >= 4 ? ' class="big2"' : ''}>${esc(nm(a))}<b>${k}</b></span>`).join('')}</div>
+        ${c.hidden ? `<p>+ ${c.hidden} ads from private accounts or services I'm not naming here</p>` : ''}`;
+    }
+    $('ad-cats').querySelectorAll('[data-i]').forEach(el => {
+      el.addEventListener('click', () => adShow(adSel = +el.dataset.i));
+      el.addEventListener('mouseenter', () => adShow(+el.dataset.i));
+    });
+    $('ad-cats').addEventListener('mouseleave', () => adShow(adSel));
+    adShow(0);
+    const cn = k => S.cats.find(c => c.c === k).n;
+    $('ad-read').innerHTML = `Read without knowing me, that's someone who works with software and AI (<strong>${cn('AI & software')}</strong> ads), is weighing a master, a bootcamp or a new job (<strong>${cn('career & study')}</strong>), has some savings to put somewhere (<strong>${cn('money & investing')}</strong>), spends on clothes and watches (<strong>${cn('fashion, watches & luxury')}</strong>) and travels. Only <strong>${pct(cn('everything else') / S.n)}</strong> of the ads fell outside those groups. I never filled in a form saying any of this: it was all inferred from what I do.`;
+    const H = [...Array(24).keys()].map(i => (i + 6) % 24), hMax = Math.max(...S.by_hour);
+    const late = h => h >= 22 || h < 2, lateN = H.filter(late).reduce((a, h) => a + S.by_hour[h], 0);
+    $('ad-hours').innerHTML = H.map(h => `<i class="${late(h) ? 'on' : ''}" title="${String(h).padStart(2, '0')}:00 · ${S.by_hour[h]} ads" style="height:${S.by_hour[h] / hMax * 100}%"></i>`).join('');
+    $('ad-hours').insertAdjacentHTML('afterend', `<div class="ad-hours-x">${H.map(h => `<span>${h % 6 ? '' : String(h).padStart(2, '0')}</span>`).join('')}</div>`);
+    $('ad-hours-foot').innerHTML = `<span>local time</span><span class="grow"></span><span><strong style="color:var(--teal)">${pct(lateN / S.n)}</strong> between 22:00 and 02:00</span>`;
+
+    const seen = new Set(S.clients);
+    $('cl').innerHTML = MA.clients.map(a => `<li class="${seen.has(a) ? 's' : /prada|dior|chanel|zegna/i.test(a) ? 'hot' : ''}" title="${esc(a)}">${esc(a)}</li>`).join('');
+    const cfoot = n => `<span>${fmt(n)} companies</span><span class="grow"></span><span style="color:var(--teal)">also showed me ads that week</span>`;
+    $('cl-foot').innerHTML = cfoot(MA.clients.length);
+    // browse: 8 rows that scroll sideways, an A–Z strip to jump, a filter
+    const box = $('cl-box'), items = [...$('cl').children];
+    const ltr = li => { const c = li.textContent[0].toUpperCase(); return c >= 'A' && c <= 'Z' ? c : '#'; };
+    const AZ = ['#', ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'];
+    $('cl-az').innerHTML = AZ.map(l => `<button type="button" data-l="${l}">${l}</button>`).join('');
+    const btns = [...$('cl-az').children];
+    const first = l => items.find(li => !li.hidden && ltr(li) === l);
+    let lock = null;  // after a jump, keep the clicked letter lit until the reader scrolls by hand
+    function mark() {
+      const top = items.find(li => !li.hidden && li.offsetLeft >= box.scrollLeft), cur = lock || (top && ltr(top));
+      btns.forEach(b => b.classList.toggle('on', b.dataset.l === cur));
+      box.classList.toggle('end', box.scrollLeft >= box.scrollWidth - box.clientWidth - 2);
+    }
+    btns.forEach(b => b.addEventListener('click', () => {
+      const li = first(b.dataset.l);
+      if (!li) return;
+      // long jumps: skip most of the way instantly, animate only the last screen
+      const to = li.offsetLeft - 14, w = box.clientWidth;
+      if (Math.abs(to - box.scrollLeft) > 2 * w) box.scrollLeft = to - Math.sign(to - box.scrollLeft) * w;
+      lock = b.dataset.l; box.scrollTo({ left: to, behavior: 'smooth' }); mark();
+    }));
+    // a vertical wheel scrolls the list sideways until it reaches an end, then the page takes over
+    box.addEventListener('wheel', e => {
+      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+      const max = box.scrollWidth - box.clientWidth;
+      if ((e.deltaY > 0 && box.scrollLeft < max - 1) || (e.deltaY < 0 && box.scrollLeft > 0)) { e.preventDefault(); box.scrollLeft += e.deltaY; }
+    }, { passive: false });
+    box.addEventListener('scroll', mark, { passive: true });
+    ['wheel', 'pointerdown', 'touchstart', 'keydown'].forEach(t => box.addEventListener(t, () => { lock = null; }, { passive: true }));
+    $('cl-q').addEventListener('input', e => {
+      const q = e.target.value.trim().toLowerCase(); let n = 0;
+      for (const li of items) { const on = li.textContent.toLowerCase().includes(q); li.hidden = !on; n += on; }
+      btns.forEach(b => { b.disabled = !first(b.dataset.l); });
+      lock = null; box.scrollLeft = 0; mark();
+      $('cl-foot').innerHTML = cfoot(n);
+    });
+    btns.forEach(b => { b.disabled = !first(b.dataset.l); }); mark();
+    $('ma-act').textContent = fmt(MA.adv_total - MA.adv_lists);
     const cd = new Date(MA.consent_date + 'T00:00:00Z');
     $('ma-consent').textContent = `${cd.getUTCDate()} ${MON[cd.getUTCMonth()]} ${cd.getUTCFullYear()}`;
     $('ma-based').textContent = MA.based_in;
@@ -364,7 +431,9 @@
   }
 
   // ---------- rhythm ----------
-  const heat = PJ.canvas($('rh-heat'), .42), sleepC = PJ.canvas($('rh-sleep'), w => (D.sleep.length * 16 + 26) / w);
+  // heatmap and sleep chart share one height, so the two halves line up; sleep rows stay at least 15px
+  const rhR = w => Math.max(.42, (D.sleep.length * 15 + 20) / w);
+  const heat = PJ.canvas($('rh-heat'), rhR), sleepC = PJ.canvas($('rh-sleep'), rhR);
   let phase = D.phases.length - 1;
   const DOW = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
   function drawHeat() {
@@ -384,19 +453,19 @@
     $('rh-title').textContent = `phase 0${phase + 1} · ${mlabel(p.start)} – ${mlabel(p.end)}`;
   }
   function drawSleep() {
-    const { w, h } = sleepC.fit(), ctx = sleepC.ctx, l = 36, rowH = 16, t = 2;
+    const { w, h } = sleepC.fit(), ctx = sleepC.ctx, l = 36, t = 4, b = 16, rowH = (h - t - b) / D.sleep.length;
     const cw = (w - l) / 24;
     ctx.clearRect(0, 0, w, h); ctx.font = '9.5px JetBrains Mono, monospace';
     D.sleep.forEach((s, i) => {
       const y0 = t + i * rowH, mx = Math.max(...s.hours);
-      ctx.fillStyle = C.muted; ctx.fillText(s.y, 0, y0 + 10);
+      ctx.fillStyle = C.muted; ctx.fillText(s.y, 0, y0 + rowH / 2 + 3);
       s.hours.forEach((v, hr) => {
         ctx.fillStyle = C.fg; ctx.globalAlpha = .05 + (v / mx) * .5;
-        ctx.fillRect(l + hr * cw, y0 + 2, cw - .5, rowH - 6);
+        ctx.fillRect(l + hr * cw + .5, y0 + 2, cw - 1, rowH - 4);
       });
       ctx.globalAlpha = 1; ctx.strokeStyle = C.teal; ctx.lineWidth = 1.5;
       const segs = s.start + 6 <= 24 ? [[s.start, 6]] : [[s.start, 24 - s.start], [0, s.start + 6 - 24]];
-      segs.forEach(([a, n]) => ctx.strokeRect(l + a * cw + .75, y0 + 1.25, n * cw - 1.5, rowH - 3.5));
+      segs.forEach(([a, n]) => ctx.strokeRect(l + a * cw + .75, y0 + 1.25, n * cw - 1.5, rowH - 2.5));
     });
     ctx.lineWidth = 1; ctx.fillStyle = C.muted;
     [0, 6, 12, 18].forEach(hr => ctx.fillText(String(hr).padStart(2, '0'), l + hr * cw, h - 3));
