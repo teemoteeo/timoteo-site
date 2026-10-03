@@ -120,12 +120,12 @@ html{scroll-behavior:smooth}
 .rd::selection{background:var(--fg);color:transparent}
 
 /* meta's view */
-.cl-az{display:flex;gap:1px;padding:8px 14px 0;overflow-x:auto;scrollbar-width:none}
+.cl-az{display:flex;gap:4px;padding:10px 14px 2px;overflow-x:auto;scrollbar-width:none}
 .cl-az::-webkit-scrollbar{display:none}
-.cl-az button{flex:1 0 auto;min-width:20px;font:inherit;font-size:10.5px;color:var(--fg-dim);background:none;border:0;border-radius:2px;padding:3px 4px;cursor:pointer}
-.cl-az button:hover{color:var(--fg);background:var(--surface)}
-.cl-az button.on{color:var(--bg);background:var(--teal)}
-.cl-az button:disabled{color:var(--border2);cursor:default;background:none}
+.cl-az button{flex:1 0 auto;min-width:26px;font:inherit;font-size:11px;color:var(--fg-dim);background:transparent;border:1px solid var(--border2);border-radius:2px;padding:4px 0;cursor:pointer;transition:color .15s,border-color .15s}
+.cl-az button:hover{color:var(--fg);border-color:var(--fg-muted)}
+.cl-az button.on{color:var(--bg);background:var(--teal);border-color:var(--teal)}
+.cl-az button:disabled{color:var(--border2);border-color:var(--border);cursor:default}
 .cl-box{position:relative;overflow-x:auto;overflow-y:hidden;padding:10px 14px 12px;scrollbar-width:thin;overscroll-behavior-x:contain;
   -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 60px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 60px),transparent)}
 .cl-box.end{-webkit-mask-image:none;mask-image:none}
@@ -135,7 +135,8 @@ html{scroll-behavior:smooth}
 .cl li.s{color:var(--teal)}
 .cl-q{font:inherit;font-size:11px;width:150px;color:var(--fg);background:var(--bg);border:1px solid var(--border2);border-radius:2px;padding:3px 7px;outline:none}
 .cl-q:focus{border-color:var(--teal)}
-@media(max-width:760px){.cl{grid-auto-columns:150px;column-gap:16px}.cl-q{width:100px}}
+@media(max-width:760px){.cl{grid-auto-columns:150px;column-gap:16px}.cl-q{width:100px}
+  .cl-az{display:grid;grid-template-columns:repeat(9,1fr)}.cl-az button{min-width:0}}
 .ma-h{margin:44px 0 14px;font-size:10px;font-weight:400;letter-spacing:2px;text-transform:uppercase;color:var(--teal)}
 .ad-stack{display:flex;height:26px;margin:16px 14px 4px;gap:2px}
 .ad-stack button{display:block;height:100%;border:0;padding:0;cursor:pointer;font:inherit;font-size:10px;color:#0e0d10;overflow:hidden;white-space:nowrap;transition:opacity .15s,transform .15s}
@@ -144,10 +145,9 @@ html{scroll-behavior:smooth}
 .ad-stack button.on{transform:scaleY(1.18)}
 .ad-split{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:0 22px;padding:8px 14px 12px}
 .ad-t{width:100%;border-collapse:collapse;font-size:11.5px;align-self:start}
-.ad-t tr{cursor:pointer}
 .ad-t td{padding:7px 8px 7px 0;border-bottom:1px solid var(--border);color:var(--fg-dim);white-space:nowrap;transition:color .15s}
 .ad-t tr:last-child td{border-bottom:0}
-.ad-t tr:hover td,.ad-t tr.on td{color:var(--fg)}
+.ad-t tr.on td{color:var(--fg)}
 .ad-t tr.on td:first-child{box-shadow:inset 2px 0 0 var(--teal)}
 .ad-t td:first-child{padding-left:8px}
 .ad-t td i{display:inline-block;width:8px;height:8px;border-radius:1px;margin-right:9px}
@@ -326,7 +326,7 @@ html{scroll-behavior:smooth}
       <h3 class="ma-h">the list</h3>
       <p class="fp-text"><strong id="ma-lists">902</strong> companies uploaded a file of their own (emails, phone numbers, past customers) and my profile matched a line in it. To them I'm not just an audience, I'm a line in their own files. Below is every one of them, as Meta lists it. The other <span id="ma-act">2,425</span> built an audience out of people who visited their site, used their app or interacted with them on Instagram.</p>
       <div class="viz">
-        <div class="viz-bar"><span class="viz-label">audience list</span><span class="grow"></span><input class="cl-q" id="cl-q" type="search" placeholder="filter" aria-label="filter the list"></div>
+        <div class="viz-bar"><span class="viz-label">companies that have me in their audience list</span><span class="grow"></span><input class="cl-q" id="cl-q" type="search" placeholder="filter" aria-label="filter the list"></div>
         <div class="cl-az" id="cl-az" aria-label="jump to letter"></div>
         <div class="cl-box" id="cl-box"><ul class="cl" id="cl"></ul></div>
         <div class="viz-foot" id="cl-foot"></div>
@@ -337,7 +337,7 @@ html{scroll-behavior:smooth}
       <div class="viz">
         <div class="viz-bar"><span class="viz-label">what they sold me · one week of instagram ads</span></div>
         <div class="ad-cats" id="ad-cats"></div>
-        <div class="viz-foot"><span>grouped by advertiser and caption · click a category to see who paid</span></div>
+        <div class="viz-foot"><span>grouped by advertiser and caption · click the bar to see who paid</span></div>
       </div>
       <p class="fp-text" style="margin-top:22px" id="ad-read"></p>
       <div class="viz">
