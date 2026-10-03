@@ -4,7 +4,6 @@
 // Every app window is a small scene that plays only while that app is in front.
 (function () {
   const $ = id => document.getElementById(id);
-  const MS_PER_MIN = 95;
   // [app, site, minutes, closed afterwards]; app null = away (idle pause). In the morning everything
   // stays open and you switch around; later, apps and tabs you won't need again get closed.
   const SCRIPT = [
@@ -24,6 +23,9 @@
     return s;
   });
   const TOTAL = t;
+  // The whole loop lasts 45 s: the day, idle stretches at 4× speed, then a 3 s hold before the next day.
+  const LOOP_MS = 45000, HOLD_MS = 3000, IDLE_SPEED = 4;
+  const MS_PER_MIN = (LOOP_MS - HOLD_MS) / day.reduce((m, s) => m + (s.end - s.start) / (s.app ? 1 : IDLE_SPEED), 0);
   const rules = {
     Claude: 'green', Terminal: 'green', Xcode: 'green', 'mail.google.com': 'green', 'agenziaentrate.gov.it': 'green',
     'instagram.com': 'red', 'youtube.com': 'red', 'netflix.com': 'red',
@@ -538,9 +540,9 @@
     const dt = last ? Math.min(ts - last, 100) : 0;
     last = ts;
     if (playing) {
-      // Idle stretches run four times faster: nothing happens on screen.
-      if (now < TOTAL) now = Math.min(TOTAL, now + dt / MS_PER_MIN * (idle ? 4 : 1));
-      else if ((hold += dt) > 4000) newDay();
+      // Idle stretches run faster: nothing happens on screen.
+      if (now < TOTAL) now = Math.min(TOTAL, now + dt / MS_PER_MIN * (idle ? IDLE_SPEED : 1));
+      else if ((hold += dt) > HOLD_MS) newDay();
       render();
       advance(apps[shown], dt);
     }

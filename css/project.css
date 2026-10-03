@@ -30,7 +30,8 @@ body { min-height: 100vh; }
   font-size: clamp(30px, 5vw, 44px); font-weight: 300; letter-spacing: -.5px;
   line-height: 1.1; color: var(--fg);
 }
-.pj-title::after { content: '█'; color: var(--teal); margin-left: 6px; animation: blink 1s step-end infinite; font-size: .7em; vertical-align: 2px; }
+/* a block as tall as the capitals, sitting on the baseline: the █ glyph hung below the letters */
+.pj-title::after { content: ''; display: inline-block; width: .42em; height: .7em; margin-left: 6px; background: var(--teal); animation: blink 1s step-end infinite; vertical-align: baseline; }
 .pj-lead {
   margin-top: 18px; max-width: none;
   font-size: 13.5px; line-height: 1.85; color: var(--fg-dim);

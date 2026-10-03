@@ -8,8 +8,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Doto:wght@800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/project.css?v=20260930n">
+  <link rel="stylesheet" href="../css/project.css?v=20261003a">
   <style>
+/* the menu bar switch next to the title, sized with the title text; click flips green/red */
+.pj-switch{position:relative;display:inline-block;box-sizing:content-box;width:1.28em;height:.64em;padding:0;margin-right:.3em;vertical-align:.06em;border:.04em solid rgba(255,255,255,.75);border-radius:.36em;background:#34c759;font-size:inherit;cursor:pointer;transition:background .32s}
+.pj-switch i{position:absolute;top:.06em;left:.42em;width:.8em;height:.52em;border-radius:.26em;background:linear-gradient(#f7f7f7,#dbdbdb);box-shadow:0 .02em .05em rgba(0,0,0,.35);transition:left .32s cubic-bezier(.25,1,.35,1)}
+.pj-switch.red{background:#ff3b30} .pj-switch.red i{left:.06em}
+.pj-switch:focus-visible{outline:2px solid var(--teal);outline-offset:3px}
 /* the demo: an approximated macOS desktop */
 .bz-screen{position:relative;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;background:radial-gradient(120% 90% at 85% 100%,#b4587a 0%,transparent 55%),radial-gradient(90% 80% at 0% 0%,#1f3f7a 0%,transparent 60%),linear-gradient(160deg,#18224a,#3b2a63 60%,#7a3d6c)}
 .bz-menubar{display:flex;align-items:center;gap:16px;height:28px;padding:0 14px;background:rgba(0,0,0,.28);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);font-size:12.5px;color:#fff}
@@ -282,7 +287,7 @@ b.green{color:var(--green);font-weight:500} b.red{color:var(--red);font-weight:5
 
     <header class="pj-head">
       <div class="pj-eyebrow">personal project · macos · swift</div>
-      <h1 class="pj-title"><img src="../icons/busy.png" alt="" style="height:.8em;width:auto;vertical-align:-.06em;margin-right:.28em">BUSY</h1>
+      <h1 class="pj-title"><button class="pj-switch green" id="pj-switch" type="button" aria-label="Switch: green" title="click me"><i></i></button>BUSY</h1>
       <p class="pj-lead">A macOS menu bar app that measures how much of your day goes to work (<strong>green</strong>) and how much to distractions (<strong>red</strong>). A switch in the menu bar shows the current state at a glance, and one click opens the recap of the day. No timers to start: it watches the app in front and the site open in the browser.</p>
       <div class="pj-tags"><span>swift</span><span>swiftui</span><span>appkit</span><span>sqlite</span><span>applescript</span><span>macos 14+</span></div>
     </header>
@@ -351,8 +356,13 @@ Quote the file and line for every finding. If you can't verify something from th
     </nav>
   </main>
 
-  <script src="../js/projects/busy.js?v=20261003h"></script>
+  <script src="../js/projects/busy.js?v=20261003i"></script>
   <script>
+    document.getElementById('pj-switch').onclick = e => {
+      const sw = e.currentTarget, red = sw.classList.toggle('red');
+      sw.classList.toggle('green', !red);
+      sw.setAttribute('aria-label', 'Switch: ' + (red ? 'red' : 'green'));
+    };
     document.getElementById('bz-copy').onclick = e => {
       navigator.clipboard.writeText(document.getElementById('bz-prompt-text').textContent)
         .then(() => { e.target.textContent = 'copied'; setTimeout(() => { e.target.textContent = 'copy prompt'; }, 1500); });
