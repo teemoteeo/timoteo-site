@@ -134,7 +134,7 @@
   gap: 12px;
   margin-bottom: 20px;
 }
-.sections-header-col.display-header { margin-bottom: 16px; }
+.sections-header-col.display-header { margin-bottom: 10px; }
 .sections-body {
   display: flex;
   gap: 48px;
@@ -228,19 +228,19 @@
 .ticker-wrapper {
   margin-bottom: 32px;
   overflow: hidden;
-  min-height: 18px;
+  min-height: 20px;
   display: flex;
   align-items: center;
   gap: 8px;
 }
-.ticker-prompt { color: var(--teal); font-size: 13px; flex-shrink: 0; }
+.ticker-prompt { color: var(--teal); font-size: 14.3px; flex-shrink: 0; }
 .interest-list {
   list-style: none;
   flex: 1;
   min-width: 0;
   overflow: hidden;
 }
-.interest-list li { display: none; font-size: 13px; color: var(--fg); }
+.interest-list li { display: none; font-size: 14.3px; color: var(--fg); }
 .interest-list li.active {
   display: block;
   white-space: nowrap;
