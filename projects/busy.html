@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BUSY — Timoteo Costantini Scala</title>
+  <meta name="description" content="personal project · macos · swift — project by Timoteo Costantini Scala.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Doto:wght@800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/project.css?v=20260930n">
+  <style>
+/* the demo: an approximated macOS desktop */
+.bz-screen{position:relative;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;background:radial-gradient(120% 90% at 85% 100%,#b4587a 0%,transparent 55%),radial-gradient(90% 80% at 0% 0%,#1f3f7a 0%,transparent 60%),linear-gradient(160deg,#18224a,#3b2a63 60%,#7a3d6c)}
+.bz-menubar{display:flex;align-items:center;gap:16px;height:28px;padding:0 14px;background:rgba(0,0,0,.28);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);font-size:12.5px;color:#fff}
+.bz-menubar .grow{flex:1}
+.bz-menubar span{color:rgba(255,255,255,.85)}
+.bz-menubar .apple{font-size:14px;color:#fff}
+.mb-icons{display:flex;align-items:center;gap:16px;color:#fff}
+.mb-icons svg{display:block}
+#bz-time{color:#fff;white-space:nowrap}
+.bz-switch{position:relative;width:32px;height:16px;border-radius:8px;border:1px solid rgba(255,255,255,.75);background:#8e8e93;transition:background .32s;flex-shrink:0}
+.bz-switch i{position:absolute;top:1px;left:5px;width:20px;height:12px;border-radius:6px;background:linear-gradient(#f7f7f7,#dbdbdb);box-shadow:0 .5px 1px rgba(0,0,0,.3);transition:left .32s cubic-bezier(.25,1,.35,1)}
+.bz-switch.green{background:#34c759} .bz-switch.green i{left:9px}
+.bz-switch.red{background:#ff3b30} .bz-switch.red i{left:1px}
+.bz-area{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px;padding:18px;align-items:start}
+.bz-desk{position:relative;height:460px;min-width:0;isolation:isolate}
+/* app windows: one per app, all open at once; the one in front is active, the others sit behind */
+.mb-menus{display:flex;gap:16px;overflow:hidden;white-space:nowrap}
+.bz-area{padding:18px 18px 84px}
+.mw{position:absolute;border-radius:12px;overflow:hidden;background:#1e1e20;border:1px solid rgba(255,255,255,.14);box-shadow:0 22px 60px rgba(0,0,0,.5);display:flex;flex-direction:column;color:#e8e8ea;font-size:12px;transition:filter .2s}
+.mw.launch{animation:mw-in .3s ease}
+@keyframes mw-in{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+.mw.bg{box-shadow:0 12px 30px rgba(0,0,0,.35)}
+.mw.bg .mw-bar{filter:saturate(0) brightness(.75)}
+.mw.bg .tl i{background:#55555a!important}
+.mw.bg .ptr{opacity:0!important}
+.w-Safari{left:0;top:16px;width:94%;height:calc(100% - 16px)}
+.w-Claude{left:7%;top:0;width:89%;height:93%}
+.w-Terminal{left:14%;top:34px;width:84%;height:calc(100% - 34px)}
+.w-Xcode{left:3%;top:6px;width:96%;height:calc(100% - 6px)}
+.mw-bar{height:40px;display:flex;align-items:center;gap:12px;padding:0 14px;background:#2b2b2e;border-bottom:1px solid rgba(0,0,0,.45);flex-shrink:0;color:#a9a9ae}
+.tl{display:flex;gap:7px;flex-shrink:0} .tl i{width:12px;height:12px;border-radius:50%;background:#ff5f57} .tl i:nth-child(2){background:#febc2e} .tl i:nth-child(3){background:#28c840}
+.mw-bar svg{display:block;flex-shrink:0}
+.mw-url{flex:1;max-width:380px;margin:0 auto;height:26px;border-radius:8px;background:rgba(255,255,255,.09);color:#ddd;font-size:12px;display:flex;align-items:center;justify-content:center;gap:6px}
+.mw-title{flex:1;text-align:center;color:#bdbdc2;font-size:12.5px;font-weight:600;transform:translateX(-30px)}
+.mw-body{flex:1;min-height:0;overflow:hidden;position:relative}
+.sf-tabs{display:flex;gap:1px;background:#202022;padding:4px 6px 0;flex-shrink:0;border-bottom:1px solid rgba(0,0,0,.45)}
+.sf-tabs span{flex:1;max-width:190px;min-width:0;display:flex;align-items:center;gap:6px;padding:5px 10px;border-radius:7px 7px 0 0;font-size:11px;color:#9a9aa0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;animation:mw-in .25s ease}
+.sf-tabs span i{width:12px;height:12px;border-radius:3px;flex-shrink:0;background:var(--c)}
+.sf-tabs span.on{background:#2b2b2e;color:#ececf0}
+.sf-page{position:absolute;inset:0}
+.sf-page[hidden]{display:none}
+.mono{font-family:ui-monospace,Menlo,monospace}
+/* project.css stretches every svg in a .viz-stage to full width: icons here keep their own size */
+.bz-screen svg{width:auto;height:auto}
+.bz-screen .ptr{position:absolute;left:0;top:0;width:13px;height:20px;z-index:9;opacity:0;pointer-events:none;transition:transform .6s cubic-bezier(.3,.7,.25,1),opacity .3s;filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.45))}
+.pressed{filter:brightness(.82);transform:scale(.97);transition:transform .1s,filter .1s}
+.caret{display:inline-block;width:1.5px;height:1.1em;background:currentColor;vertical-align:-.15em;margin-left:1px;animation:blink 1s step-end infinite}
+.bz-screen.paused *{animation-play-state:paused!important}
+/* lock screen while idle: over the windows, blurred */
+.lock{position:absolute;inset:28px 0 0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.35);background:rgba(20,16,40,.35);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);opacity:0;pointer-events:none;transition:opacity .5s}
+.lock.on{opacity:1}
+.lock small{font-size:14px;opacity:.85}
+.lock b{font-size:72px;font-weight:600;letter-spacing:-1px;line-height:1.1}
+.lock span{opacity:.75;margin-top:10px}
+/* dock */
+.dock{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);display:flex;align-items:flex-end;gap:7px;padding:6px 8px;border-radius:20px;background:rgba(255,255,255,.16);backdrop-filter:blur(24px) saturate(1.6);-webkit-backdrop-filter:blur(24px) saturate(1.6);border:1px solid rgba(255,255,255,.22);box-shadow:0 10px 30px rgba(0,0,0,.25);z-index:2}
+.dock i{position:relative;width:46px;height:46px;display:block}
+.dock img{display:block;width:100%;height:100%}
+.dock i.run::after{content:'';position:absolute;bottom:-5px;left:50%;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:rgba(255,255,255,.85)}
+.dock i.bounce{animation:bounce .5s ease 3}
+@keyframes bounce{40%{transform:translateY(-16px)}}
+.dock .sep{width:1px;height:40px;background:rgba(255,255,255,.3);margin:0 3px 3px}
+.mw.closing{animation:mw-out .25s ease forwards}
+@keyframes mw-out{to{opacity:0;transform:scale(.94)}}
+/* terminal */
+.tm{height:100%;background:#1c1c1c;padding:10px 14px;font-size:11.5px;line-height:1.62;color:#e5e5e5;white-space:pre;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
+.tm .p{color:#5ac8fa} .tm .ok{color:#32d74b} .tm .dim{color:#8e8e93} .tm .cc{color:#ff9f6b} .tm .add{color:#32d74b} .tm .del{color:#ff6961}
+.tm .cur{display:inline-block;width:7px;height:13px;background:#e5e5e5;vertical-align:-2px;animation:blink 1s step-end infinite}
+/* claude */
+.cl{display:grid;grid-template-columns:168px 1fr;height:100%;background:#262624;color:#ece9df}
+.cl-side{background:#1f1e1d;padding:12px 10px;display:flex;flex-direction:column;gap:4px;font-size:11.5px;color:#b5b1a6;border-right:1px solid #33322f}
+.cl-new{display:flex;align-items:center;gap:8px;color:#ece9df;padding:6px 8px;margin-bottom:10px;font-weight:600}
+.cl-new i{width:18px;height:18px;border-radius:50%;background:#d97757;display:grid;place-items:center;color:#fff;font-style:normal;font-size:13px;line-height:1}
+.cl-side small{color:#87837a;font-size:10.5px;padding:0 8px;margin:4px 0}
+.cl-side span{padding:6px 8px;border-radius:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .cl-side .on{background:#33322f;color:#fff}
+.cl-main{display:flex;flex-direction:column;min-width:0;min-height:0}
+.cl-head{padding:10px 22px;font-size:12px;color:#c9c5ba;border-bottom:1px solid #2f2e2b}
+.cl-thread{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:flex-end;gap:14px;padding:14px 22px;overflow:hidden}
+.cl-user{align-self:flex-end;background:#141413;border-radius:14px;padding:9px 13px;max-width:78%;line-height:1.5;animation:msg-in .25s ease}
+.cl-ai{line-height:1.65;color:#dcd8cd;max-width:94%;font-family:Georgia,"Times New Roman",serif;font-size:13px}
+.cl-spark{color:#d97757;font-size:18px;display:inline-block;animation:spark 1s ease-in-out infinite}
+@keyframes spark{50%{transform:rotate(45deg) scale(.8);opacity:.6}}
+@keyframes msg-in{from{opacity:0;transform:translateY(6px)}}
+.cl-box{margin:0 22px 16px;border:1px solid #3d3c38;border-radius:16px;background:#30302e;padding:11px 12px;display:flex;align-items:center;gap:10px;color:#8a877e}
+.cl-box span{flex:1;color:#ece9df;min-height:1.2em}
+.cl-box span:empty::before{content:'Reply to Claude…';color:#8a877e}
+.cl-send{width:26px;height:26px;border-radius:8px;background:#d97757;color:#fff;display:grid;place-items:center;font-weight:700}
+/* gmail */
+.gm{display:grid;grid-template-rows:50px 1fr;height:100%;background:#f6f8fc;color:#202124}
+.gm-top{display:flex;align-items:center;gap:16px;padding:0 16px}
+.gm-logo{display:flex;align-items:center;gap:8px;font-size:17px;color:#5f6368;width:134px}
+.gm-search{flex:1;max-width:440px;height:34px;border-radius:17px;background:#e9eef6;display:flex;align-items:center;gap:10px;padding:0 14px;color:#5f6368;font-size:12.5px}
+.gm-av{width:28px;height:28px;border-radius:50%;background:#7b61ff;color:#fff;display:grid;place-items:center;font-weight:600;margin-left:auto}
+.gm-body{display:grid;grid-template-columns:150px 1fr;min-height:0}
+.gm-side{padding:4px 8px;display:flex;flex-direction:column;gap:2px;font-size:12px}
+.gm-compose{background:#c2e7ff;border-radius:14px;padding:12px 14px;margin-bottom:10px;font-weight:600;width:max-content}
+.gm-side span{padding:6px 12px;border-radius:14px;display:flex;justify-content:space-between}
+.gm-side .on{background:#d3e3fd;font-weight:700}
+.gm-main{position:relative;background:#fff;border-radius:14px 14px 0 0;overflow:hidden;margin-right:10px}
+.gm-tabs{display:flex;border-bottom:1px solid #eceff1;font-size:11.5px;color:#5f6368}
+.gm-tabs span{padding:10px 16px} .gm-tabs .on{color:#0b57d0;box-shadow:inset 0 -3px #0b57d0;font-weight:600}
+.gm-row{display:grid;grid-template-columns:16px 120px minmax(0,1fr) 44px;gap:10px;align-items:center;height:35px;padding:0 14px;border-bottom:1px solid #f1f3f4;white-space:nowrap;font-size:12px;color:#5f6368;transition:background .2s}
+.gm-row b{font-weight:400;overflow:hidden;text-overflow:ellipsis;color:#202124} .gm-row span{overflow:hidden;text-overflow:ellipsis}
+.gm-row em{font-style:normal;text-align:right;font-size:11px}
+.gm-row i{width:12px;height:12px;border:1.5px solid #c4c7c5;border-radius:2px}
+.gm-row.unread{background:#fff} .gm-row.unread b,.gm-row.unread em{font-weight:700;color:#202124}
+.gm-row:not(.unread){background:#f2f6fc}
+.gm-row.new{animation:gm-new .6s ease}
+@keyframes gm-new{from{transform:translateY(-35px);background:#fff8e1}to{background:#fff8e1}}
+.gm-read{position:absolute;inset:0;background:#fff;padding:16px 22px;transform:translateX(102%);transition:transform .3s ease;display:flex;flex-direction:column;gap:10px}
+.gm-main.reading .gm-read{transform:none}
+.gm-back{width:max-content;color:#5f6368;font-size:16px;padding:2px 8px;border-radius:8px}
+.gm-read h3{font-size:18px;font-weight:400}
+.gm-from{display:flex;align-items:center;gap:10px;font-size:12px} .gm-from i{width:30px;height:30px;border-radius:50%;background:#1a73e8;display:block}
+.gm-text{line-height:1.6;color:#3c4043;font-size:12.5px;white-space:pre-line}
+/* instagram */
+.ig{height:100%;background:#000;display:grid;grid-template-columns:58px 1fr 150px}
+.ig-nav{border-right:1px solid #262626;display:flex;flex-direction:column;align-items:center;gap:20px;padding-top:16px;font-size:17px;color:#f5f5f5}
+.ig-nav b{font-family:"Snell Roundhand","Brush Script MT",cursive;font-size:20px;font-weight:400}
+.ig-view{position:relative;overflow:hidden;display:flex;justify-content:center}
+.ig-feed{width:290px;padding-top:12px;will-change:transform}
+.ig-stories{display:flex;gap:11px;margin-bottom:16px}
+.ig-stories i{width:44px;height:44px;border-radius:50%;padding:2px;background:linear-gradient(45deg,#feda75,#fa7e1e,#d62976,#962fbf);flex-shrink:0}
+.ig-stories i::after{content:'';display:block;width:100%;height:100%;border-radius:50%;border:2px solid #000;box-sizing:border-box;background:var(--c,#444)}
+.ig-post{margin-bottom:22px}
+.ig-head{display:flex;align-items:center;gap:8px;font-weight:600;font-size:12px;margin-bottom:8px}
+.ig-head i{width:28px;height:28px;border-radius:50%;background:var(--c);border:2px solid #000;box-shadow:0 0 0 2px #d62976}
+.ig-head small{color:#a8a8a8;font-weight:400}
+.ig-img{position:relative;height:290px;border-radius:4px;overflow:hidden}
+.ig-act{display:flex;gap:14px;font-size:20px;margin:8px 0 4px;line-height:1}
+.ig-act .like.on{color:#ff3040;animation:ig-like .3s ease}
+.ig-act span:last-child{margin-left:auto}
+@keyframes ig-like{50%{transform:scale(1.3)}}
+.ig-post p{font-size:11.5px;line-height:1.45;color:#f5f5f5} .ig-post p b{font-weight:600}
+.ig-heart{position:absolute;left:50%;top:50%;font-size:96px;color:#fff;line-height:1;animation:ig-pop .9s ease forwards;text-shadow:0 6px 24px rgba(0,0,0,.35)}
+@keyframes ig-pop{0%{transform:translate(-50%,-50%) scale(0)}15%{transform:translate(-50%,-50%) scale(1.2)}30%{transform:translate(-50%,-50%) scale(.95)}45%,75%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:translate(-50%,-60%) scale(1);opacity:0}}
+.ig-sugg{padding:16px 10px;font-size:11px;color:#a8a8a8;display:flex;flex-direction:column;gap:12px}
+.ig-sugg div{display:flex;align-items:center;gap:8px;color:#f5f5f5} .ig-sugg i{width:26px;height:26px;border-radius:50%;background:var(--c)} .ig-sugg em{margin-left:auto;color:#0095f6;font-style:normal;font-weight:600}
+/* youtube */
+.yt{height:100%;background:#0f0f0f;display:flex;flex-direction:column}
+.yt-top{height:44px;display:flex;align-items:center;gap:14px;padding:0 14px;flex-shrink:0}
+.yt-logo{display:flex;align-items:center;gap:4px;font-weight:700;font-size:14px;letter-spacing:-.5px;width:140px}
+.yt-logo i{width:22px;height:15px;border-radius:4px;background:#f00;position:relative} .yt-logo i::after{content:'';position:absolute;left:8px;top:4px;border-left:7px solid #fff;border-top:3.5px solid transparent;border-bottom:3.5px solid transparent}
+.yt-search{flex:1;max-width:340px;height:30px;border:1px solid #303030;border-radius:15px;background:#121212;color:#888;display:flex;align-items:center;padding:0 14px;font-size:12px}
+.yt-main{display:grid;grid-template-columns:minmax(0,1fr) 160px;gap:14px;padding:0 14px 14px;min-height:0}
+.yt-player{position:relative;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#000}
+.scene{position:absolute;inset:0;overflow:hidden}
+.yt-sky{position:absolute;inset:0;background:linear-gradient(#20325a 0%,#a0577a 45%,#f2a65a 70%,#f7d38a 100%)}
+.yt-sun{position:absolute;left:58%;top:36%;width:56px;height:56px;border-radius:50%;background:#ffefc2;box-shadow:0 0 50px 18px rgba(255,214,120,.55);animation:yt-sun 40s linear infinite}
+@keyframes yt-sun{to{transform:translateY(40px)}}
+.ridge{position:absolute;left:0;bottom:0;width:200%;animation:pan linear infinite}
+.ridge.r1{height:46%;background:#6a3f63;clip-path:polygon(0 60%,8% 35%,15% 50%,24% 20%,33% 48%,41% 30%,50% 60%,58% 35%,65% 50%,74% 20%,83% 48%,91% 30%,100% 60%,100% 100%,0 100%);animation-duration:38s;opacity:.85}
+.ridge.r2{height:34%;background:#3b2443;clip-path:polygon(0 50%,6% 30%,14% 55%,22% 25%,30% 45%,38% 20%,50% 50%,56% 30%,64% 55%,72% 25%,80% 45%,88% 20%,100% 50%,100% 100%,0 100%);animation-duration:22s}
+.ridge.r3{height:18%;background:#1b1022;clip-path:polygon(0 40%,10% 10%,20% 45%,30% 15%,40% 50%,50% 40%,60% 10%,70% 45%,80% 15%,90% 50%,100% 40%,100% 100%,0 100%);animation-duration:12s}
+@keyframes pan{to{transform:translateX(-50%)}}
+.vctrl{position:absolute;left:0;right:0;bottom:0;padding:22px 12px 8px;background:linear-gradient(transparent,rgba(0,0,0,.7));font-size:11px;color:#fff}
+.vbar{height:3px;background:rgba(255,255,255,.3);border-radius:2px;margin-bottom:7px;position:relative} .vbar i{position:absolute;left:0;top:0;bottom:0;background:#f00;border-radius:2px}
+.vbar i::after{content:'';position:absolute;right:-5px;top:-4px;width:11px;height:11px;border-radius:50%;background:#f00}
+.vrow{display:flex;align-items:center;gap:14px} .vrow .grow{flex:1}
+.yt h4{font-size:14px;margin:10px 0 8px;font-weight:600}
+.yt-ch{display:flex;align-items:center;gap:10px;font-size:11px;color:#aaa}
+.yt-ch i{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#43cea2,#185a9d)}
+.yt-ch b{display:block;color:#f1f1f1;font-size:12px}
+.yt-sub{background:#f1f1f1;color:#0f0f0f;border-radius:16px;padding:7px 13px;font-weight:600;margin-left:6px}
+.yt-pill{margin-left:auto;background:#272727;color:#f1f1f1;border-radius:16px;padding:7px 13px}
+.yt-side{display:flex;flex-direction:column;gap:10px;font-size:10.5px}
+.yt-side div{display:grid;grid-template-columns:72px 1fr;gap:7px;color:#f1f1f1;line-height:1.35}
+.yt-side i{position:relative;height:41px;border-radius:6px;background:var(--c)} .yt-side i::after{content:attr(data-d);position:absolute;right:3px;bottom:3px;background:rgba(0,0,0,.8);font-size:9px;font-style:normal;padding:0 3px;border-radius:3px}
+.yt-side small{display:block;color:#aaa;margin-top:2px}
+/* netflix */
+.nf{position:relative;height:100%;background:#000;overflow:hidden;color:#fff}
+.nf .scene{inset:-5%;animation:nf-zoom 26s ease-in-out infinite alternate}
+@keyframes nf-zoom{to{transform:scale(1.1) translateX(-2%)}}
+.nf-sky{position:absolute;inset:0;background:radial-gradient(60% 50% at 70% 85%,rgba(255,120,60,.35),transparent 70%),linear-gradient(#05070f,#121a33 60%,#2a1f3a)}
+.nf-moon{position:absolute;left:18%;top:14%;width:34px;height:34px;border-radius:50%;background:#f4f1e6;box-shadow:0 0 40px 10px rgba(244,241,230,.25)}
+.nf-city{position:absolute;left:0;right:0;bottom:0;height:62%;background:#06070c;clip-path:polygon(0 40%,6% 40%,6% 22%,12% 22%,12% 48%,17% 48%,17% 8%,23% 8%,23% 35%,30% 35%,30% 18%,34% 18%,34% 0,40% 0,40% 30%,47% 30%,47% 14%,55% 14%,55% 42%,61% 42%,61% 5%,67% 5%,67% 26%,74% 26%,74% 12%,81% 12%,81% 38%,88% 38%,88% 20%,94% 20%,94% 44%,100% 44%,100% 100%,0 100%)}
+.nf-city::after{content:'';position:absolute;inset:0;background-image:radial-gradient(#ffd27a .9px,transparent 1.4px),radial-gradient(#ffe7b0 1.1px,transparent 1.7px),radial-gradient(#9cc8ff .8px,transparent 1.3px);background-size:23px 17px,37px 29px,17px 41px;background-position:0 0,9px 5px,4px 11px;opacity:.5;animation:lights 4s steps(2) infinite}
+.nf-back{position:absolute;left:0;right:0;bottom:0;height:72%;background:#0d1124;clip-path:polygon(0 30%,9% 30%,9% 12%,15% 12%,15% 34%,26% 34%,26% 4%,29% 0,32% 4%,32% 26%,44% 26%,44% 16%,52% 16%,52% 36%,70% 36%,70% 10%,78% 10%,78% 30%,90% 30%,90% 18%,100% 18%,100% 100%,0 100%)}
+@keyframes lights{50%{opacity:.38;background-position:23px 0,9px 34px,21px 11px}}
+.nf-top{position:absolute;top:12px;left:16px;font-size:12px;display:flex;gap:10px;align-items:center;text-shadow:0 1px 3px #000}
+.nf-top small{color:#bbb}
+.nf-sub{position:absolute;bottom:64px;left:10%;right:10%;text-align:center;font-size:17px;line-height:1.35;text-shadow:0 1px 4px #000,0 0 2px #000;min-height:1.4em}
+.nf .vbar i,.nf .vbar i::after{background:#e50914}
+/* agenzia entrate */
+.ae{position:relative;height:100%;background:#f2f4f7;color:#17324d;overflow:hidden}
+.ae-slim{background:#004d99;color:#fff;font-size:10px;padding:4px 20px;opacity:.95}
+.ae-top{background:#0066cc;color:#fff;padding:10px 20px;display:flex;align-items:center;gap:12px}
+.ae-top b{font-size:16px} .ae-top span{margin-left:auto;font-size:11px;opacity:.9}
+.ae-emb{width:30px;height:30px;border-radius:50%;border:2px solid #fff;display:grid;place-items:center;font-size:13px;font-weight:700}
+.ae-view{position:absolute;top:84px;left:0;right:0;bottom:0;padding:18px 24px;transition:opacity .3s}
+.ae .home,.ae.in .login{opacity:0;pointer-events:none} .ae.in .home{opacity:1}
+.ae-card{background:#fff;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.08);padding:16px 18px}
+.login .ae-card{width:330px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+.ae h3{font-size:16px;color:#06c}
+.ae-tabs{display:flex;gap:6px} .ae-tabs span{flex:1;text-align:center;border:1px solid #c5d1dc;border-radius:4px;padding:5px;font-size:11px} .ae-tabs .on{background:#06c;color:#fff;border-color:#06c}
+.ae label{font-size:10.5px;color:#5c6f82;font-weight:600}
+.ae-field{border:1px solid #9aa9b8;border-radius:4px;padding:8px 10px;font-family:ui-monospace,Menlo,monospace;font-size:12px;min-height:33px;color:#17324d;background:#fff}
+.ae-btn{background:#06c;color:#fff;border-radius:4px;padding:9px 16px;font-weight:600;width:max-content;font-size:12px}
+.ae-wait{position:absolute;inset:84px 0 0;background:rgba(242,244,247,.85);display:none;place-items:center}
+.ae.wait .ae-wait{display:grid}
+.ae-wait i{width:30px;height:30px;border-radius:50%;border:3px solid #c5d1dc;border-top-color:#06c;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.home h2{font-size:18px;margin-bottom:12px} .home h2 small{display:block;font-size:11px;color:#5c6f82;font-weight:400;margin-top:2px}
+.ae-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:12px}
+.ae-grid .ae-card{display:flex;flex-direction:column;gap:6px}
+.ae-grid b{font-size:12.5px} .ae-grid p{font-size:11px;color:#5c6f82;line-height:1.45}
+.ae-state{font-size:10.5px;font-weight:700;color:#a66300;background:#fff3d6;border-radius:3px;padding:2px 6px;width:max-content}
+.ae-state.done{color:#0a7d3e;background:#dcf5e7}
+.ae-ok{margin-top:12px;background:#dcf5e7;color:#0a5c2e;border-left:4px solid #0a7d3e;border-radius:4px;padding:10px 12px;font-size:11.5px;display:none;animation:msg-in .3s ease}
+.ae.sent .ae-ok{display:block}
+/* xcode */
+.xc-bar{gap:10px}
+.xc-run{width:24px;height:24px;border-radius:6px;display:grid;place-items:center;color:#d0d0d4}
+.xc-scheme{font-size:11.5px;color:#c8c8cc;white-space:nowrap}
+.xc-status{flex:1;max-width:330px;margin:0 auto;height:24px;border-radius:7px;background:rgba(255,255,255,.07);font-size:11px;color:#c8c8cc;display:flex;align-items:center;justify-content:center;gap:6px;position:relative;overflow:hidden;white-space:nowrap}
+.xc-status i{position:absolute;left:0;bottom:0;height:2px;background:#0a84ff;width:0;transition:width .2s}
+.xc-status .ok{color:#32d74b}
+.xc{display:grid;grid-template-columns:150px 1fr;height:100%}
+.xc-side{background:#252527;padding:10px;font-size:11px;line-height:1.9;color:#bbb;border-right:1px solid #111}
+.xc-side .on{background:#2f5bb7;color:#fff;border-radius:4px;padding:0 6px;margin:0 -6px;display:block}
+.xc-ed{background:#1f1f24;display:grid;grid-template-columns:34px 1fr;grid-template-rows:auto 1fr;font-size:11px;line-height:1.75;min-width:0;overflow:hidden}
+.xc-tabs{grid-column:1/-1;background:#252528;border-bottom:1px solid #111;padding:5px 12px;font-size:11px;color:#ddd}
+.xc-gut{color:#5d5d66;text-align:right;padding:8px 8px 0 0;white-space:pre}
+.xc-code{padding:8px 12px 0;white-space:pre;color:#dfdfe0;overflow:hidden}
+.xc-code div.cur{background:rgba(255,255,255,.05)}
+.k{color:#fc5fa3} .t{color:#5dd8ff} .s{color:#fc6a5d} .c{color:#6c7986} .n{color:#d0bf69} .f{color:#67b7a4}
+/* BUSY popover */
+.bz-pop{position:relative;z-index:4;background:rgba(30,30,34,.84);backdrop-filter:blur(26px) saturate(1.5);-webkit-backdrop-filter:blur(26px) saturate(1.5);border:1px solid rgba(255,255,255,.16);border-radius:14px;box-shadow:0 18px 44px rgba(0,0,0,.45);padding:16px;display:flex;flex-direction:column;gap:18px;color:#f2f2f2;margin-top:-8px}
+.bz-pop::before{content:'';position:absolute;top:-7px;left:var(--arrow-x,80%);margin-left:-6px;width:12px;height:12px;background:rgba(30,30,34,.95);border-left:1px solid rgba(255,255,255,.16);border-top:1px solid rgba(255,255,255,.16);transform:rotate(45deg)}
+.bz-h{display:block;font-size:11px;color:rgba(255,255,255,.55);margin-bottom:6px}
+.bz-tot{display:flex;gap:36px}
+.bz-tot b{display:block;font-size:22px;font-weight:600}
+.bz-tot .green{color:#34c759} .bz-tot .red{color:#ff453a}
+#bz-share{font-size:11px;color:rgba(255,255,255,.55);margin-top:-10px}
+#bz-tl{position:relative;height:12px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden}
+#bz-tl i{position:absolute;top:0;bottom:0;transition:background .3s}
+#bz-tl i.green{background:#34c759} #bz-tl i.red{background:#ff453a} #bz-tl i.paused{background:rgba(255,255,255,.18)}
+.bz-tl-axis{display:flex;justify-content:space-between;font-size:10px;color:rgba(255,255,255,.45);margin-top:4px}
+#bz-top{display:grid;gap:8px}
+.bz-row{display:grid;grid-template-columns:minmax(0,1fr) 56px 54px;gap:10px;align-items:center;font-size:12px;color:rgba(255,255,255,.85)}
+.bz-row span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bz-row span:nth-child(2){text-align:right;color:rgba(255,255,255,.6)}
+.bz-row[hidden]{display:none}
+.bz-pill{font-family:inherit;font-size:10.5px;font-weight:600;border:0;border-radius:9px;padding:3px 0;cursor:pointer;color:#fff}
+.bz-pill.green{background:#248a3d} .bz-pill.red{background:#c9342b}
+.bz-pill:hover{filter:brightness(1.15)}
+#bz-rule code{color:var(--fg)}
+b.green{color:var(--green);font-weight:500} b.red{color:var(--red);font-weight:500} b.paused{color:var(--fg-muted);font-weight:500}
+.lg i.g{background:#34c759} .lg i.r{background:#ff453a} .lg i.p{background:var(--border2)}
+@media(max-width:860px){.dock i{width:36px;height:36px}.bz-area{grid-template-columns:1fr}.bz-desk{height:380px}.bz-pop{margin-top:0}.bz-pop::before{display:none}}
+.bz-dl{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;margin-top:22px}
+.bz-dl a.btn{color:var(--bg);background:var(--teal);text-decoration:none;font-size:12px;letter-spacing:1px;padding:8px 16px;border-radius:2px}
+.bz-dl a.btn:hover{opacity:.85}
+.bz-dl span{font-size:10.5px;color:var(--fg-muted)}
+.bz-cmd{display:block;margin-top:6px;padding:8px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:3px;font-size:11.5px;color:var(--fg);white-space:pre-wrap;overflow-wrap:anywhere}
+.pj-points a{color:var(--teal);text-decoration:none} .pj-points a:hover{text-decoration:underline}
+#bz-copy{margin:0 6px}
+.bz-prompt{display:inline}
+.bz-prompt summary{display:inline;cursor:pointer;color:var(--teal);font-size:11px}
+.bz-prompt[open]{display:block}
+.bz-prompt .bz-cmd{color:var(--fg-dim);margin-top:8px}
+  </style>
+</head>
+<body>
+  <main class="pj">
+    <div class="pj-top">
+      <a href="../index.html">← cd ~</a>
+      <span class="pj-crumb">~/personal/<b>busy</b></span>
+    </div>
+
+    <header class="pj-head">
+      <div class="pj-eyebrow">personal project · macos · swift</div>
+      <h1 class="pj-title"><img src="../icons/busy.png" alt="" style="height:.8em;width:auto;vertical-align:-.06em;margin-right:.28em">BUSY</h1>
+      <p class="pj-lead">A macOS menu bar app that measures how much of your day goes to work (<strong>green</strong>) and how much to distractions (<strong>red</strong>). A switch in the menu bar shows the current state at a glance, and one click opens the recap of the day. No timers to start: it watches the app in front and the site open in the browser.</p>
+      <div class="pj-tags"><span>swift</span><span>swiftui</span><span>appkit</span><span>sqlite</span><span>applescript</span><span>macos 14+</span></div>
+    </header>
+
+    <div class="viz">
+      <div class="viz-bar"><span class="viz-label">a simulated workday</span><span id="bz-clock"></span><span id="bz-rule"></span><span class="grow"></span>
+        <button id="viz-restart" class="viz-btn">restart</button><button id="viz-play" class="viz-btn">pause</button></div>
+      <div class="viz-stage bz-screen">
+        <div class="bz-menubar"><span class="apple">&#63743;</span><b id="bz-app"></b><span class="mb-menus" id="bz-menus"></span><span class="grow"></span><span class="bz-switch" id="bz-switch" role="img" aria-label="BUSY switch"><i></i></span><span class="mb-icons" aria-hidden="true"><svg viewBox="0 0 26 13" width="25" height="12"><rect x=".5" y=".5" width="22" height="12" rx="3.2" fill="none" stroke="currentColor" opacity=".55"/><rect x="2.2" y="2.2" width="15" height="8.6" rx="1.8" fill="currentColor"/><path d="M24 4.5v4c.9-.3 1.4-1.1 1.4-2s-.5-1.7-1.4-2z" fill="currentColor" opacity=".55"/></svg><svg viewBox="0 0 18 13" width="17" height="12"><path d="M9 12.4 6.6 9.9a3.4 3.4 0 0 1 4.8 0z" fill="currentColor"/><path d="M4.4 7.7a6.5 6.5 0 0 1 9.2 0l-1.3 1.3a4.6 4.6 0 0 0-6.6 0z" fill="currentColor"/><path d="M2.2 5.5a9.6 9.6 0 0 1 13.6 0l-1.3 1.3a7.8 7.8 0 0 0-11 0z" fill="currentColor"/><path d="M0 3.3a12.7 12.7 0 0 1 18 0l-1.3 1.3a10.9 10.9 0 0 0-15.4 0z" fill="currentColor"/></svg><svg viewBox="0 0 14 14" width="13" height="13"><circle cx="5.6" cy="5.6" r="4.4" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m8.9 8.9 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><svg viewBox="0 0 16 14" width="15" height="13"><rect x=".8" y=".8" width="14.4" height="5.4" rx="2.7" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="4" cy="3.5" r="1.6" fill="currentColor"/><rect x=".8" y="7.8" width="14.4" height="5.4" rx="2.7" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="12" cy="10.5" r="1.6" fill="currentColor"/></svg></span><span id="bz-time"></span></div>
+        <div class="bz-area">
+          <div class="bz-desk" id="bz-desk"></div>
+          <div class="bz-pop">
+            <div class="bz-tot">
+              <div><span class="bz-h">Green</span><b class="green" id="bz-green"></b></div>
+              <div><span class="bz-h">Red</span><b class="red" id="bz-red"></b></div>
+            </div>
+            <div id="bz-share"></div>
+            <div><div id="bz-tl"></div><div class="bz-tl-axis" id="bz-axis"></div></div>
+            <div><span class="bz-h">Top apps &amp; sites</span><div id="bz-top"></div></div>
+          </div>
+        </div>
+        <div class="dock" id="bz-dock" aria-hidden="true"></div>
+        <div class="lock" id="bz-lock"><small>Saturday 3 October</small><b id="bz-away-clock"></b><span>no input for 5 min · tracking paused</span></div>
+      </div>
+      <div class="viz-foot"><span class="lg"><i class="g"></i>green</span><span class="lg"><i class="r"></i>red</span><span class="lg"><i class="p"></i>paused</span><span>click a pill to flip its rule: the whole day recolours</span></div>
+    </div>
+    <p class="viz-note">Simulated in the browser with the same logic as the app: one rule per app or domain, idle time paused, colours recomputed from the history every time you look.</p>
+
+    <div class="bz-dl">
+      <a class="btn" href="../downloads/BUSY.zip" download>download BUSY 1.5 (.zip, 1.3 MB)</a>
+      <span>macOS 14 or later · Apple Silicon &amp; Intel · free, MIT licence</span>
+    </div>
+
+    <section class="pj-sec">
+      <h2>install</h2>
+      <ul class="pj-points">
+        <li><b>Install:</b> open the zip and drag <code>BUSY.app</code> into Applications.</li>
+        <li><b>First launch:</b> BUSY isn't signed with a paid Apple Developer certificate, so macOS blocks it the first time. On macOS 15 and 26, open it once, then go to System Settings → Privacy &amp; Security, scroll down and click <b>Open Anyway</b>. On macOS 14, right-click the app → Open → Open. Or, in Terminal:<code class="bz-cmd">xattr -dr com.apple.quarantine /Applications/BUSY.app</code></li>
+        <li><b>Permissions:</b> it only asks to control your browser, to read the domain of the active tab (revoke it in Privacy &amp; Security → Automation). Your activity stays in <code>~/Library/Application Support/BUSY</code>; the only network request fetches a site's icon from that site.</li>
+        <li><b>Is it safe?</b> Scan the zip on <a href="https://www.virustotal.com/gui/home/upload" target="_blank" rel="noopener">VirusTotal</a>. Check the code: upload the <a href="https://github.com/teemoteeo/BUSY/archive/55e9fa9.zip">source of this exact version</a> to Claude, ChatGPT or any model that reads files, with this prompt:
+          <button class="viz-btn" id="bz-copy" type="button">copy prompt</button>
+          <details class="bz-prompt"><summary>read it</summary><code class="bz-cmd" id="bz-prompt-text">I'm about to install a macOS app called BUSY, made by a developer I don't know. The attached zip is its full source code. Act as a skeptical security reviewer: don't assume it's safe, and look for anything that could harm me or my privacy.
+
+1. List every network request the code makes: the destination, when it happens, and exactly what data is sent.
+2. List every file it reads or writes, every permission it asks macOS for, and every entitlement in the project.
+3. Check whether it runs shell commands, downloads or executes code, records keystrokes, screen content, passwords, messages or full browsing history, or sends anything to the developer.
+4. Point out any obfuscated, hidden, unused or suspicious code, and anything that doesn't match what the app claims to do (measure time spent on apps and websites, stored locally).
+
+Quote the file and line for every finding. If you can't verify something from the code, say so instead of guessing. End with a one-line verdict: safe to install, safe with caveats, or don't install, and why.</code></details></li>
+        <li><b>Uninstall:</b> delete the app and <code>~/Library/Application Support/BUSY</code>.</li>
+      </ul>
+    </section>
+
+    <section class="pj-sec">
+      <h2>how it works</h2>
+      <ul class="pj-points"><li><b>Classification:</b> on every app switch the active app is matched by bundle ID. For Safari, Chrome and Arc it reads the URL of the active tab through AppleScript every 2.5 seconds and keeps only the domain, subdomains included.</li><li><b>Pauses:</b> after 5 minutes without input, and during sleep, shutdown or user switch, tracking stops on its own, so idle time never counts as either colour.</li><li><b>Recap:</b> day, week, month and year, with a red/green timeline of active time only and a top 10 of apps and sites. Any entry opens its own stats.</li><li><b>Rules:</b> mark installed apps green or red, add a site by pasting a link. Changes apply instantly, past included, because the recap recolours the stored history with the current rules every time.</li><li><b>Local only:</b> one SQLite file and one <code>rules.json</code> in Application Support. Your activity never leaves the Mac; the only network request fetches a site's icon from that same site.</li><li><b>Native:</b> the menu bar switch is an <code>NSStatusItem</code> animated with Core Animation; the window uses the Liquid Glass sidebar on macOS 26 and still runs on macOS 14, Apple Silicon and Intel.</li></ul>
+    </section>
+
+    <a class="pj-repo" href="https://github.com/teemoteeo/BUSY" target="_blank" rel="noopener">
+      <b>view source on github ↗</b><span>teemoteeo/BUSY</span>
+    </a>
+
+    <nav class="pj-nav">
+      <a href="footprint.html">← digital footprint</a>
+      <a href="../index.html">cd ~ →</a>
+    </nav>
+  </main>
+
+  <script src="../js/projects/busy.js?v=20261003h"></script>
+  <script>
+    document.getElementById('bz-copy').onclick = e => {
+      navigator.clipboard.writeText(document.getElementById('bz-prompt-text').textContent)
+        .then(() => { e.target.textContent = 'copied'; setTimeout(() => { e.target.textContent = 'copy prompt'; }, 1500); });
+    };
+  </script>
+</body>
+</html>
