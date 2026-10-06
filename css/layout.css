@@ -44,7 +44,7 @@
   margin-top: 3px;
 }
 .age-clock {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--fg-muted);
   text-align: center;
   margin-top: 2px;
@@ -73,14 +73,14 @@
 .sidebar-contacts a::before {
   content: '→';
   color: var(--fg-muted);
-  font-size: 10px;
+  font-size: 11px;
 }
 .sidebar-contacts a:hover { color: var(--fg); }
 
 /* nav */
 .nav-section { margin-bottom: 22px; }
 .nav-header {
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--fg-muted);
@@ -109,7 +109,7 @@
 .tree-branch { color: var(--fg-muted); font-size: 13px; flex-shrink: 0; white-space: pre; }
 .project-name { color: var(--fg-dim); font-size: 13px; flex: 1; }
 .project-name.featured { color: var(--fg); }
-.project-year { color: var(--fg-muted); font-size: 10px; }
+.project-year { color: var(--fg-muted); font-size: 11px; }
 .tree-item:hover .project-name { color: var(--fg); }
 .tree-item:hover .tree-branch { color: var(--teal); }
 
@@ -209,7 +209,7 @@
 
 .bio-block { margin-bottom: 32px; }
 .bio-block-label {
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--fg-muted);
@@ -255,7 +255,7 @@
   margin-bottom: 24px;
 }
 .section-title {
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: 2.5px;
   text-transform: uppercase;
   color: var(--fg-muted);
@@ -343,8 +343,8 @@
   .profile-id   { order: 4; grid-column: 1; grid-row: 3; align-self: center; margin: 2px 0 0; }
   .profile-name { text-align: left; line-height: 1.35; }
   /* in mezza colonna queste due andavano a capo male: una riga sola, piu' piccole */
-  .profile-meta { text-align: left; font-size: 10.5px; white-space: nowrap; margin-top: 5px; }
-  .age-clock    { text-align: left; font-size: 9.5px; white-space: nowrap; }
+  .profile-meta { text-align: left; font-size: 11px; white-space: nowrap; margin-top: 5px; }
+  .age-clock    { text-align: left; font-size: 11px; white-space: nowrap; }
 
   /* Contatti sotto "Applying Skills", su due sotto-colonne compatte:
      in colonna singola occupavano 220px di altezza e allungavano la foto
@@ -395,7 +395,7 @@
   }
   .mobile-photo figcaption {
     margin-top: 8px;
-    font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
     color: var(--fg-muted);
   }
 }

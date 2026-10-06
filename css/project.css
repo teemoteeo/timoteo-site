@@ -23,7 +23,7 @@ body { min-height: 100vh; }
 
 .pj-head { margin: 20px 0 28px; }
 .pj-eyebrow {
-  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
   color: var(--fg-muted); margin-bottom: 10px;
 }
 .pj-title {
@@ -39,7 +39,7 @@ body { min-height: 100vh; }
 .pj-lead strong { color: var(--fg); font-weight: 500; }
 .pj-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 18px; }
 .pj-tags span {
-  font-size: 10px; letter-spacing: .5px; color: var(--fg-dim);
+  font-size: 11px; letter-spacing: .5px; color: var(--fg-dim);
   border: 1px solid var(--border2); border-radius: 2px; padding: 2px 8px;
 }
 
@@ -54,9 +54,9 @@ body { min-height: 100vh; }
   font-size: 11px; color: var(--fg-muted);
 }
 .viz-bar .grow { flex: 1; }
-.viz-label { letter-spacing: 1.5px; text-transform: uppercase; font-size: 10px; }
+.viz-label { letter-spacing: 1.5px; text-transform: uppercase; font-size: 11px; }
 .viz-btn {
-  font-family: inherit; font-size: 10.5px; letter-spacing: 1px; text-transform: lowercase;
+  font-family: inherit; font-size: 11px; letter-spacing: 1px; text-transform: lowercase;
   background: transparent; color: var(--fg-dim);
   border: 1px solid var(--border2); border-radius: 2px;
   padding: 4px 10px; cursor: pointer;
@@ -68,11 +68,11 @@ body { min-height: 100vh; }
 .viz-foot {
   display: flex; flex-wrap: wrap; gap: 6px 18px;
   padding: 10px 14px; border-top: 1px solid var(--border);
-  font-size: 10.5px; color: var(--fg-muted);
+  font-size: 11px; color: var(--fg-muted);
 }
 .lg { display: inline-flex; align-items: center; gap: 6px; }
 .lg i { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
-.viz-note { margin-top: 10px; font-size: 10.5px; color: var(--fg-muted); }
+.viz-note { margin-top: 10px; font-size: 11px; color: var(--fg-muted); }
 .viz-note code { color: var(--fg-dim); }
 
 .range { accent-color: var(--teal); width: 140px; }
@@ -80,7 +80,7 @@ body { min-height: 100vh; }
 /* sections */
 .pj-sec { margin-top: 40px; }
 .pj-sec h2 {
-  font-size: 10px; font-weight: 400; letter-spacing: 2.5px; text-transform: uppercase;
+  font-size: 11px; font-weight: 400; letter-spacing: 2.5px; text-transform: uppercase;
   color: var(--fg-muted); margin-bottom: 14px;
 }
 .pj-sec h2::before { content: '/// '; }
@@ -113,7 +113,7 @@ body { min-height: 100vh; }
   /* i controlli a 10.5px erano illeggibili e difficili da centrare col dito */
   .viz-bar { gap: 8px 10px; padding: 10px 12px; }
   .viz-btn { font-size: 11.5px; padding: 8px 12px; min-height: 36px; }
-  .viz-label { font-size: 10.5px; }
+  .viz-label { font-size: 11px; }
   .pj-head { margin: 16px 0 22px; }
   .pj-repo { flex-direction: column; align-items: flex-start; }
 }

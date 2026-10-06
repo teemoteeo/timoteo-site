@@ -21,7 +21,7 @@
 }
 #rubik-close:hover { color: var(--fg); }
 #rubik-title {
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 3px;
   text-transform: uppercase;
   color: var(--fg-muted);
@@ -37,7 +37,7 @@
 }
 .rubik-btn {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 2px;
   text-transform: uppercase;
   background: none;
@@ -50,7 +50,7 @@
 .rubik-btn:hover { color: var(--fg); border-color: var(--teal); }
 .rubik-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 #rubik-status {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--fg-muted);
   letter-spacing: 1px;
   margin-top: 20px;
@@ -59,7 +59,7 @@
 #konami-hint {
   position: fixed;
   bottom: 20px; right: 20px;
-  font-size: 9px;
+  font-size: 11px;
   color: var(--fg-muted);
   opacity: 0;
   transition: opacity 0.5s;
@@ -98,7 +98,7 @@
 #sb-cube-canvas:active { cursor: grabbing; }
 #sb-cube-btn {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 2px;
   text-transform: uppercase;
   background: none;
@@ -124,7 +124,7 @@
   top: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
-  font-size: 10px;
+  font-size: 11px;
   color: var(--fg-muted);
   min-height: 14px;
   letter-spacing: 1px;
@@ -159,7 +159,7 @@
   #sb-cube-label {
     position: absolute; top: 48px; left: calc(50% + 56px);
     transform: translateY(-50%);
-    margin: 0; min-height: 0; font-size: 10px; white-space: nowrap;
+    margin: 0; min-height: 0; font-size: 11px; white-space: nowrap;
   }
   #rubik-close { top: 16px; right: 18px; }
   #rubik-title { margin-bottom: 22px; }

@@ -3,14 +3,13 @@
 // ============================
 (function() {
   const overlay = document.getElementById('intro-overlay');
-  const introText = document.getElementById('intro-text');
   const container = document.querySelector('.container');
   const bootSeq = document.getElementById('boot-sequence');
-  const msg = 'click to meet me...';
 
   // Su mobile l'intro non serve: niente tap a vuoto prima del contenuto.
   const skipIntro = window.matchMedia('(max-width: 900px)').matches
-    || sessionStorage.getItem('introSeen');
+    || sessionStorage.getItem('introSeen')
+    || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   if (skipIntro) {
     overlay.remove(); bootSeq.remove();
@@ -18,12 +17,6 @@
     document.querySelectorAll('[data-boot]').forEach(el => el.classList.add('revealed'));
     return;
   }
-
-  let i = 0;
-  function type() {
-    if (i < msg.length) { introText.textContent += msg[i++]; setTimeout(type, 30 + Math.random() * 80); }
-  }
-  setTimeout(type, 600);
 
   function runBoot() {
     const b1 = document.getElementById('boot-line-1');
@@ -44,12 +37,9 @@
     ].forEach(([t, fn]) => setTimeout(fn, t));
   }
 
-  function dismiss() {
-    sessionStorage.setItem('introSeen', 'true');
-    runBoot();
-  }
-  overlay.onclick = dismiss;
-  overlay.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); dismiss(); } };
+  // niente click-gate: il boot parte da solo (~1.5s) e va saltato con reduced-motion
+  sessionStorage.setItem('introSeen', 'true');
+  runBoot();
 })();
 
 // ============================

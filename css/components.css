@@ -8,11 +8,11 @@
 }
 .pl-label {
   white-space: nowrap;
-  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
   color: var(--fg-dim);
 }
 .pl-label::before { content: '~/'; color: var(--fg-muted); }
-.pl-sub { font-size: 10px; color: var(--fg-muted); }
+.pl-sub { font-size: 11px; color: var(--fg-muted); }
 .pl-sub a { color: var(--fg-dim); text-decoration: none; }
 .pl-sub a:hover { color: var(--teal); }
 .pl-row {
@@ -49,12 +49,12 @@
 .pl-tags { grid-column: 2; grid-row: 2; }
 .pl-tags { display: flex; flex-wrap: wrap; gap: 6px; }
 .pl-tags span {
-  font-size: 9.5px; letter-spacing: .5px;
+  font-size: 11px; letter-spacing: .5px;
   color: var(--fg-muted);
 }
 .pl-tags span:not(:last-child)::after { content: ' ·'; }
 .pl-tags .pl-flag { color: var(--yellow); }
-.pl-year { font-size: 10px; color: var(--fg-muted); white-space: nowrap; }
+.pl-year { font-size: 11px; color: var(--fg-muted); white-space: nowrap; }
 /* 42 projects grouped by milestone: vertical label + a thin rule that
    spans every project of that milestone, like a bracket */
 .pl-ms {
@@ -70,7 +70,7 @@
 .pl-ms-l {
   writing-mode: vertical-rl; transform: rotate(180deg);
   justify-self: center; align-self: center;
-  font-size: 9px; letter-spacing: 2px; text-transform: uppercase; white-space: nowrap;
+  font-size: 11px; letter-spacing: 2px; text-transform: uppercase; white-space: nowrap;
   color: var(--fg-muted);
 }
 .pl-ms-rows { min-width: 0; padding-left: 4px; }
@@ -99,7 +99,7 @@
   width: 100%;
 }
 .display-item:last-child { border-bottom: none; }
-.display-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--fg-muted); }
+.display-label { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--fg-muted); }
 .display-content {
   font-size: 12px;
   color: var(--fg-dim);
@@ -285,7 +285,7 @@
 .tech-grid-item:hover img { opacity: 1; }
 .tech-grid-item span {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 1px;
   text-transform: uppercase;
   color: var(--fg-muted);
