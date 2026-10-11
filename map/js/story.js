@@ -18,8 +18,8 @@ const NOS_SCALE = 0.75;                          // a "no" is drawn smaller than
 const colorOf = e => e.lane === 'nos' ? 'var(--opt)' : `var(--imp-${e.importance ?? 1})`;
 const MIN_PX = 2.5;                              // text smaller than this on screen is hidden
 
-const HOLDERS = { whatsapp: 'WhatsApp', instagram: 'Instagram', modelscom: 'models.com', email: 'Email (Google)', none: 'nessuna traccia digitale' };
-const KINDS = { casting: 'Casting', fitting: 'Fitting', opzione: 'Opzione' };
+const HOLDERS = { whatsapp: 'WhatsApp', instagram: 'Instagram', modelscom: 'models.com', email: 'Email (Google)', none: 'no digital trace' };
+const KINDS = { casting: 'Casting', fitting: 'Fitting', opzione: 'Option' };
 const FONT = '"Helvetica Neue", Helvetica, Arial, sans-serif';
 
 const $ = id => document.getElementById(id);
@@ -56,11 +56,11 @@ function cards() {
   return data.events.filter(e => e.date).map(e => {
     const f = e.lane === 'nos' ? NOS_SCALE : 1;
     const lvl = e.importance ?? 1, w = CARD_W[lvl - 1] * f, fs = TITLE[lvl - 1] * f, fd = Math.max(1.4, fs * 0.4);
-    const t = day(e.date), title = e.client ?? e.title ?? 'Cliente non noto';
+    const t = day(e.date), title = e.client ?? e.title ?? 'Unknown client';
     const lines = [
-      `${e.date_precision === 'month' ? fmtDate(e.date.slice(0, 7)) : fmtRange(e.date, e.date_end)} · ${e.city ?? 'città non nota'}`,
-      e.lane === 'nos' ? `${KINDS[e.kind] ?? e.kind} · ${types[e.type]} · ${e.outcome}` : `${types[e.type]} · ${e.status === 'confirmed' ? 'confermato' : 'da verificare'}`,
-      `dato: ${e.holders.map(h => HOLDERS[h]).join(' + ')}${e.holder_inferred ? ' (dedotto)' : ''}`,
+      `${e.date_precision === 'month' ? fmtDate(e.date.slice(0, 7)) : fmtRange(e.date, e.date_end)} · ${e.city ?? 'city unknown'}`,
+      e.lane === 'nos' ? `${KINDS[e.kind] ?? e.kind} · ${types[e.type]} · ${e.outcome}` : `${types[e.type]} · ${e.status === 'confirmed' ? 'confirmed' : 'to be verified'}`,
+      `data held by: ${e.holders.map(h => HOLDERS[h]).join(' + ')}${e.holder_inferred ? ' (inferred)' : ''}`,
     ];
     const bw = Math.max(w, textWidth(title, fs, 500) + fs, ...lines.map(l => textWidth(l, fd))) + 4;
     const bh = w * 1.25 + fs * 1.7 + lines.length * fd * 1.3 + 6;
@@ -69,10 +69,10 @@ function cards() {
   }).sort((a, b) => b.w - a.w || a.t - b.t);
 }
 
-const agLane = lane('agencies', 'Agenzie', 60);
+const agLane = lane('agencies', 'Agencies', 60);
 const items = cards();
 const jobs = items.filter(e => e.lane === 'jobs'), nos = items.filter(e => e.lane === 'nos');
-const evLane = lane('events', 'Lavori e opzioni', 0);   // last: the tallest lane
+const evLane = lane('events', 'Jobs and options', 0);   // last: the tallest lane
 cursor += (evLane.h = pack(items, evLane.y + 40) + 40);
 const H = cursor;
 
@@ -80,7 +80,7 @@ const H = cursor;
 const svg = d3.select('#map-svg');
 const view = d3.select('#view');                 // carries the zoom transform
 const world = d3.select('#world');               // untransformed: the minimap <use>s it
-svg.attr('aria-label', `Mappa della carriera 2021–2026: ${jobs.length} lavori e ${nos.length} opzioni o casting. Tab per spostarsi tra i lavori.`);
+svg.attr('aria-label', `Career map 2021–2026: ${jobs.length} jobs and ${nos.length} options or castings. Use Tab to move between cards.`);
 
 const years = d3.utcYear.range(d3.utcYear.ceil(D0), D1);
 const months = d3.utcMonth.range(d3.utcMonth.ceil(D0), D1).filter(m => m.getUTCMonth() !== 0);
@@ -231,7 +231,7 @@ function showPhoto(i) {
   const { d } = active, n = d.images.length;
   active.i = (i + n) % n;
   stageImg.src = d.images[active.i];
-  stageImg.alt = `${d.title}, foto ${active.i + 1} di ${n}`;
+  stageImg.alt = `${d.title}, photo ${active.i + 1} of ${n}`;
   stageCount.textContent = n > 1 ? `${active.i + 1} / ${n}` : '';
   stagePrev.hidden = stageNext.hidden = n < 2;
   if (n > 1) new Image().src = d.images[(active.i + 1) % n];   // preload the next one
@@ -278,7 +278,7 @@ $('zoom-fit').onclick = () => svg.transition().duration(450).call(zoom.transform
 
 // Theme: follows the system until toggled.
 const root = document.documentElement, themeBtn = $('theme');
-const setTheme = th => { root.dataset.theme = th; themeBtn.textContent = th === 'light' ? 'Scuro' : 'Chiaro'; };
+const setTheme = th => { root.dataset.theme = th; themeBtn.textContent = th === 'light' ? 'Dark' : 'Light'; };
 setTheme(matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
 themeBtn.onclick = () => setTheme(root.dataset.theme === 'light' ? 'dark' : 'light');
 
@@ -286,7 +286,7 @@ themeBtn.onclick = () => setTheme(root.dataset.theme === 'light' ? 'dark' : 'lig
 const nJobs = data.events.filter(e => e.lane === 'jobs').length, nNos = data.events.filter(e => e.lane === 'nos').length;
 $('n-jobs').textContent = nJobs;
 $('n-nos').textContent = nNos;
-$('n-ratio').textContent = String(Math.round(nNos * 10 / nJobs) / 10).replace('.', ',');
+$('n-ratio').textContent = String(Math.round(nNos * 10 / nJobs) / 10);
 const info = $('info');
 $('info-btn').onclick = ev => { ev.stopPropagation(); info.hidden = !info.hidden; };
 document.addEventListener('keydown', ev => { if (ev.key === 'Escape') { info.hidden = true; hideStage(); } });
