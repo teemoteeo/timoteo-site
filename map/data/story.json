@@ -1,0 +1,3019 @@
+{
+ "_meta": {
+  "generated_by": "scripts/derive-story.mjs",
+  "updated": "2026-10-09",
+  "types": {
+   "show": "Sfilata",
+   "presentation": "Presentazione",
+   "campaign": "Campagna / ADV",
+   "ecommerce": "E-commerce",
+   "lookbook": "Lookbook / Looks",
+   "editorial": "Editoriale",
+   "showroom": "Showroom",
+   "other": "Altro"
+  }
+ },
+ "agencies": [
+  {
+   "name": "Why Not",
+   "city": "Milano",
+   "role": "main",
+   "from": "2021-11-01",
+   "to": "2024-05-31"
+  },
+  {
+   "name": "Brave",
+   "city": "Milano",
+   "role": "main",
+   "from": "2024-06-01",
+   "to": null
+  },
+  {
+   "name": "Bananas",
+   "city": "Parigi",
+   "role": "secondary",
+   "from": "2022-03-01",
+   "to": null
+  }
+ ],
+ "events": [
+  {
+   "id": "2022-01-14-dsquared2",
+   "date": "2022-01-14",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "show",
+   "client": "Dsquared2",
+   "title": "Sfilata FW22, debutto",
+   "city": "Milano",
+   "image": "images/telefono/2022-01-14_dsquared2.jpg",
+   "images": [
+    "images/telefono/2022-01-14_dsquared2.jpg",
+    "images/vogue/2022-01-14_dsquared2-vogue.jpg"
+   ],
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 5,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": false,
+   "videos": [
+    "videos/2022-01-14_dsquared2.mp4"
+   ]
+  },
+  {
+   "id": "2022-01-19-prada",
+   "date": "2022-01-19",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "ecommerce",
+   "client": "Prada",
+   "title": "E-commerce",
+   "city": "Milano",
+   "image": "images/telefono/2022-01-19_prada.jpg",
+   "images": [
+    "images/telefono/2022-01-19_prada.jpg",
+    "images/telefono/2022-01-19_prada-2.jpg",
+    "images/telefono/2022-01-19_prada-3.jpg",
+    "images/telefono/2022-01-19_prada-4.jpg",
+    "images/telefono/2022-01-19_prada-5.jpg",
+    "images/telefono/2022-01-19_prada-6.jpg"
+   ],
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": false
+  },
+  {
+   "id": "2022-02-17-setchu",
+   "date": "2022-02-17",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "other",
+   "client": "Setchu",
+   "title": "Social e PR",
+   "city": "Milano",
+   "image": null,
+   "images": [],
+   "agency": "Why Not",
+   "status": "uncertain",
+   "importance": 1,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": false
+  },
+  {
+   "id": "2022-02-22-capasa",
+   "date": "2022-02-22",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "show",
+   "client": "Capasa",
+   "title": "Sfilata FW22",
+   "city": "Milano",
+   "image": "images/telefono/2022-02-22_capasa.jpg",
+   "images": [
+    "images/telefono/2022-02-22_capasa.jpg",
+    "images/vogue/2022-02-22_capasa-vogue.jpg"
+   ],
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": false,
+   "videos": [
+    "videos/2022-02-22_capasa.mp4"
+   ]
+  },
+  {
+   "id": "2022-02-25-palm-angels",
+   "date": "2022-02-25",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "show",
+   "client": "Palm Angels",
+   "title": "Sfilata FW22",
+   "city": "Milano",
+   "image": "images/vogue/2022-02-25_palm-angels.jpg",
+   "images": [
+    "images/vogue/2022-02-25_palm-angels.jpg"
+   ],
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 5,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": false,
+   "videos": [
+    "videos/2022-02-25_palm-angels.mp4"
+   ]
+  },
+  {
+   "id": "2022-05-24-aspesi",
+   "date": "2022-05-24",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "presentation",
+   "client": "Aspesi",
+   "title": "Presentazione",
+   "city": "Milano",
+   "image": null,
+   "images": [],
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 2,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": false
+  },
+  {
+   "id": "2022-06-loewe-ss23",
+   "date": "2022-06-15",
+   "date_end": null,
+   "date_precision": "month",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "show",
+   "client": "Loewe",
+   "title": "Sfilata uomo SS23",
+   "city": "Parigi",
+   "image": "images/telefono/2022-06-25_loewe.jpg",
+   "images": [
+    "images/telefono/2022-06-25_loewe.jpg",
+    "images/vogue/2022-06-25_loewe-vogue.jpg",
+    "images/telefono/2022-06-25_loewe-backstage.jpg",
+    "images/telefono/2022-06-25_loewe-scarpe.jpg"
+   ],
+   "agency": "Bananas",
+   "status": "confirmed",
+   "importance": 5,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp",
+    "modelscom"
+   ],
+   "holder_inferred": false,
+   "videos": [
+    "videos/2022-06-25_loewe.mp4"
+   ]
+  },
+  {
+   "id": "2022-09-22-aspesi",
+   "date": "2022-09-22",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "presentation",
+   "client": "Aspesi",
+   "title": "Presentazione SS23",
+   "city": "Milano",
+   "image": null,
+   "images": [],
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 2,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": false
+  },
+  {
+   "id": "2022-11-19-loro-piana",
+   "date": "2022-11-19",
+   "date_end": "2022-11-20",
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "showroom",
+   "client": "Loro Piana",
+   "title": "Showroom",
+   "city": "Milano",
+   "image": null,
+   "images": [],
+   "agency": "Why Not",
+   "status": "uncertain",
+   "importance": 2,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": false
+  },
+  {
+   "id": "2022-12-12-rewop",
+   "date": "2022-12-12",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "ecommerce",
+   "client": "Rewop",
+   "title": "E-commerce, mezza giornata",
+   "city": "Milano",
+   "image": null,
+   "images": [],
+   "agency": "Why Not",
+   "status": "uncertain",
+   "importance": 1,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": false
+  },
+  {
+   "id": "2022-12-16-3x1",
+   "date": "2022-12-16",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "other",
+   "client": "3x1",
+   "title": "Shooting",
+   "city": "Milano",
+   "image": null,
+   "images": [],
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 1,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": false
+  },
+  {
+   "id": "2023-01-20-feng-chen-wang",
+   "date": "2023-01-20",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "show",
+   "client": "Feng Chen Wang",
+   "title": "FW23",
+   "city": "Parigi",
+   "image": "images/modelscom/2023-01-20_feng-chen-wang.jpg",
+   "images": [
+    "images/modelscom/2023-01-20_feng-chen-wang.jpg",
+    "images/vogue/2023-01-20_feng-chen-wang-vogue.jpg"
+   ],
+   "agency": "Bananas",
+   "status": "confirmed",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp",
+    "modelscom"
+   ],
+   "holder_inferred": false,
+   "videos": [
+    "videos/2023-01-20_feng-chen-wang.mp4"
+   ]
+  },
+  {
+   "id": "2023-02-18-shooting",
+   "date": "2023-02-18",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "other",
+   "client": null,
+   "title": "Shooting di un paio d'ore",
+   "city": "Milano",
+   "image": null,
+   "images": [],
+   "agency": "Why Not",
+   "status": "uncertain",
+   "importance": 1,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": false
+  },
+  {
+   "id": "2023-02-24-act-n1",
+   "date": "2023-02-24",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "show",
+   "client": "ACT N°1",
+   "title": "Sfilata FW23, apertura",
+   "city": "Milano",
+   "image": "images/modelscom/2023-02-24_act-n-1.jpg",
+   "images": [
+    "images/modelscom/2023-02-24_act-n-1.jpg",
+    "images/stampa/2023-02-24_act-n-1-runway.jpg"
+   ],
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp",
+    "modelscom"
+   ],
+   "holder_inferred": false,
+   "videos": [
+    "videos/2023-02-24_act-n-1.mp4"
+   ]
+  },
+  {
+   "id": "2023-02-25-bally",
+   "date": "2023-02-25",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "show",
+   "client": "Bally",
+   "title": "Sfilata FW23",
+   "city": "Milano",
+   "image": "images/modelscom/2023-02-25_bally.jpg",
+   "images": [
+    "images/modelscom/2023-02-25_bally.jpg",
+    "images/vogue/2023-02-25_bally-viso.jpg",
+    "images/vogue/2023-02-25_bally-dettaglio.jpg",
+    "images/vogue/2023-02-25_bally-stivali.jpg",
+    "images/stampa/2023-02-25_bally-sala.jpg",
+    "images/vogue/2023-02-25_bally-vogue.jpg"
+   ],
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 4,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp",
+    "modelscom"
+   ],
+   "holder_inferred": false,
+   "videos": [
+    "videos/2023-02-25_bally-1.mp4",
+    "videos/2023-02-25_bally-2.mp4"
+   ]
+  },
+  {
+   "id": "2023-03-31-sun68",
+   "date": "2023-03-31",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "lookbook",
+   "client": "SUN68",
+   "title": "Lookbook",
+   "city": "Milano",
+   "image": null,
+   "images": [],
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 2,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": false
+  },
+  {
+   "id": "2023-04-03-lavoro",
+   "date": "2023-04-03",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "other",
+   "client": null,
+   "title": "Lavoro di mezza mattina",
+   "city": "Milano",
+   "image": null,
+   "images": [],
+   "agency": "Why Not",
+   "status": "uncertain",
+   "importance": 1,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": false
+  },
+  {
+   "id": "2023-06-03-loro-piana",
+   "date": "2023-06-03",
+   "date_end": "2023-06-11",
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "showroom",
+   "client": "Loro Piana",
+   "title": "Showroom",
+   "city": "Milano",
+   "image": null,
+   "images": [],
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 2,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": false
+  },
+  {
+   "id": "2023-06-16-valentino",
+   "date": "2023-06-16",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "show",
+   "client": "Valentino",
+   "title": "Sfilata uomo SS24",
+   "city": "Milano",
+   "image": "images/modelscom/2023-06-16_valentino.jpg",
+   "images": [
+    "images/modelscom/2023-06-16_valentino.jpg",
+    "images/vogue/2023-06-16_valentino-dettaglio.jpg",
+    "images/vogue/2023-06-16_valentino-vogue.jpg"
+   ],
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 5,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp",
+    "modelscom"
+   ],
+   "holder_inferred": false,
+   "videos": [
+    "videos/2023-06-16_valentino.mp4"
+   ]
+  },
+  {
+   "id": "2023-06-19-zegna",
+   "date": "2023-06-19",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "show",
+   "client": "Zegna",
+   "title": "Sfilata SS24",
+   "city": "Milano",
+   "image": "images/modelscom/2023-06-19_zegna.jpg",
+   "images": [
+    "images/modelscom/2023-06-19_zegna.jpg",
+    "images/vogue/2023-06-19_zegna-vogue.jpg"
+   ],
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 5,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp",
+    "modelscom"
+   ],
+   "holder_inferred": false,
+   "videos": [
+    "videos/2023-06-19_zegna.mp4"
+   ]
+  },
+  {
+   "id": "2023-06-21-show-parigi",
+   "date": "2023-06-21",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "show",
+   "client": null,
+   "title": "Show, men's SS24",
+   "city": "Parigi",
+   "image": null,
+   "images": [],
+   "agency": "Bananas",
+   "status": "uncertain",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": false
+  },
+  {
+   "id": "2023-06-24-saudi-100",
+   "date": "2023-06-24",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "show",
+   "client": "Saudi 100 / Emerge",
+   "title": "Men's SS24",
+   "city": "Parigi",
+   "image": "images/modelscom/2023-06-24_saudi-100-emerge.jpg",
+   "images": [
+    "images/modelscom/2023-06-24_saudi-100-emerge.jpg"
+   ],
+   "agency": "Bananas",
+   "status": "confirmed",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp",
+    "modelscom"
+   ],
+   "holder_inferred": false
+  },
+  {
+   "id": "2023-06-doublet-ss24",
+   "date": "2023-06-15",
+   "date_end": null,
+   "date_precision": "month",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "show",
+   "client": "Doublet",
+   "title": "Sfilata SS24",
+   "city": "Parigi",
+   "image": "images/modelscom/2023-06_doublet.jpg",
+   "images": [
+    "images/modelscom/2023-06_doublet.jpg",
+    "images/vogue/2023-06_doublet-vogue.jpg"
+   ],
+   "agency": "Bananas",
+   "status": "confirmed",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp",
+    "modelscom"
+   ],
+   "holder_inferred": false,
+   "videos": [
+    "videos/2023-06_doublet.mp4"
+   ]
+  },
+  {
+   "id": "2023-07-08-tes-zegna",
+   "date": "2023-07-08",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "campaign",
+   "client": "TES x Zegna",
+   "title": "Capsule ADV",
+   "city": "Oasi Zegna",
+   "image": "images/telefono/2023-07-08_tes-x-zegna.jpg",
+   "images": [
+    "images/telefono/2023-07-08_tes-x-zegna.jpg",
+    "images/telefono/2023-07-08_tes-x-zegna-2.jpg",
+    "images/telefono/2023-07-08_tes-x-zegna-3.jpg"
+   ],
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 4,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp",
+    "modelscom"
+   ],
+   "holder_inferred": false,
+   "videos": [
+    "videos/2023-07-08_tes-x-zegna.mp4"
+   ]
+  },
+  {
+   "id": "2023-09-16-the-collector",
+   "date": "2023-09-16",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "editorial",
+   "client": "The Collector",
+   "title": "Editoriale FW issue",
+   "city": "Venezia",
+   "image": null,
+   "images": [],
+   "agency": "Why Not",
+   "status": "uncertain",
+   "importance": 2,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": false
+  },
+  {
+   "id": "2023-09-19-slam-jam",
+   "date": "2023-09-19",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "ecommerce",
+   "client": "Slam Jam",
+   "title": "E-commerce",
+   "city": "Ferrara",
+   "image": null,
+   "images": [],
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 1,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": false
+  },
+  {
+   "id": "2023-10-02-slam-jam",
+   "date": "2023-10-02",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "ecommerce",
+   "client": "Slam Jam",
+   "title": "E-commerce",
+   "city": "Ferrara",
+   "image": null,
+   "images": [],
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 1,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": false
+  },
+  {
+   "id": "2023-10-11-slam-jam",
+   "date": "2023-10-11",
+   "date_end": "2023-10-12",
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "ecommerce",
+   "client": "Slam Jam",
+   "title": "E-commerce",
+   "city": "Ferrara",
+   "image": null,
+   "images": [],
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 1,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": false
+  },
+  {
+   "id": "2023-10-25-slam-jam",
+   "date": "2023-10-25",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "ecommerce",
+   "client": "Slam Jam",
+   "title": "E-commerce",
+   "city": "Ferrara",
+   "image": null,
+   "images": [],
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 1,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": false
+  },
+  {
+   "id": "2023-11-08-slam-jam",
+   "date": "2023-11-08",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "ecommerce",
+   "client": "Slam Jam",
+   "title": "E-commerce",
+   "city": "Ferrara",
+   "image": null,
+   "images": [],
+   "agency": "Why Not",
+   "status": "uncertain",
+   "importance": 1,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": false
+  },
+  {
+   "id": "2023-11-09-lardini",
+   "date": "2023-11-09",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "presentation",
+   "client": "Lardini",
+   "title": "Presentazione interna",
+   "city": "Milano",
+   "image": null,
+   "images": [],
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 1,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": false
+  },
+  {
+   "id": "2023-11-23-slam-jam",
+   "date": "2023-11-23",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "ecommerce",
+   "client": "Slam Jam",
+   "title": "E-commerce",
+   "city": "Ferrara",
+   "image": null,
+   "images": [],
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 1,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": false
+  },
+  {
+   "id": "2023-12-04-lavoro",
+   "date": "2023-12-04",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "other",
+   "client": null,
+   "title": "Lavoro (zona Bologna?)",
+   "city": null,
+   "image": null,
+   "images": [],
+   "agency": "Why Not",
+   "status": "uncertain",
+   "importance": 1,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": false
+  },
+  {
+   "id": "2023-12-05-luisaviaroma",
+   "date": "2023-12-05",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "ecommerce",
+   "client": "LuisaViaRoma",
+   "title": "E-commerce",
+   "city": "Firenze",
+   "image": null,
+   "images": [],
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 1,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": false
+  },
+  {
+   "id": "2023-12-20-luisaviaroma",
+   "date": "2023-12-20",
+   "date_end": "2023-12-21",
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "ecommerce",
+   "client": "LuisaViaRoma",
+   "title": "E-commerce",
+   "city": "Firenze",
+   "image": null,
+   "images": [],
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 1,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": false
+  },
+  {
+   "id": "2024-01-11-slam-jam",
+   "date": "2024-01-11",
+   "date_end": "2024-01-12",
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "ecommerce",
+   "client": "Slam Jam",
+   "title": "E-commerce",
+   "city": "Ferrara",
+   "image": null,
+   "images": [],
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 1,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": false
+  },
+  {
+   "id": "campagna-metro",
+   "date": null,
+   "date_end": null,
+   "date_precision": null,
+   "lane": "jobs",
+   "kind": "job",
+   "type": "campaign",
+   "client": null,
+   "title": "Campagna in metro",
+   "city": "Milano",
+   "image": null,
+   "images": [],
+   "agency": "Why Not",
+   "status": "uncertain",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": false
+  },
+  {
+   "id": "2024-07-26-virtus",
+   "date": "2024-07-26",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "editorial",
+   "client": "Virtus Magazine",
+   "title": "Editoriale",
+   "city": "Milano",
+   "image": null,
+   "images": [],
+   "agency": "Brave",
+   "status": "uncertain",
+   "importance": 2,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": false
+  },
+  {
+   "id": "2026-02-25-oakley",
+   "date": "2026-02-25",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "campaign",
+   "client": "Oakley",
+   "title": "Web, social e magazine",
+   "city": "Napoli",
+   "image": "images/instagram/2026-02-25_oakley.jpg",
+   "images": [
+    "images/instagram/2026-02-25_oakley.jpg",
+    "images/instagram/2026-02-25_oakley-2.jpg",
+    "images/instagram/2026-02-25_oakley-3.jpg",
+    "images/instagram/2026-02-25_oakley-4.jpg"
+   ],
+   "agency": "Brave",
+   "status": "confirmed",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp",
+    "instagram"
+   ],
+   "holder_inferred": false
+  },
+  {
+   "id": "2026-03-02-timberland",
+   "date": "2026-03-02",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "campaign",
+   "client": "Timberland",
+   "title": "Shooting, mezza giornata",
+   "city": "Milano",
+   "image": null,
+   "images": [],
+   "agency": "Brave",
+   "status": "confirmed",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": false
+  },
+  {
+   "id": "2026-06-15-polimoda",
+   "date": "2026-06-15",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "show",
+   "client": "Polimoda",
+   "title": "Pitti Uomo",
+   "city": "Firenze",
+   "image": "images/instagram/2026-06-15_polimoda.jpg",
+   "images": [
+    "images/instagram/2026-06-15_polimoda.jpg"
+   ],
+   "agency": "Brave",
+   "status": "confirmed",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp",
+    "instagram"
+   ],
+   "holder_inferred": false,
+   "videos": [
+    "videos/2026-06-15_polimoda-1.mp4",
+    "videos/2026-06-15_polimoda-2.mp4"
+   ]
+  },
+  {
+   "id": "2026-08-off-white",
+   "date": "2026-08-15",
+   "date_end": null,
+   "date_precision": "month",
+   "lane": "jobs",
+   "kind": "job",
+   "type": "campaign",
+   "client": "Off-White",
+   "title": "Fall 2026",
+   "city": null,
+   "image": "images/instagram/2026-08_off-white.jpg",
+   "images": [
+    "images/instagram/2026-08_off-white.jpg",
+    "images/instagram/2026-08_off-white-2.jpg",
+    "images/instagram/2026-08_off-white-3.jpg"
+   ],
+   "agency": "Brave",
+   "status": "confirmed",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp",
+    "modelscom",
+    "instagram"
+   ],
+   "holder_inferred": false
+  },
+  {
+   "id": "no-2022-01-13-etro",
+   "date": "2022-01-13",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "casting",
+   "type": "other",
+   "client": "Etro",
+   "outcome": "Callback, nessuna conferma",
+   "city": "Milano",
+   "logo": "logos/etro.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 4,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2022-01-13-justin-gall",
+   "date": "2022-01-13",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "casting",
+   "type": "other",
+   "client": "Justin Gall",
+   "outcome": "Nessuna conferma",
+   "city": "Milano",
+   "logo": null,
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 2,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2022-02-16-prada",
+   "date": "2022-02-16",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "ecommerce",
+   "client": "Prada",
+   "outcome": "E-commerce off",
+   "city": "Milano",
+   "logo": "logos/prada.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2022-02-24-sunnei",
+   "date": "2022-02-24",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "show",
+   "client": "Sunnei",
+   "outcome": "Show off",
+   "city": "Milano",
+   "logo": "logos/sunnei.png",
+   "logo_raw": true,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2022-03-25-gas",
+   "date": "2022-03-25",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "casting",
+   "type": "other",
+   "client": "GAS",
+   "outcome": "Opzione a Vicenza, esito non noto",
+   "city": "Milano",
+   "logo": "logos/gas.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "uncertain",
+   "importance": 1,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2022-04-27-pt-torino",
+   "date": "2022-04-27",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "other",
+   "client": "PT Torino",
+   "outcome": "Web e social, ero fuori Milano",
+   "city": null,
+   "logo": "logos/pt-torino.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 2,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2022-04-29-lorenzoni",
+   "date": "2022-04-29",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "other",
+   "client": "Lorenzoni",
+   "outcome": "Web e social a Verona, esito non noto",
+   "city": "Verona",
+   "logo": null,
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "uncertain",
+   "importance": 1,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2022-06-20-zegna",
+   "date": "2022-06-20",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "other",
+   "client": "Zegna",
+   "outcome": "Nessuna conferma",
+   "city": "Milano",
+   "logo": "logos/zegna.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 4,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2022-06-22-amiri",
+   "date": "2022-06-22",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "fitting",
+   "type": "other",
+   "client": "Amiri",
+   "outcome": "Fitting di 3 ore e mezza, non confermato",
+   "city": "Parigi",
+   "logo": "logos/amiri.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 4,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2022-07-14-versace-jeans",
+   "date": "2022-07-14",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "campaign",
+   "client": "Versace Jeans",
+   "outcome": "ADV off",
+   "city": "Milano",
+   "logo": "logos/versace-jeans.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2022-07-16-sun68",
+   "date": "2022-07-16",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "lookbook",
+   "client": "SUN68",
+   "outcome": "Lookbook off",
+   "city": "Milano",
+   "logo": null,
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 1,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2022-07-18-elle-italia",
+   "date": "2022-07-18",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "editorial",
+   "client": "Elle Italia",
+   "outcome": "Editoriale off",
+   "city": "Milano",
+   "logo": "logos/elle-italia.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2022-07-20-woolrich",
+   "date": "2022-07-20",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "other",
+   "client": "Woolrich",
+   "outcome": "Off",
+   "city": "Milano",
+   "logo": "logos/woolrich.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 2,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2022-07-loewe",
+   "date": "2022-07-15",
+   "date_end": null,
+   "date_precision": "month",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "other",
+   "client": "Loewe",
+   "outcome": "Off",
+   "city": null,
+   "logo": "logos/loewe.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 4,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2022-07-29-etro",
+   "date": "2022-07-29",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "ecommerce",
+   "client": "Etro",
+   "outcome": "Catalogo off",
+   "city": "Milano",
+   "logo": "logos/etro.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2022-08-04-alcott",
+   "date": "2022-08-04",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "other",
+   "client": "Alcott",
+   "outcome": "Off",
+   "city": "Napoli",
+   "logo": "logos/alcott.png",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 1,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2022-09-02-benetton",
+   "date": "2022-09-02",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "other",
+   "client": "Benetton",
+   "outcome": "Esito non noto",
+   "city": "Treviso",
+   "logo": "logos/benetton.svg",
+   "logo_raw": true,
+   "agency": "Why Not",
+   "status": "uncertain",
+   "importance": 2,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2022-09-13-damir-doma",
+   "date": "2022-09-13",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "other",
+   "client": "Damir Doma",
+   "outcome": "Esito non noto",
+   "city": "Milano",
+   "logo": null,
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "uncertain",
+   "importance": 2,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2022-09-20-about-you",
+   "date": "2022-09-20",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "show",
+   "client": "About You",
+   "outcome": "Show off",
+   "city": "Milano",
+   "logo": "logos/about-you.svg",
+   "logo_raw": true,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 2,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2022-09-21-onitsuka-tiger",
+   "date": "2022-09-21",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "fitting",
+   "type": "show",
+   "client": "Onitsuka Tiger",
+   "outcome": "Show SS23 saltato per modifiche al board",
+   "city": "Milano",
+   "logo": "logos/onitsuka-tiger.svg",
+   "logo_raw": true,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2022-09-22-cormio",
+   "date": "2022-09-22",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "other",
+   "client": "Cormio",
+   "outcome": "Esito non noto",
+   "city": "Milano",
+   "logo": null,
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "uncertain",
+   "importance": 2,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2022-09-22-hugo-boss",
+   "date": "2022-09-22",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "other",
+   "client": "Hugo Boss",
+   "outcome": "Esito non noto",
+   "city": "Milano",
+   "logo": "logos/hugo-boss.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "uncertain",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2022-10-11-fielmann",
+   "date": "2022-10-11",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "campaign",
+   "client": "Fielmann",
+   "outcome": "ADV SS23 off",
+   "city": null,
+   "logo": "logos/fielmann.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 2,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2022-10-31-diesel",
+   "date": "2022-10-31",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "other",
+   "client": "Diesel",
+   "outcome": "Esito non noto",
+   "city": "Milano",
+   "logo": "logos/diesel.png",
+   "logo_raw": true,
+   "agency": "Why Not",
+   "status": "uncertain",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2022-12-07-cat",
+   "date": "2022-12-07",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "other",
+   "client": "CAT",
+   "outcome": "Off",
+   "city": "Verona",
+   "logo": "logos/cat.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 1,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2022-12-08-mytheresa-x-givenchy",
+   "date": "2022-12-08",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "other",
+   "client": "Mytheresa x Givenchy",
+   "outcome": "Off",
+   "city": null,
+   "logo": "logos/mytheresa-x-givenchy.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 4,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-01-08-stone-island",
+   "date": "2023-01-08",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "casting",
+   "type": "other",
+   "client": "Stone Island",
+   "outcome": "Nessuna conferma",
+   "city": "Milano",
+   "logo": "logos/stone-island.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-01-14-msgm",
+   "date": "2023-01-14",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "show",
+   "client": "MSGM",
+   "outcome": "Looks e show off",
+   "city": "Milano",
+   "logo": null,
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-01-12-family-first",
+   "date": "2023-01-12",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "fitting",
+   "type": "other",
+   "client": "Family First",
+   "outcome": "Annullato dal cliente",
+   "city": "Milano",
+   "logo": null,
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 2,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-01-15-valstar",
+   "date": "2023-01-15",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "presentation",
+   "client": "Valstar",
+   "outcome": "Presentazione off",
+   "city": "Milano",
+   "logo": null,
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 2,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-01-17-loewe",
+   "date": "2023-01-17",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "other",
+   "client": "Loewe",
+   "outcome": "FW23, esito non noto",
+   "city": "Parigi",
+   "logo": "logos/loewe.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "uncertain",
+   "importance": 5,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-02-16-shoe",
+   "date": "2023-02-16",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "other",
+   "client": "Shoe",
+   "outcome": "Web e social, esito non noto",
+   "city": "Milano",
+   "logo": null,
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "uncertain",
+   "importance": 1,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-02-21-jil-sander",
+   "date": "2023-02-21",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "other",
+   "client": "Jil Sander",
+   "outcome": "Off",
+   "city": "Milano",
+   "logo": "logos/jil-sander.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 4,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-03-01-prada",
+   "date": "2023-03-01",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "campaign",
+   "client": "Prada",
+   "outcome": "Campagna Ramadan off",
+   "city": "Milano",
+   "logo": "logos/prada.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 5,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-03-08-vichy-dercos",
+   "date": "2023-03-08",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "campaign",
+   "client": "Vichy Dercos",
+   "outcome": "ADV in Belgio (Bananas), esito non noto",
+   "city": null,
+   "logo": "logos/vichy-dercos.jpg",
+   "logo_raw": true,
+   "agency": "Why Not",
+   "status": "uncertain",
+   "importance": 2,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-04-05-view-uno-barcellona",
+   "date": "2023-04-05",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "casting",
+   "type": "other",
+   "client": "View / UNO (Barcellona)",
+   "outcome": "Agenzie, risposta negativa",
+   "city": "Barcellona",
+   "logo": null,
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 1,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-05-26-dolce-gabbana-x-mytheresa",
+   "date": "2023-05-26",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "fitting",
+   "type": "other",
+   "client": "Dolce&Gabbana x Mytheresa",
+   "outcome": "Evento a Portofino, non fittato",
+   "city": "Milano",
+   "logo": "logos/dolce-gabbana-x-mytheresa.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 4,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-06-14-msgm",
+   "date": "2023-06-14",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "other",
+   "client": "MSGM",
+   "outcome": "Nessuna conferma",
+   "city": "Milano",
+   "logo": null,
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-06-21-givenchy",
+   "date": "2023-06-21",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "other",
+   "client": "Givenchy",
+   "outcome": "Nessuna richiesta di casting",
+   "city": "Parigi",
+   "logo": "logos/givenchy.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 5,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-06-21-songzio",
+   "date": "2023-06-21",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "other",
+   "client": "Songzio",
+   "outcome": "Esito non noto",
+   "city": "Parigi",
+   "logo": "logos/songzio.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "uncertain",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-06-28-bally",
+   "date": "2023-06-28",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "campaign",
+   "client": "Bally",
+   "outcome": "Campagna off",
+   "city": null,
+   "logo": "logos/bally.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 4,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-07-05-valentino",
+   "date": "2023-07-05",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "lookbook",
+   "client": "Valentino",
+   "outcome": "Couture off, look tagliati",
+   "city": "Parigi",
+   "logo": "logos/valentino.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 5,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-07-11-arnette",
+   "date": "2023-07-11",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "other",
+   "client": "Arnette",
+   "outcome": "Esito non noto",
+   "city": "Milano",
+   "logo": "logos/arnette.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "uncertain",
+   "importance": 2,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-07-12-cavalli",
+   "date": "2023-07-12",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "campaign",
+   "client": "Cavalli",
+   "outcome": "Campagna, esito non noto",
+   "city": null,
+   "logo": "logos/cavalli.png",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "uncertain",
+   "importance": 4,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-07-18-k-way",
+   "date": "2023-07-18",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "other",
+   "client": "K-Way",
+   "outcome": "Shortlist, esito non noto",
+   "city": "Milano",
+   "logo": "logos/k-way.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "uncertain",
+   "importance": 2,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-07-27-ferrari-casablanca",
+   "date": "2023-07-27",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "campaign",
+   "client": "Ferrari / Casablanca",
+   "outcome": "Campagna social off",
+   "city": null,
+   "logo": "logos/ferrari-casablanca.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-07-31-campagna-aw23-a-beirut",
+   "date": "2023-07-31",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "other",
+   "client": "Campagna AW23 a Beirut",
+   "outcome": "Richiesta di Bananas, esito non noto",
+   "city": "Beirut",
+   "logo": null,
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "uncertain",
+   "importance": 2,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-08-29-valentino",
+   "date": "2023-08-29",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "other",
+   "client": "Valentino",
+   "outcome": "Party Collection a Parigi, 29-31/08, esito non noto",
+   "city": "Parigi",
+   "logo": "logos/valentino.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "uncertain",
+   "importance": 4,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-10-09-palm-angels",
+   "date": "2023-10-09",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "other",
+   "client": "Palm Angels",
+   "outcome": "Digital SS24 off",
+   "city": "Milano",
+   "logo": "logos/palm-angels.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-10-11-benetton",
+   "date": "2023-10-11",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "ecommerce",
+   "client": "Benetton",
+   "outcome": "E-commerce off",
+   "city": "Treviso",
+   "logo": "logos/benetton.svg",
+   "logo_raw": true,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 1,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-10-20-zegna",
+   "date": "2023-10-20",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "campaign",
+   "client": "Zegna",
+   "outcome": "Campagna SS24 off",
+   "city": "Milano",
+   "logo": "logos/zegna.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 5,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-10-24-benetton",
+   "date": "2023-10-24",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "ecommerce",
+   "client": "Benetton",
+   "outcome": "E-commerce off dopo la prova scarpe",
+   "city": "Milano",
+   "logo": "logos/benetton.svg",
+   "logo_raw": true,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 1,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-10-31-stone-island",
+   "date": "2023-10-31",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "other",
+   "client": "Stone Island",
+   "outcome": "Esito non noto",
+   "city": "Milano",
+   "logo": "logos/stone-island.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "uncertain",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-11-01-burberry",
+   "date": "2023-11-01",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "other",
+   "client": "Burberry",
+   "outcome": "Fitting dal 1 al 7/11 off",
+   "city": "Milano",
+   "logo": "logos/burberry.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 5,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-11-06-valentino",
+   "date": "2023-11-06",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "lookbook",
+   "client": "Valentino",
+   "outcome": "Lookbook off",
+   "city": null,
+   "logo": "logos/valentino.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 4,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-11-20-zegna",
+   "date": "2023-11-20",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "campaign",
+   "client": "Zegna",
+   "outcome": "ADV in Portogallo, poco probabile",
+   "city": null,
+   "logo": "logos/zegna.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 4,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-11-25-gucci",
+   "date": "2023-11-25",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "show",
+   "client": "Gucci",
+   "outcome": "Showroom confermato e poi annullato (troppo alto)",
+   "city": "Milano",
+   "logo": "logos/gucci.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 4,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-12-07-zalando-x-highsnobiety",
+   "date": "2023-12-07",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "other",
+   "client": "Zalando x Highsnobiety",
+   "outcome": "Non confermato",
+   "city": "Berlino",
+   "logo": "logos/zalando-x-highsnobiety.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-12-06-vespa",
+   "date": "2023-12-06",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "editorial",
+   "client": "Vespa",
+   "outcome": "Editoriale, esito non noto",
+   "city": null,
+   "logo": "logos/vespa.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "uncertain",
+   "importance": 2,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-12-12-ferrari",
+   "date": "2023-12-12",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "ecommerce",
+   "client": "Ferrari",
+   "outcome": "E-commerce, esito non noto",
+   "city": null,
+   "logo": "logos/ferrari.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "uncertain",
+   "importance": 2,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2023-12-15-manuel-ritz",
+   "date": "2023-12-15",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "fitting",
+   "type": "lookbook",
+   "client": "Manuel Ritz",
+   "outcome": "Lookbook, esito non noto",
+   "city": "Milano",
+   "logo": "logos/manuel-ritz.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "uncertain",
+   "importance": 1,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2024-01-10-tod-s",
+   "date": "2024-01-10",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "casting",
+   "type": "other",
+   "client": "Tod's",
+   "outcome": "Casting fitting, esito non noto",
+   "city": "Milano",
+   "logo": "logos/tod-s.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "uncertain",
+   "importance": 4,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2024-01-15-zegna",
+   "date": "2024-01-15",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "other",
+   "client": "Zegna",
+   "outcome": "Off",
+   "city": "Milano",
+   "logo": "logos/zegna.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 4,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2024-02-01-jacob-cohen",
+   "date": "2024-02-01",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "campaign",
+   "client": "Jacob Cohën",
+   "outcome": "ADV, esito non noto",
+   "city": null,
+   "logo": "logos/jacob-cohen.png",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "uncertain",
+   "importance": 2,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2024-02-12-bottega-veneta",
+   "date": "2024-02-12",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "casting",
+   "type": "other",
+   "client": "Bottega Veneta",
+   "outcome": "Nessuna conferma",
+   "city": "Milano",
+   "logo": "logos/bottega-veneta.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 5,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2024-02-22-ferragamo",
+   "date": "2024-02-22",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "fitting",
+   "type": "other",
+   "client": "Ferragamo",
+   "outcome": "Non funziona",
+   "city": "Milano",
+   "logo": "logos/ferragamo.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 4,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2024-05-17-dolce-gabbana",
+   "date": "2024-05-17",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "casting",
+   "type": "other",
+   "client": "Dolce&Gabbana",
+   "outcome": "Per luglio; opzione off a giugno",
+   "city": "Milano",
+   "logo": "logos/dolce-gabbana.svg",
+   "logo_raw": false,
+   "agency": "Why Not",
+   "status": "confirmed",
+   "importance": 5,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2024-07-27-antik-batik",
+   "date": "2024-07-27",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "ecommerce",
+   "client": "Antik Batik",
+   "outcome": "E-commerce off",
+   "city": "Milano",
+   "logo": "logos/antik-batik.svg",
+   "logo_raw": false,
+   "agency": "Brave",
+   "status": "confirmed",
+   "importance": 1,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2024-09-29-numero-switzerland",
+   "date": "2024-09-29",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "editorial",
+   "client": "Numéro Switzerland",
+   "outcome": "Editoriale, ero fuori Milano",
+   "city": "Milano",
+   "logo": "logos/numero-switzerland.svg",
+   "logo_raw": false,
+   "agency": "Brave",
+   "status": "confirmed",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2024-10-15-armani",
+   "date": "2024-10-15",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "other",
+   "client": "Armani",
+   "outcome": "Richiesta foto di mani e braccia, esito non noto",
+   "city": "Milano",
+   "logo": "logos/armani.svg",
+   "logo_raw": false,
+   "agency": "Brave",
+   "status": "uncertain",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2024-10-28-gucci",
+   "date": "2024-10-28",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "casting",
+   "type": "show",
+   "client": "Gucci",
+   "outcome": "Showroom di novembre, non confermato",
+   "city": "Milano",
+   "logo": "logos/gucci.svg",
+   "logo_raw": false,
+   "agency": "Brave",
+   "status": "confirmed",
+   "importance": 4,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2024-11-05-jil-sander",
+   "date": "2024-11-05",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "casting",
+   "type": "other",
+   "client": "Jil Sander",
+   "outcome": "Esito non noto",
+   "city": "Milano",
+   "logo": "logos/jil-sander.svg",
+   "logo_raw": false,
+   "agency": "Brave",
+   "status": "uncertain",
+   "importance": 4,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2024-11-27-sanpellegrino",
+   "date": "2024-11-27",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "casting",
+   "type": "campaign",
+   "client": "Sanpellegrino",
+   "outcome": "Selezionato per uno spot, esito non noto",
+   "city": null,
+   "logo": "logos/sanpellegrino.png",
+   "logo_raw": false,
+   "agency": "Brave",
+   "status": "uncertain",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2024-12-18-loro-piana",
+   "date": "2024-12-18",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "other",
+   "client": "Loro Piana",
+   "outcome": "Lavoro sugli sci, data non nota",
+   "city": null,
+   "logo": "logos/loro-piana.png",
+   "logo_raw": true,
+   "agency": "Brave",
+   "status": "confirmed",
+   "importance": 4,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2025-01-21-y-3",
+   "date": "2025-01-21",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "fitting",
+   "type": "other",
+   "client": "Y-3",
+   "outcome": "Esito non noto",
+   "city": "Parigi",
+   "logo": null,
+   "logo_raw": false,
+   "agency": "Brave",
+   "status": "uncertain",
+   "importance": 4,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2025-01-30-champion",
+   "date": "2025-01-30",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "ecommerce",
+   "client": "Champion",
+   "outcome": "E-commerce SS25, ero a Parigi",
+   "city": "Milano",
+   "logo": "logos/champion.svg",
+   "logo_raw": false,
+   "agency": "Brave",
+   "status": "confirmed",
+   "importance": 2,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2025-03-26-rick-owens",
+   "date": "2025-03-26",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "casting",
+   "type": "other",
+   "client": "Rick Owens",
+   "outcome": "Non andato, ero a Parigi",
+   "city": "Milano",
+   "logo": "logos/rick-owens.svg",
+   "logo_raw": false,
+   "agency": "Brave",
+   "status": "confirmed",
+   "importance": 5,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2025-04-24-loewe",
+   "date": "2025-04-24",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "casting",
+   "type": "other",
+   "client": "Loewe",
+   "outcome": "Esito non noto",
+   "city": "Parigi",
+   "logo": "logos/loewe.svg",
+   "logo_raw": false,
+   "agency": "Brave",
+   "status": "uncertain",
+   "importance": 5,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2026-04-14-safilo",
+   "date": "2026-04-14",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "casting",
+   "type": "other",
+   "client": "Safilo",
+   "outcome": "Non andato",
+   "city": "Milano",
+   "logo": "logos/safilo.svg",
+   "logo_raw": false,
+   "agency": "Brave",
+   "status": "confirmed",
+   "importance": 2,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  },
+  {
+   "id": "no-2026-07-24-magliano",
+   "date": "2026-07-24",
+   "date_end": null,
+   "date_precision": "day",
+   "lane": "nos",
+   "kind": "opzione",
+   "type": "ecommerce",
+   "client": "Magliano",
+   "outcome": "E-commerce, non disponibile",
+   "city": null,
+   "logo": null,
+   "logo_raw": false,
+   "agency": "Brave",
+   "status": "confirmed",
+   "importance": 3,
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": true
+  }
+ ],
+ "paris": [
+  {
+   "id": "paris-0",
+   "lane": "paris",
+   "from": "2022-03-24",
+   "to": "2022-03-24",
+   "purpose": "Giro agenzie (Bananas, The Face e altre)",
+   "outcome": "Piazzato con Bananas il 30/03",
+   "jobs": [],
+   "confirmed": false
+  },
+  {
+   "id": "paris-1",
+   "lane": "paris",
+   "from": "2022-06-01",
+   "to": "2022-06-11",
+   "purpose": "Pre-casting",
+   "outcome": "Opzioni aperte",
+   "jobs": [],
+   "confirmed": false
+  },
+  {
+   "id": "paris-2",
+   "lane": "paris",
+   "from": "2022-06-21",
+   "to": "2022-06-27",
+   "purpose": "Men's SS23",
+   "outcome": "Loewe SS23 confermato; fitting Amiri senza conferma",
+   "jobs": [
+    "2022-06-loewe-ss23"
+   ],
+   "confirmed": true
+  },
+  {
+   "id": "paris-3",
+   "lane": "paris",
+   "from": "2023-01-02",
+   "to": "2023-01-06",
+   "purpose": "Casting",
+   "outcome": "Solo casting",
+   "jobs": [],
+   "confirmed": false
+  },
+  {
+   "id": "paris-4",
+   "lane": "paris",
+   "from": "2023-01-16",
+   "to": "2023-01-23",
+   "purpose": "Men's FW23",
+   "outcome": "Feng Chen Wang; opzione Loewe senza esito",
+   "jobs": [
+    "2023-01-20-feng-chen-wang"
+   ],
+   "confirmed": true
+  },
+  {
+   "id": "paris-5",
+   "lane": "paris",
+   "from": "2023-06-05",
+   "to": "2023-06-08",
+   "purpose": "Pre-casting",
+   "outcome": "Solo casting",
+   "jobs": [],
+   "confirmed": false
+  },
+  {
+   "id": "paris-6",
+   "lane": "paris",
+   "from": "2023-06-19",
+   "to": "2023-06-26",
+   "purpose": "Men's SS24",
+   "outcome": "Saudi 100 / Emerge, Doublet SS24; opzioni Givenchy e Songzio",
+   "jobs": [
+    "2023-06-21-show-parigi",
+    "2023-06-24-saudi-100",
+    "2023-06-doublet-ss24"
+   ],
+   "confirmed": true
+  },
+  {
+   "id": "paris-7",
+   "lane": "paris",
+   "from": "2024-01-15",
+   "to": "2024-01-22",
+   "purpose": "Men's FW24",
+   "outcome": "Nessun lavoro",
+   "jobs": [],
+   "confirmed": false
+  },
+  {
+   "id": "paris-8",
+   "lane": "paris",
+   "from": "2025-01-19",
+   "to": null,
+   "purpose": "Fashion week e trasferimento",
+   "outcome": "Fitting Y-3; casting Loewe ad aprile 2025",
+   "jobs": [],
+   "confirmed": false
+  }
+ ],
+ "other_work": [
+  {
+   "id": "tramtram",
+   "lane": "other",
+   "name": "Tram Tram",
+   "city": "Milano",
+   "role": "Cameriere a chiamata",
+   "from": "2021-10-01",
+   "to": "2024-11-30",
+   "date_precision": "month",
+   "status": "confirmed",
+   "pattern": "on_call",
+   "holder": "whatsapp",
+   "holders": [
+    "whatsapp"
+   ],
+   "holder_inferred": false,
+   "shifts_by_month": {
+    "2021-10": 3,
+    "2022-01": 3,
+    "2022-02": 5,
+    "2022-03": 17,
+    "2022-04": 9,
+    "2022-05": 7,
+    "2022-07": 3,
+    "2022-09": 3,
+    "2022-10": 14,
+    "2022-11": 13,
+    "2022-12": 5,
+    "2023-01": 3,
+    "2023-03": 5,
+    "2023-04": 4,
+    "2023-05": 5,
+    "2023-09": 4,
+    "2023-10": 10,
+    "2023-11": 7,
+    "2023-12": 6,
+    "2024-01": 3,
+    "2024-02": 3,
+    "2024-03": 10,
+    "2024-04": 10,
+    "2024-05": 6,
+    "2024-06": 5,
+    "2024-07": 1,
+    "2024-10": 1,
+    "2024-11": 3
+   }
+  },
+  {
+   "id": "osteria-toscano",
+   "lane": "other",
+   "name": "Osteria al Toscano",
+   "city": "Udine",
+   "role": "Sala",
+   "from": "2024-01-01",
+   "to": "2025-12-31",
+   "date_precision": "year",
+   "status": "fuzzy",
+   "pattern": "continuous",
+   "holder": "none",
+   "holders": [
+    "none"
+   ],
+   "holder_inferred": false
+  },
+  {
+   "id": "armani-paris",
+   "lane": "other",
+   "name": "Emporio Armani Caffè Paris",
+   "city": "Parigi",
+   "role": "Commis de salle",
+   "from": "2025-02-10",
+   "to": "2025-09-07",
+   "date_precision": "day",
+   "status": "confirmed",
+   "pattern": "continuous",
+   "holder": "email",
+   "holders": [
+    "email"
+   ],
+   "holder_inferred": false
+  }
+ ]
+}
