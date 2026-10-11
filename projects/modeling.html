@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modeling — Timoteo Costantini Scala</title>
+  <meta name="description" content="Runway and campaigns since 2021, plotted on one zoomable map: jobs, castings that went nowhere, Paris, and who holds the data behind each event.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Doto:wght@800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/project.css?v=20261006a">
+  <style>
+.mm-lead a,.mm-note a{color:var(--fg);text-decoration:underline;text-decoration-color:var(--border2);text-underline-offset:3px}
+.mm-lead a:hover,.mm-note a:hover{color:var(--teal)}
+.mm-frame{display:block;width:100%;height:clamp(460px,72vh,760px);border:0;background:#111}
+.mm-note{margin-top:14px;font-size:12px;line-height:1.8;color:var(--fg-muted)}
+.viz-bar a.viz-btn{text-decoration:none}
+</style>
+</head>
+<body>
+  <main class="pj">
+    <div class="pj-top">
+      <a href="../index.html">← cd ~</a>
+      <span class="pj-crumb">~/other/<b>modeling</b></span>
+    </div>
+    <header class="pj-head">
+      <div class="pj-eyebrow">modeling · ongoing · data visualization</div>
+      <h1 class="pj-title">Modeling</h1>
+      <p class="pj-lead mm-lead">Runway and campaigns since 2021: Valentino, Zegna, Prada, Oakley, Paris Fashion Week. Below, four years of it on one map: the jobs, the castings that went nowhere, Paris, and who holds the data behind each event. The official profile is on <a href="https://models.com/models/timoteo-scala" target="_blank" rel="noopener">models.com&nbsp;↗</a></p>
+      <div class="pj-tags"><span>fashion</span><span>d3</span><span>2021–2026</span></div>
+    </header>
+    <div class="viz">
+      <div class="viz-bar"><span class="viz-label">career map</span><span>drag to move · scroll or pinch to zoom · tap a card</span><span class="grow"></span>
+        <a class="viz-btn" href="../map/">full screen</a><a class="viz-btn" href="https://models.com/models/timoteo-scala" target="_blank" rel="noopener">models.com ↗</a></div>
+      <div class="viz-stage"><iframe class="mm-frame" src="../map/" title="Modeling career map 2021–2026" loading="lazy" allow="fullscreen"></iframe></div>
+      <div class="viz-foot"><span>bigger card = bigger job</span><span>hollow = options and castings that never became jobs</span><span>colour of the data = who holds it</span></div>
+    </div>
+    <p class="mm-note">Each event was rebuilt from WhatsApp, Instagram, Gmail and models.com: services that hold the traces of my work, not me. That is the case study behind <a href="footprint.html">The Non-Ownership of Data</a>.</p>
+  </main>
+</body>
+</html>
