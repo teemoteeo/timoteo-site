@@ -131,7 +131,7 @@ function drawCards(laneObj, items) {
   c.append('circle').attr('class', 'tick').attr('cx', d => d.cx).attr('cy', spineY).attr('r', d => 1 + d.lvl * 0.7);
   c.append('rect').attr('class', 'face').attr('x', d => d.cx - d.w / 2).attr('y', d => d.y).attr('width', d => d.w).attr('height', d => d.w * 1.25);
   // Photo slot: shown as soon as story.json carries an image path.
-  c.filter(d => d.image).append('image').attr('href', d => d.image).attr('preserveAspectRatio', 'xMidYMid slice')
+  c.filter(d => d.image).append('image').attr('href', d => d.image).attr('preserveAspectRatio', 'xMidYMin slice')
     .attr('x', d => d.cx - d.w / 2).attr('y', d => d.y).attr('width', d => d.w).attr('height', d => d.w * 1.25);
   // Failed options show the brand logo, inked white on the card.
   // An HTML <img> (via foreignObject): SVG <image> mis-scales logos whose files lack a proper viewBox.
