@@ -123,10 +123,9 @@ function initRubikCube() {
   let isMoving = false, autoRotate = true, isDragging = false;
   let lastPX = 0, lastPY = 0;
   let state = 'idle', executedMoves = [], aborted = false;
-  let timerInterval = null, solveStart = 0, shuffleTimeout = null, btnFadeTimeout = null;
+  let shuffleTimeout = null, btnFadeTimeout = null;
 
   const btn = document.getElementById('sb-cube-btn');
-  const lbl = document.getElementById('sb-cube-label');
 
   function snapMatrix(obj) {
     obj.updateMatrix();
@@ -195,7 +194,7 @@ function initRubikCube() {
   function shuffleLoop() {
     if (aborted) {
       if (shuffleTimeout) { clearTimeout(shuffleTimeout); shuffleTimeout = null; }
-      state = 'shuffled'; lbl.textContent = ''; syncBtn();
+      state = 'shuffled'; syncBtn();
       return;
     }
     const move = randomMove();
@@ -237,10 +236,6 @@ function initRubikCube() {
     else if (state === 'solving')   { setCubeButton('solving\u2026', true); }
   }
 
-  function stopTimer() {
-    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
-  }
-
   function resetCubies() {
     let idx = 0;
     for (let gx = -1; gx <= 1; gx++) {
@@ -258,8 +253,6 @@ function initRubikCube() {
 
   btn.onclick = function() {
     if (state === 'idle') {
-      stopTimer();
-      lbl.textContent = '';
       executedMoves = [];
       aborted = false;
       state = 'shuffling'; syncBtn();
@@ -269,15 +262,9 @@ function initRubikCube() {
       aborted = true; // shuffleLoop checks this after current move and transitions to 'shuffled'
     } else if (state === 'shuffled') {
       state = 'solving'; syncBtn();
-      solveStart = performance.now();
-      timerInterval = setInterval(() => {
-        lbl.textContent = ((performance.now() - solveStart) / 1000).toFixed(1) + 's';
-      }, 100);
       const sol = executedMoves.slice().reverse().map(m => INVERSE[m]);
       runMoves(sol, solveDelay,
         () => {
-          stopTimer();
-          lbl.textContent = ((performance.now() - solveStart) / 1000).toFixed(2) + 's';
           state = 'idle'; syncBtn();
         },
         null,

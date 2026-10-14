@@ -119,17 +119,6 @@
 #sb-cube-btn.is-fading { opacity: 0.55; }
 #sb-cube-btn:hover { color: var(--fg); }
 #sb-cube-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-#sb-cube-label {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 11px;
-  color: var(--fg-muted);
-  min-height: 14px;
-  letter-spacing: 1px;
-  text-align: center;
-}
 
 /* ===== PLACEHOLDER + LAZY LOAD (three.js caricato solo quando serve) ===== */
 .sidebar-cube { position: relative; }
@@ -152,15 +141,6 @@
   }
   /* bottone piccolo ma area di tap ~42px: il riquadro resta 26px, il tocco no */
   #sb-cube-btn::after { content: ''; position: absolute; inset: -8px -12px; }
-  /* il timer stava sotto il bottone e, comparendo, allungava la riga e
-     spostava il nome accanto: ora sta a destra del cubo, fuori dal flusso */
-  .sidebar-cube-stack { position: relative; }
-  .sidebar-cube-controls { position: static; }
-  #sb-cube-label {
-    position: absolute; top: 48px; left: calc(50% + 56px);
-    transform: translateY(-50%);
-    margin: 0; min-height: 0; font-size: 11px; white-space: nowrap;
-  }
   #rubik-close { top: 16px; right: 18px; }
   #rubik-title { margin-bottom: 22px; }
 }

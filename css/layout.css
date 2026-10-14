@@ -363,11 +363,15 @@
 
   /* --- cubo, subito dopo l'header --- */
   .hero-cube-shell {
-    order: 5; grid-column: 2; grid-row: 3;
+    order: 5; grid-column: 1 / -1; grid-row: 3;
     align-self: start;
-    min-height: 0; margin: 14px 0 0;
-    justify-content: flex-start;
+    min-height: 0; margin: 14px -20px 0 0;
+    /* 200px = larghezza del blocco nome (riga meta nowrap): il cubo si
+       centra tra il suo bordo destro e il bordo dello schermo */
+    padding-left: 200px; justify-content: center;
+    pointer-events: none;
   }
+  .sidebar-cube-stack { pointer-events: auto; }
   .hero-cube { margin: 0; justify-content: center; }
   /* stack in verticale (cubo sopra, shuffle sotto): vedi cube.css */
   .sidebar-cube-stack { width: 100%; }
