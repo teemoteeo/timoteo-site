@@ -1,6 +1,6 @@
 # timoteo-site
 
-Personal portfolio of Timoteo Costantini Scala, software developer and 42 Firenze student.
+Personal portfolio of Timoteo Costantini Scala, freelance software developer and 42 Firenze student.
 
 Live: https://teemoteeo.github.io/timoteo-site
 
