@@ -150,7 +150,7 @@ config = {
     user_canvas_managed : 0,
     gui_divider : 2,
     ume_block : 0,
-    can_close : 0,
+    can_close : 1,
     archive : "pac-man",
     gui_debug : 2,
     cdn : "https://pygame-web.github.io/cdn/0.9.3/",
@@ -434,5 +434,5 @@ frameborder="1"
 
     </script>
 
-</body>
+<script>addEventListener("wheel", e => { e.stopImmediatePropagation(); e.preventDefault(); parent.scrollBy(e.deltaX, e.deltaY * (e.deltaMode ? 16 : 1)) }, { capture: true, passive: false })</script></body>
 </html>
