@@ -1,3 +1,5 @@
 .DS_Store
 .claude/
 Claude outputs/
+.vercel
+.env*
