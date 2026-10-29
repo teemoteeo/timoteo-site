@@ -72,16 +72,18 @@ body {
 }
 
 /* ===== DOT MATRIX (dalla griglia di nothing.tech) =====
-   livello fisso a 32px dai bordi, 12 colonne (4 sotto i 640px),
+   livello fisso a tutto schermo, 12 colonne (4 sotto i 640px), punto al centro di ogni cella:
+   il primo punto sta a mezza cella dai bordi, quindi l'angolo è esattamente un quarto di cella.
    punto bianco da 1px al 30% in mix-blend-difference. */
-:root { --dm-cell: calc((100vw - 64px) / 12); }
-@media (max-width: 639px) { :root { --dm-cell: calc((100vw - 64px) / 4); } }
+:root { --dm-cols: 12; }
+@media (max-width: 639px) { :root { --dm-cols: 4; } }
 body::before {
-  content: ''; position: fixed; inset: 31px; z-index: 0; pointer-events: none;
+  content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
   opacity: .3; mix-blend-mode: difference;
   background-image: radial-gradient(circle, #fff 1px, transparent 1.5px);
-  background-size: var(--dm-cell) var(--dm-cell);
-  background-position: calc(1px - var(--dm-cell) / 2) calc(1px - var(--dm-cell) / 2);
+  /* larghezza in % del livello (esatta anche con la scrollbar), altezza uguale in vw per celle quadrate */
+  background-size: calc(100% / var(--dm-cols)) calc(100vw / var(--dm-cols));
+  background-position: 0 0;
 }
 .container, .pj { position: relative; z-index: 1; }
 
