@@ -1,5 +1,5 @@
 /* ===== RUBIK'S EASTER EGG MODAL ===== */
-#rubik-modal {
+#rubik-modal, #neofetch-modal {
   display: none;
   position: fixed; inset: 0;
   background: rgba(8,7,11,0.97);
@@ -8,8 +8,8 @@
   justify-content: center;
   flex-direction: column;
 }
-#rubik-modal.open { display: flex; }
-#rubik-close {
+#rubik-modal.open, #neofetch-modal.open { display: flex; }
+#rubik-close, #neofetch-close {
   position: absolute;
   top: 24px; right: 32px;
   color: var(--fg-muted);
@@ -19,8 +19,8 @@
   text-transform: uppercase;
   transition: color 0.15s;
 }
-#rubik-close:hover { color: var(--fg); }
-#rubik-title {
+#rubik-close:hover, #neofetch-close:hover { color: var(--fg); }
+#rubik-title, #neofetch-title {
   font-size: 11px;
   letter-spacing: 3px;
   text-transform: uppercase;
@@ -141,7 +141,7 @@
   }
   /* bottone piccolo ma area di tap ~42px: il riquadro resta 26px, il tocco no */
   #sb-cube-btn::after { content: ''; position: absolute; inset: -8px -12px; }
-  #rubik-close { top: 16px; right: 18px; }
+  #rubik-close, #neofetch-close { top: 16px; right: 18px; }
   #rubik-title { margin-bottom: 22px; }
 }
 
@@ -151,3 +151,5 @@
   .sidebar-cube-stack { flex-direction: column; gap: 10px; }
   #sb-cube-canvas, .cube-ph { width: 140px; height: 140px; }
 }
+
+#neofetch-card { width: min(985px, 94vw); height: auto; }

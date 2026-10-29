@@ -17,7 +17,23 @@
   });
 
   document.getElementById('rubik-close').onclick = closeRubik;
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeRubik(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeRubik(); closeNeofetch(); } });
+
+  // type "neofetch" anywhere (outside inputs) to open the GitHub profile card
+  let typed = '';
+  const neo = document.getElementById('neofetch-modal');
+  const card = document.getElementById('neofetch-card');
+  document.addEventListener('keydown', e => {
+    if (e.target.closest('input, textarea') || e.key.length !== 1) return;
+    typed = (typed + e.key.toLowerCase()).slice(-8);
+    if (typed === 'neofetch') {
+      if (!card.src) card.src = card.dataset.src;
+      neo.classList.add('open');
+    }
+  });
+  document.getElementById('neofetch-close').onclick = closeNeofetch;
+  neo.onclick = e => { if (e.target === neo) closeNeofetch(); };
+  function closeNeofetch() { neo.classList.remove('open'); }
 
   function openRubik() {
     document.getElementById('rubik-modal').classList.add('open');
