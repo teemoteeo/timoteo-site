@@ -5,9 +5,9 @@ function initRubikCube() {
   const canvas = document.getElementById('sb-cube-canvas');
   if (!canvas || !window.THREE) return;
 
-  const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false });
+  const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
   renderer.setSize(480, 480, false);
-  renderer.setClearColor(0x0e0d10);
+  renderer.setClearColor(0x000000, 0); // trasparente: sotto c'e' lo spazio
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
@@ -126,6 +126,9 @@ function initRubikCube() {
   let shuffleTimeout = null, btnFadeTimeout = null;
 
   const btn = document.getElementById('sb-cube-btn');
+  const timer = document.getElementById('sb-cube-timer');
+  let solveStart = 0;
+  function showTime(ms) { if (timer) timer.textContent = (ms / 1000).toFixed(2) + 's'; }
 
   function snapMatrix(obj) {
     obj.updateMatrix();
@@ -230,9 +233,9 @@ function initRubikCube() {
   }
 
   function syncBtn() {
-    if (state === 'idle')           { setCubeButton('shuffle', false); }
+    if (state === 'idle')           { setCubeButton('shuffle the cube', false); }
     else if (state === 'shuffling') { setCubeButton('stop', false); }
-    else if (state === 'shuffled')  { setCubeButton('solve', false); }
+    else if (state === 'shuffled')  { setCubeButton('solve it', false); }
     else if (state === 'solving')   { setCubeButton('solving\u2026', true); }
   }
 
@@ -256,15 +259,20 @@ function initRubikCube() {
       executedMoves = [];
       aborted = false;
       state = 'shuffling'; syncBtn();
+      if (timer) { timer.classList.remove('is-done', 'is-running'); showTime(0); }
       shuffleTimeout = setTimeout(() => { aborted = true; }, MAX_SHUFFLE_MS);
       shuffleLoop();
     } else if (state === 'shuffling') {
       aborted = true; // shuffleLoop checks this after current move and transitions to 'shuffled'
     } else if (state === 'shuffled') {
       state = 'solving'; syncBtn();
+      solveStart = performance.now();
+      if (timer) timer.classList.add('is-running');
       const sol = executedMoves.slice().reverse().map(m => INVERSE[m]);
       runMoves(sol, solveDelay,
         () => {
+          showTime(performance.now() - solveStart);
+          if (timer) { timer.classList.remove('is-running'); timer.classList.add('is-done'); }
           state = 'idle'; syncBtn();
         },
         null,
@@ -290,6 +298,7 @@ function initRubikCube() {
   (function render() {
     requestAnimationFrame(render);
     if (autoRotate && !isMoving) cubeGroup.rotation.y += 0.004;
+    if (state === 'solving') showTime(performance.now() - solveStart);
     renderer.render(scene, camera);
   })();
 

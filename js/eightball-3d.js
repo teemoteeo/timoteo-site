@@ -11,12 +11,12 @@ function initEightBall() {
 
   let renderer;
   try {
-    renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false });
+    renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
   } catch (e) {
     return; // niente WebGL: resta la palla di riserva, che risponde in testo
   }
   renderer.setSize(560, 560, false);
-  renderer.setClearColor(0x0e0d10);
+  renderer.setClearColor(0x000000, 0); // trasparente: sotto c'e' lo spazio
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);

@@ -90,8 +90,8 @@
   min-width: 104px;
 }
 #sb-cube-canvas {
-  width: 170px;
-  height: 170px;
+  width: 220px;
+  height: 220px;
   display: block;
   cursor: grab;
 }
@@ -123,7 +123,7 @@
 /* ===== PLACEHOLDER + LAZY LOAD (three.js caricato solo quando serve) ===== */
 .sidebar-cube { position: relative; }
 #sb-cube-canvas { touch-action: none; }
-.cube-ph { display: block; width: 170px; height: 170px; }
+.cube-ph { display: block; width: 220px; height: 220px; }
 .sidebar-cube.is-live .cube-ph { display: none; }
 .sidebar-cube #sb-cube-canvas { display: none; }
 .sidebar-cube.is-live #sb-cube-canvas { display: block; animation: cube-in .35s ease-out; }
@@ -153,3 +153,38 @@
 }
 
 #neofetch-card { width: min(985px, 94vw); height: auto; }
+
+/* ===== CUBO LIBERO, BOTTONE IN VETRO ALLA SUA DESTRA =====
+   il timer sta in assoluto sotto il bottone: non sposta niente */
+.sidebar-cube-stack { flex-direction: row; gap: 24px; }
+.sidebar-cube-controls { min-width: 0; }
+/* bottone senza box: solo testo, lime al passaggio */
+#sb-cube-btn {
+  /* larghezza fissa sull'etichetta piu' lunga ("shuffle the cube"):
+     cambiando testo il bottone non spinge piu' il cubo */
+  width: 150px; min-height: 36px; padding: 0; text-align: center;
+  border: 0; border-radius: 0; background: none;
+  color: var(--fg); font-size: 11px; font-weight: 500; letter-spacing: 1.5px;
+  transition: color .2s, opacity .18s;
+}
+#sb-cube-btn:hover { color: var(--teal); }
+#sb-cube-btn:disabled { opacity: .6; cursor: default; }
+#sb-cube-btn:focus-visible { outline: 1px solid var(--teal); outline-offset: 3px; }
+.cube-timer {
+  position: absolute; top: 100%; left: 0; right: 0; margin-top: 8px;
+  text-align: center; font-size: 10px; letter-spacing: 1px;
+  font-variant-numeric: tabular-nums; color: var(--fg-muted);
+  transition: color .2s;
+}
+.cube-timer.is-running { color: var(--teal); }
+.cube-timer.is-done { color: var(--fg); }
+@media (min-width: 901px) and (max-width: 1279px) {
+  #sb-cube-canvas, .cube-ph { width: 160px; height: 160px; }
+  .sidebar-cube-stack { gap: 16px; }
+}
+@media (max-width: 900px) {
+  .sidebar-cube-stack { flex-direction: column; gap: 6px; }
+  #sb-cube-canvas, .cube-ph { width: 96px; height: 96px; }
+  #sb-cube-btn { width: 116px; min-height: 28px; padding: 0; font-size: 9px; letter-spacing: 1px; white-space: nowrap; }
+  .cube-timer { font-size: 9px; margin-top: 4px; }
+}

@@ -273,7 +273,7 @@
   cursor: default;
   transition: background 0.15s;
 }
-.tech-grid-item:hover { background: var(--bg2); }
+.tech-grid-item:hover { background: none; }
 .tech-grid-item img {
   width: 32px;
   height: 32px;
@@ -311,3 +311,93 @@
 /* l'indirizzo email è una parola sola: tra 901 e 950px sforava la colonna */
 .display-content { min-width: 0; }
 .display-content a.email-link { overflow-wrap: anywhere; }
+
+/* ===== LIQUID GLASS =====
+   vetro: sfondo quasi trasparente + backdrop blur/saturate, bordo di luce
+   piu' forte in alto a sinistra (::after con mask), riflesso che segue il
+   puntatore (::before, --mx/--my da js/glass.js) */
+.glass {
+  position: relative;
+  isolation: isolate;
+  border-radius: 20px;
+  background: linear-gradient(150deg, rgba(255,255,255,.085), rgba(255,255,255,.025) 45%, rgba(255,255,255,.05));
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  backdrop-filter: blur(22px) saturate(180%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.18),
+    inset 0 0 30px rgba(255,255,255,.025),
+    0 18px 50px -12px rgba(0,0,0,.6);
+}
+.glass::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px;
+  background: linear-gradient(135deg, rgba(255,255,255,.42), rgba(255,255,255,.06) 32%, rgba(255,255,255,.02) 60%, rgba(255,255,255,.2));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  pointer-events: none;
+}
+.glass::before {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; z-index: -1;
+  background: radial-gradient(320px circle at var(--mx, 50%) var(--my, 0%), rgba(255,255,255,.11), transparent 65%);
+  opacity: 0; transition: opacity .35s;
+  pointer-events: none;
+}
+.glass:hover::before { opacity: 1; }
+
+/* ===== SELECTED WORK ===== */
+.featured { margin: 8px 0 56px; }
+.featured .sections-header-col { margin-bottom: 18px; }
+.feat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+.feat {
+  display: flex; flex-direction: column;
+  padding: 8px;
+  transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s;
+}
+.feat:hover { transform: translateY(-4px); box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 26px 60px -14px rgba(0,0,0,.7); }
+.feat-img { border-radius: 13px; overflow: hidden; aspect-ratio: 16 / 10; background: var(--bg2); }
+.feat-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s cubic-bezier(.2,.8,.2,1); }
+.feat:hover .feat-img img { transform: scale(1.04); }
+.feat-body { display: flex; flex-direction: column; flex: 1; padding: 16px 12px 10px; }
+.feat-eyebrow {
+  font-family: 'Doto', 'JetBrains Mono', monospace; font-weight: 800;
+  font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--teal); margin-bottom: 8px;
+}
+.feat-title { font-size: 19px; font-weight: 500; line-height: 1.25; letter-spacing: -.2px; color: var(--fg); margin-bottom: 10px; }
+.feat-link { color: inherit; text-decoration: none; }
+/* tutta la card e' cliccabile; i link nella descrizione restano sopra */
+.feat-link::after { content: ''; position: absolute; inset: 0; border-radius: 20px; z-index: 1; }
+.feat-link:focus-visible { outline: none; }
+.feat:has(.feat-link:focus-visible) { outline: 1px solid var(--teal); outline-offset: 3px; }
+.feat-desc { font-size: 12.5px; line-height: 1.65; color: var(--fg-dim); flex: 1; }
+.feat-desc a { position: relative; z-index: 2; color: var(--fg); text-decoration: underline; text-decoration-color: rgba(255,255,255,.3); text-underline-offset: 3px; }
+.feat-desc a:hover { color: var(--teal); text-decoration-color: var(--teal); }
+.feat-foot {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+  margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,.08);
+  font-size: 11px; letter-spacing: .5px; color: var(--fg-muted);
+}
+.feat-stat b { font-size: 15px; font-weight: 500; color: var(--fg); margin-right: 2px; }
+.feat-go { color: var(--fg); letter-spacing: 1px; text-transform: uppercase; transition: color .2s, transform .2s; }
+.feat:hover .feat-go { color: var(--teal); transform: translateX(3px); }
+.feat:hover .feat-title { color: var(--teal); }
+
+@media (min-width: 901px) and (max-width: 1279px) {
+  .feat-grid { gap: 14px; }
+  .feat-body { padding: 14px 8px 8px; }
+  .feat-title { font-size: 16px; }
+  .feat-desc { font-size: 12px; }
+}
+@media (max-width: 900px) {
+  .feat-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* righe dei progetti: descrizione piu' leggibile */
+.pl-desc { font-size: 12.5px; }
+
+/* tech grid in vetro */
+.tech-grid { background: transparent; gap: 0; }
+.tech-grid-item:hover { background: none; }
