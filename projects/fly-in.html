@@ -61,10 +61,9 @@
 .tui .b{font-weight:600}.tui .d{opacity:.5}
 .tui .c1{color:#55555c}.tui .c2{color:#ef6b73}.tui .c3{color:#8fd46a}.tui .c4{color:#f0c35a}.tui .c5{color:#6aa8ff}.tui .c6{color:#d07ef0}.tui .c7{color:#5fd0d6}.tui .c8,.tui .c9,.tui .c10{color:#e6e6ea}
 .tui .r{color:#0b0b0d;background:#d4d4d8}.tui .r.c2{background:#ef6b73}.tui .r.c3{background:#8fd46a}.tui .r.c4{background:#f0c35a}.tui .r.c5{background:#6aa8ff}.tui .r.c6{background:#d07ef0}.tui .r.c7{background:#5fd0d6}.tui .r.c8,.tui .r.c9,.tui .r.c10{background:#e6e6ea}
-/* the terminal breaks out of the text column: up to 1380px, centered on the page */
-.pj{--bx:min(calc(50vw - 32px),690px)}
-.fly-wrap{margin-left:calc(50% - var(--bx));margin-right:calc(50% - var(--bx))}
-.viz-note.fly{margin-left:calc(50% - var(--bx) + 254px);margin-right:calc(50% - var(--bx))}
+/* list + terminal span from the title on the left to the breadcrumb on the right */
+.fly-wrap{margin-left:calc(-1 * var(--hang))}
+.viz-note.fly{margin-left:calc(254px - var(--hang))}
 .viz-sel{font-family:inherit;font-size:11px;color:var(--fg);background:var(--bg);border:1px solid var(--border2);border-radius:2px;padding:4px 8px;max-width:100%}
 .viz-sel:focus{outline:1px solid var(--teal)}
 </style>
