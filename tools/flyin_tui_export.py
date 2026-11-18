@@ -14,7 +14,7 @@ sys.path.insert(0, ".")
 from src.__main__ import FlyInApplication  # noqa: E402
 from src.tui import CURSES_COLOR, HEADER_ROWS, FOOTER_ROWS, TerminalUI  # noqa: E402
 
-MIN_COLS, MIN_ROWS, STEPS = 120, 24, 16  # STEPS samples per turn
+MIN_COLS, MIN_ROWS, STEPS = 160, 30, 16  # STEPS samples per turn
 PAIRS = list(CURSES_COLOR)  # pair index - 1 -> color name
 
 

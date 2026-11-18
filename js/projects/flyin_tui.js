@@ -55,7 +55,7 @@
   function fit() {  // whole terminal width visible, like a maximised window
     pre.style.fontSize = '';
     const w = pre.parentElement.clientWidth - 24;
-    pre.style.fontSize = Math.max(7, Math.min(13, w / (M.cols * 0.6))) + 'px';  // phones: scroll sideways below 7px
+    pre.style.fontSize = Math.max(7, Math.min(16, w / (M.cols * 0.6))) + 'px';  // phones: scroll sideways below 7px
   }
 
   function load(i) {
