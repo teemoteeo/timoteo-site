@@ -34,7 +34,7 @@
 .pl-row:last-child { border-bottom: none; }
 .pl-row:hover { background: var(--surface); }
 .pl-row:hover::before { transform: scaleY(1); }
-.pl-name { font-size: 13px; font-weight: 500; color: var(--fg); white-space: nowrap; }
+.pl-name { font-size: 12px; font-weight: 500; color: var(--fg); white-space: nowrap; }
 .pl-row:hover .pl-name { color: var(--teal); }
 .pl-arrow { margin-left: 6px; font-size: 12px; color: var(--fg-muted); }
 /* compact rows: name | description (2 lines max), then year | tags on the line below */
@@ -49,32 +49,12 @@
 .pl-tags { grid-column: 2; grid-row: 2; }
 .pl-tags { display: flex; flex-wrap: wrap; gap: 6px; }
 .pl-tags span {
-  font-size: 11px; letter-spacing: .5px;
+  font-size: 10.5px; letter-spacing: .5px;
   color: var(--fg-muted);
 }
 .pl-tags span:not(:last-child)::after { content: ' ·'; }
 .pl-tags .pl-flag { color: var(--yellow); }
 .pl-year { font-size: 11px; color: var(--fg-muted); white-space: nowrap; }
-/* 42 projects grouped by milestone: vertical label + a thin rule that
-   spans every project of that milestone, like a bracket */
-.pl-ms {
-  position: relative;
-  display: grid; grid-template-columns: 16px minmax(0, 1fr);
-  border-bottom: 1px solid var(--border);
-}
-.pl-ms:last-child { border-bottom: none; }
-.pl-ms::before {
-  content: ''; position: absolute; left: 16px; top: 12px; bottom: 12px;
-  width: 1px; background: var(--border2);
-}
-.pl-ms-l {
-  writing-mode: vertical-rl; transform: rotate(180deg);
-  justify-self: center; align-self: center;
-  font-size: 11px; letter-spacing: 2px; text-transform: uppercase; white-space: nowrap;
-  color: var(--fg-muted);
-}
-.pl-ms-rows { min-width: 0; padding-left: 4px; }
-.pl-ms-rows .pl-row:last-child { border-bottom: none; }
 @media (max-width: 1099px) {
   .pl-row { grid-template-columns: 1fr auto; gap: 3px 12px; padding: 9px 12px; }
   .pl-year { grid-column: 2; grid-row: 1; }
@@ -101,7 +81,7 @@
 .display-item:last-child { border-bottom: none; }
 .display-label { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--fg-muted); }
 .display-content {
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--fg-dim);
   line-height: 1.5;
   text-align: center;
@@ -268,15 +248,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  padding: 18px 8px;
+  gap: 8px;
+  padding: 12px 6px;
   cursor: default;
   transition: background 0.15s;
 }
 .tech-grid-item:hover { background: none; }
 .tech-grid-item img {
-  width: 32px;
-  height: 32px;
+  width: 22px;
+  height: 22px;
   object-fit: contain;
   display: block;
   opacity: 0.85;
@@ -285,7 +265,7 @@
 .tech-grid-item:hover img { opacity: 1; }
 .tech-grid-item span {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
+  font-size: 9.5px;
   letter-spacing: 1px;
   text-transform: uppercase;
   color: var(--fg-muted);
@@ -313,91 +293,237 @@
 .display-content a.email-link { overflow-wrap: anywhere; }
 
 /* ===== LIQUID GLASS =====
-   vetro: sfondo quasi trasparente + backdrop blur/saturate, bordo di luce
-   piu' forte in alto a sinistra (::after con mask), riflesso che segue il
-   puntatore (::before, --mx/--my da js/glass.js) */
+   vetro sobrio: velo chiaro quasi piatto, filo di luce uniforme
+   (piu' chiaro solo sul bordo alto, mai sugli angoli), ombra corta.
+   Il raggio sta in --r: le immagini dentro usano --r meno il padding,
+   cosi' gli angoli restano concentrici. In hover si schiarisce solo il bordo:
+   riflesso sul puntatore e translate sopra il backdrop-filter lasciavano
+   una banda chiara a bordi netti mentre il video girava. */
 .glass {
+  --r: 14px;
   position: relative;
   isolation: isolate;
-  border-radius: 20px;
-  background: linear-gradient(150deg, rgba(255,255,255,.085), rgba(255,255,255,.025) 45%, rgba(255,255,255,.05));
-  -webkit-backdrop-filter: blur(22px) saturate(180%);
-  backdrop-filter: blur(22px) saturate(180%);
+  border-radius: var(--r);
+  /* niente backdrop-filter: calcolato a tile sopra le stelle (canvas fisso) e la
+     griglia in mix-blend-mode lasciava rettangoli piu' chiari a bordi netti, che
+     cambiavano a ogni ridisegno del video (il flicker). Lo sfondo dietro e' quasi
+     nero uniforme: un velo semi-opaco da' lo stesso vetro, stelle appena visibili. */
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.025)),
+    rgba(14,13,16,.8);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.18),
-    inset 0 0 30px rgba(255,255,255,.025),
-    0 18px 50px -12px rgba(0,0,0,.6);
+    inset 0 1px 0 rgba(255,255,255,.07),
+    0 1px 2px rgba(0,0,0,.35),
+    0 12px 28px -20px rgba(0,0,0,.7);
 }
 .glass::after {
   content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px;
-  background: linear-gradient(135deg, rgba(255,255,255,.42), rgba(255,255,255,.06) 32%, rgba(255,255,255,.02) 60%, rgba(255,255,255,.2));
+  background: linear-gradient(180deg, rgba(255,255,255,.17), rgba(255,255,255,.07) 35%, rgba(255,255,255,.05));
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor; mask-composite: exclude;
   pointer-events: none;
 }
-.glass::before {
-  content: ''; position: absolute; inset: 0; border-radius: inherit; z-index: -1;
-  background: radial-gradient(320px circle at var(--mx, 50%) var(--my, 0%), rgba(255,255,255,.11), transparent 65%);
-  opacity: 0; transition: opacity .35s;
-  pointer-events: none;
+.glass:hover::after { background: linear-gradient(180deg, rgba(255,255,255,.28), rgba(255,255,255,.11) 35%, rgba(255,255,255,.08)); }
+/* vetro sul tema chiaro: velo bianco, filo scuro */
+html[data-theme="light"] .glass {
+  background: linear-gradient(180deg, rgba(255,255,255,.8), rgba(255,255,255,.55));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 1px 2px rgba(0,0,0,.06), 0 12px 28px -20px rgba(0,0,0,.3);
 }
-.glass:hover::before { opacity: 1; }
+html[data-theme="light"] .glass::after { background: linear-gradient(180deg, rgba(0,0,0,.07), rgba(0,0,0,.1)); }
+html[data-theme="light"] .glass:hover::after { background: linear-gradient(180deg, rgba(0,0,0,.16), rgba(0,0,0,.2)); }
+html[data-theme="light"] .ct .ic path[fill="#f0f0f0"] { fill: var(--fg); }
+.tech-grid-item img.inv { filter: invert(1); }
+html[data-theme="light"] .tech-grid-item img.inv { filter: none; }
+html[data-theme="light"] .tech-grid-item img.inv-light { filter: invert(1); }
 
-/* ===== SELECTED WORK ===== */
-.featured { margin: 8px 0 56px; }
-.featured .sections-header-col { margin-bottom: 18px; }
-.feat-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px;
-}
+/* ===== SELECTED WORK =====
+   desktop: strisce larghe e basse, una per riga: anteprima | testo | numeri.
+   --mh e' l'altezza dell'anteprima, cioe' della striscia; la prima e' piu' alta. */
+.featured { margin: 4px 0 40px; }
+.featured .sections-header-col { margin-bottom: 14px; }
+.feat-grid { display: grid; gap: 10px; }
 .feat {
-  display: flex; flex-direction: column;
-  padding: 8px;
-  transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s;
+  --mh: 100px;
+  display: grid; grid-template-columns: 260px minmax(0, 1fr) auto;   /* stessa colonna per tutte: i testi restano allineati */
+  align-items: center; column-gap: 20px;
+  padding: 6px;
 }
-.feat:hover { transform: translateY(-4px); box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 26px 60px -14px rgba(0,0,0,.7); }
-.feat-img { border-radius: 13px; overflow: hidden; aspect-ratio: 16 / 10; background: var(--bg2); }
-.feat-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s cubic-bezier(.2,.8,.2,1); }
-.feat:hover .feat-img img { transform: scale(1.04); }
-.feat-body { display: flex; flex-direction: column; flex: 1; padding: 16px 12px 10px; }
+.feat-img { height: var(--mh); border-radius: calc(var(--r) - 6px); overflow: hidden; background: #000; }
+.feat-body { min-width: 0; display: flex; flex-direction: column; }
 .feat-eyebrow {
   font-family: 'Doto', 'JetBrains Mono', monospace; font-weight: 800;
-  font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase;
-  color: var(--teal); margin-bottom: 8px;
+  font-size: 10.5px; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--teal); margin-bottom: 4px;
 }
-.feat-title { font-size: 19px; font-weight: 500; line-height: 1.25; letter-spacing: -.2px; color: var(--fg); margin-bottom: 10px; }
+.feat-title { font-size: 14.5px; font-weight: 500; line-height: 1.3; letter-spacing: -.1px; color: var(--fg); margin-bottom: 4px; transition: color .2s; }
+.feat--hero .feat-title { font-size: 17px; font-weight: 400; letter-spacing: -.3px; }
 .feat-link { color: inherit; text-decoration: none; }
 /* tutta la card e' cliccabile; i link nella descrizione restano sopra */
-.feat-link::after { content: ''; position: absolute; inset: 0; border-radius: 20px; z-index: 1; }
+.feat-link::after { content: ''; position: absolute; inset: 0; border-radius: var(--r); z-index: 1; }
 .feat-link:focus-visible { outline: none; }
 .feat:has(.feat-link:focus-visible) { outline: 1px solid var(--teal); outline-offset: 3px; }
-.feat-desc { font-size: 12.5px; line-height: 1.65; color: var(--fg-dim); flex: 1; }
-.feat-desc a { position: relative; z-index: 2; color: var(--fg); text-decoration: underline; text-decoration-color: rgba(255,255,255,.3); text-underline-offset: 3px; }
+/* max-height oltre al clamp: i link in posizione relativa uscivano dal clamp */
+.feat-desc {
+  max-width: 72ch; font-size: 11.5px; line-height: 1.55; color: var(--fg-dim);
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; max-height: calc(1.55em * 2);
+}
+.feat-desc a { position: relative; z-index: 2; color: var(--fg); text-decoration: underline; text-decoration-color: var(--border2); text-underline-offset: 3px; }
 .feat-desc a:hover { color: var(--teal); text-decoration-color: var(--teal); }
 .feat-foot {
-  display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
-  margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,.08);
-  font-size: 11px; letter-spacing: .5px; color: var(--fg-muted);
+  display: flex; flex-direction: column; align-items: flex-end; gap: 6px;
+  padding-right: 12px; white-space: nowrap;
+  font-size: 10.5px; letter-spacing: .5px; color: var(--fg-muted);
 }
-.feat-stat b { font-size: 15px; font-weight: 500; color: var(--fg); margin-right: 2px; }
+.feat-stat b { font-size: 14px; font-weight: 500; color: var(--fg); margin-right: 2px; }
+.feat--hero .feat-stat b { font-size: 17px; }
 .feat-go { color: var(--fg); letter-spacing: 1px; text-transform: uppercase; transition: color .2s, transform .2s; }
 .feat:hover .feat-go { color: var(--teal); transform: translateX(3px); }
 .feat:hover .feat-title { color: var(--teal); }
 
 @media (min-width: 901px) and (max-width: 1279px) {
-  .feat-grid { gap: 14px; }
-  .feat-body { padding: 14px 8px 8px; }
-  .feat-title { font-size: 16px; }
-  .feat-desc { font-size: 12px; }
-}
-@media (max-width: 900px) {
-  .feat-grid { grid-template-columns: minmax(0, 1fr); }
+  .feat { --mh: 88px; grid-template-columns: 210px minmax(0, 1fr) auto; column-gap: 16px; }
 }
 
+/* mobile: miniatura | testo, numeri sotto il testo; la prima card resta grande */
+@media (max-width: 900px) {
+  .feat { grid-template-columns: 34% minmax(0, 1fr); column-gap: 12px; row-gap: 6px; align-items: start; }
+  .feat-img { grid-row: 1 / 3; height: auto; aspect-ratio: 1; }
+  .feat-body { padding-top: 2px; }
+  .feat-desc { -webkit-line-clamp: 3; max-height: calc(1.55em * 3); }
+  .feat-foot {
+    grid-column: 2; flex-direction: row; justify-content: space-between; align-items: baseline;
+    padding: 6px 4px 2px 0; border-top: 1px solid var(--border);
+  }
+  .feat--hero { grid-template-columns: minmax(0, 1fr); }
+  .feat--hero .feat-img { grid-row: auto; aspect-ratio: 16 / 10; }
+  .feat--hero .feat-body { padding: 8px 8px 0; }
+  .feat--hero .feat-foot { grid-column: 1; padding: 8px 8px 4px; }
+  .feat--hero .feat-title { font-size: 16px; }
+}
+
+/* ===== ANTEPRIME: video corto della visualizzazione vera, parte su hover (js/preview.js) =====
+   Un solo elemento: il video mostra da se' il primo fotogramma (preload + #t=0.001).
+   Prima c'era un poster jpg sotto: jpg e video hanno neri diversi, e ogni
+   scambio poster -> video era un flicker. Niente transform ne' filter sul video. */
+.feat-img, .pr-media { position: relative; }
+.pv { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.feat--hero .pv { object-position: left top; }   /* il mese della mappa sta in alto a sinistra */
+.pv-l { object-position: 12% center; }   /* polenta nel quadrato mobile: Marte, non lo spazio tra i pianeti */
+
 /* righe dei progetti: descrizione piu' leggibile */
-.pl-desc { font-size: 12.5px; }
+.pl-desc { font-size: 11.5px; }
 
 /* tech grid in vetro */
 .tech-grid { background: transparent; gap: 0; }
 .tech-grid-item:hover { background: none; }
+
+/* ===== PROGETTI: righe in vetro, anteprima | nome + descrizione ===== */
+.pl-group > .pr { margin-top: 8px; }
+.pl-head + .pr { margin-top: 2px; }
+.pr {
+  --r: 12px;
+  display: grid; grid-template-columns: 124px minmax(0, 1fr); column-gap: 14px; align-items: center;
+  padding: 5px; color: inherit; text-decoration: none;
+}
+.pr:focus-visible { outline: 1px solid var(--teal); outline-offset: 3px; }
+.pr-media { display: block; height: 56px; border-radius: calc(var(--r) - 5px); overflow: hidden; background: #000; }
+.pr-text { min-width: 0; display: flex; flex-direction: column; gap: 3px; padding-right: 8px; }
+.pr-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.pr-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; font-weight: 500; color: var(--fg); transition: color .2s; }
+.pr:hover .pr-name { color: var(--teal); }
+.pr-tag { flex-shrink: 0; font-family: 'Doto', 'JetBrains Mono', monospace; font-weight: 800; font-size: 10.5px; letter-spacing: 1px; text-transform: uppercase; color: var(--fg-muted); }
+.pr-desc {
+  font-size: 11px; line-height: 1.5; color: var(--fg-dim);
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+/* 42: una riga sola che apre i progetti (details nativo: click, tastiera, niente js) */
+.pr-fold { margin-top: 2px; }
+.pr-fold > summary { list-style: none; cursor: pointer; }
+.pr-fold > summary::-webkit-details-marker { display: none; }
+.pr-42 { display: grid; place-items: center; color: var(--fg); background: transparent; }
+/* logo ufficiale 42 (Wikimedia Commons), monocromo: segue il tema */
+.logo42 { height: 58%; width: auto; fill: currentColor; }
+.pr-desc a { position: relative; color: var(--fg); text-decoration: underline; text-decoration-color: var(--border2); text-underline-offset: 3px; }
+.pr-desc a:hover { color: var(--teal); }
+.pr-caret { display: inline-block; margin-left: 6px; font-style: normal; transition: transform .25s ease; }
+.pr-fold[open] .pr-caret { transform: rotate(90deg); color: var(--teal); }
+/* i progetti aperti sono un file tree a due livelli: 42 > cartella per milestone > progetti.
+   Tronchi e rami sono pseudo-elementi: ::before del nodo = tronco (sull'ultimo nodo si
+   ferma all'altezza del suo ramo), ::before dell'etichetta o del testo = ramo.
+   ::after delle righe resta al bordo del vetro. --tr e' il tratto. */
+.pr-fold { --tr: 1.5px solid var(--fg-muted); --dir: 28px; }
+.pr-fold-rows { margin-left: 30px; padding-bottom: 4px; }
+/* livello 1: cartelle */
+.tree-ms { position: relative; margin-top: 10px; }
+.tree-ms::before { content: ''; position: absolute; left: -18px; top: -13px; bottom: -10px; border-left: var(--tr); pointer-events: none; }
+.tree-ms:last-child::before { bottom: auto; height: calc(13px + var(--dir) / 2); }
+.tree-dir {
+  position: relative; display: flex; align-items: center; gap: 8px; height: var(--dir);
+  font-family: 'Doto', 'JetBrains Mono', monospace; font-weight: 800; font-size: 12px; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--fg);
+}
+.tree-dir::before { content: ''; position: absolute; left: -18px; top: 50%; width: 14px; border-top: var(--tr); pointer-events: none; }
+.tree-ic { width: 16px; height: 13px; fill: var(--teal); flex-shrink: 0; }
+.tree-n { color: var(--fg-muted); font-size: 11px; }
+.tree-n::before { content: '· '; }
+/* livello 2: progetti, il tronco parte sotto l'icona della cartella */
+.tree-kids { margin-left: 26px; }
+.tree-kids > .pr { margin-top: 8px; }
+.tree-kids > .pr::before { content: ''; position: absolute; left: -18px; top: -9px; bottom: -1px; border-left: var(--tr); pointer-events: none; }
+.tree-kids > .pr:first-child::before { top: -9px; }
+.tree-kids > .pr:last-child::before { bottom: 50%; }
+.tree-kids > .pr > .pr-text::before { content: ''; position: absolute; left: -18px; top: 50%; width: 18px; border-top: var(--tr); pointer-events: none; }
+.tree-kids > .pr:hover::before, .tree-kids > .pr:hover > .pr-text::before { border-color: var(--teal); }
+/* all'apertura le cartelle spuntano una dopo l'altra */
+.pr-fold[open] .tree-ms { animation: tree-in .34s cubic-bezier(.2,.8,.2,1) both; }
+.pr-fold[open] .tree-ms:nth-child(2) { animation-delay: .07s; }
+.pr-fold[open] .tree-ms:nth-child(3) { animation-delay: .14s; }
+@keyframes tree-in { from { opacity: 0; transform: translateX(-10px); } }
+@media (prefers-reduced-motion: reduce) { .pr-fold[open] .tree-ms { animation: none; } }
+/* apertura animata dove il browser lo supporta (Chrome 131+); altrove si apre secco */
+:root { interpolate-size: allow-keywords; }
+.pr-fold::details-content { height: 0; overflow: clip; transition: height .3s ease, content-visibility .3s allow-discrete; }
+.pr-fold[open]::details-content { height: auto; }
+@media (prefers-reduced-motion: reduce) { .pr-fold::details-content { transition: none; } }
+
+/* busy: l'interruttore della menu bar, da solo, fermo, sul vetro della card */
+.pr-busy { background: transparent; }
+.pr-x { position: relative; }
+.pl-group > .pr-x { margin-top: 8px; }
+.pl-head + .pr-x { margin-top: 2px; }
+/* stesso box della miniatura (padding 5px + colonna media): l'interruttore ci sta al centro */
+.bz-slot { position: absolute; left: 5px; top: 5px; width: 124px; height: 56px; display: grid; place-items: center; pointer-events: none; }
+.bz-sw {
+  pointer-events: auto; cursor: pointer;
+  position: relative; width: 64px; height: 34px; padding: 0; border-radius: 17px;
+  background: #34c759; border: 1.5px solid rgba(255,255,255,.75);
+  box-shadow: 0 8px 20px -6px rgba(52,199,89,.6);
+  transition: background-color .2s, box-shadow .2s;
+}
+.bz-sw i {
+  position: absolute; top: 2.5px; left: 2.5px; width: 32px; height: 26px; border-radius: 13px;
+  background: linear-gradient(#f7f7f7, #dbdbdb); box-shadow: 0 1px 2px rgba(0,0,0,.35);
+  /* transform, non left: left ricalcolava il layout a ogni frame */
+  transform: translateX(24px);
+  transition: transform .2s cubic-bezier(.3,.7,.3,1.15);
+  will-change: transform;
+}
+.bz-sw:hover { box-shadow: 0 8px 26px -4px rgba(52,199,89,.85); }
+.bz-sw:focus-visible { outline: 1px solid var(--teal); outline-offset: 4px; }
+/* acceso = tema chiaro: rosso, pomello a sinistra */
+.bz-sw[aria-checked="true"] { background: #ff3b30; box-shadow: 0 8px 20px -6px rgba(255,59,48,.6); }
+.bz-sw[aria-checked="true"]:hover { box-shadow: 0 8px 26px -4px rgba(255,59,48,.85); }
+.bz-sw[aria-checked="true"] i { transform: none; }
+
+/* pac-man gira in wasm e headless non lo registra: svg, su hover mangia i puntini */
+.pr-pm { display: grid; place-items: center; height: 100%; }
+.pm { height: 64%; width: auto; }
+.pr:hover .pm-dots { animation: pm-eat .4s linear infinite; }
+@keyframes pm-eat { to { transform: translateX(-22px); } }
+@media (prefers-reduced-motion: reduce) { .pr:hover .pm-dots { animation: none; } }
+@media (max-width: 600px) {
+  .pr { grid-template-columns: 104px minmax(0, 1fr); column-gap: 12px; }
+  .pr-media { height: 54px; }
+  .bz-slot { width: 104px; height: 54px; }
+}

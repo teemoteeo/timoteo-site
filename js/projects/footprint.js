@@ -60,7 +60,7 @@
   // ---------- timeline: map + volume strip ----------
   const G = D.grid, BASE = window.FP_BASE;
   const tlC = $('tl'), tl = PJ.canvas(tlC, w => (w < 520 ? 104 : 116) / w);
-  const mpC = $('mp'), mp = PJ.canvas(mpC, w => (w < 700 ? 1.05 : 0.64));
+  const mpC = $('mp'), mp = PJ.canvas(mpC, w => (w < 700 ? 1.05 : 0.5));   // 0.5: whole map + HUD in the first screen
   let cur = M.length - 1, W = 0, H = 0;
   const pad = { l: 8, r: 8, t: 20, b: 34 };
   const maxT = Math.max(...M.map(tot));
@@ -249,10 +249,12 @@
   tlC.addEventListener('keydown', e => {
     if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); stop(); setCur(cur + (e.key === 'ArrowRight' ? 1 : -1)); }
   });
+  // the map opens the page: start from the first month with a location, not from two empty years
+  const FIRST = Math.max(0, M.findIndex(m => m.city));
   let timer = null;
   function stop() { clearInterval(timer); timer = null; $('tl-play').textContent = 'play'; }
   function play() {
-    if (cur >= M.length - 1) setCur(0);
+    if (cur >= M.length - 1) setCur(FIRST);
     $('tl-play').textContent = 'pause';
     timer = setInterval(() => { if (cur >= M.length - 1) stop(); else setCur(cur + 1); }, 170);   // ms per month: ~23 s from 2015 to today
   }
@@ -260,7 +262,7 @@
   // plays once by itself the first time the map scrolls into view
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver(es => {
-      if (es.some(e => e.isIntersecting)) { io.disconnect(); if (!timer) { setCur(0); play(); } }
+      if (es.some(e => e.isIntersecting)) { io.disconnect(); if (!timer) { setCur(FIRST); play(); } }
     }, { threshold: .45 });
     io.observe(mpC);
   }

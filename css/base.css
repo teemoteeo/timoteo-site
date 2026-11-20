@@ -76,6 +76,34 @@ body {
    il primo punto sta a mezza cella dai bordi, quindi l'angolo è esattamente un quarto di cella.
    punto bianco da 1px al 30% in mix-blend-difference. */
 :root { --dm-cols: 12; }
+
+/* ===== TEMA CHIARO: easter egg, lo accende l'interruttore di BUSY (js/theme.js) ===== */
+html[data-theme="light"] {
+  --bg:       #f2f0e9;
+  --bg2:      #e8e5dc;
+  --surface:  #e2ded3;
+  --border:   rgba(0,0,0,0.08);
+  --border2:  rgba(0,0,0,0.16);
+  --fg:       #17161a;
+  --fg-dim:   #3d3b43;
+  --fg-muted: #6b6872;
+  --teal:     #4a7a0c;   /* il lime su fondo chiaro non si legge */
+  --orange:   #4a7a0c;
+  --yellow:   #94650f;
+  color-scheme: light;
+}
+/* sul chiaro niente stelle: una griglia tre volte piu' fitta, punti piu' piccoli e tenui
+   (la griglia scura in mix-blend difference sulla carta diventava una trama in primo piano) */
+html[data-theme="light"] #space { display: none; }
+html[data-theme="light"] { --dm-cols: 36; }
+@media (max-width: 639px) { html[data-theme="light"] { --dm-cols: 12; } }
+html[data-theme="light"] body::before {
+  mix-blend-mode: normal; opacity: 1;
+  background-image: radial-gradient(circle, rgba(0,0,0,.22) .55px, transparent .9px);
+}
+/* il cambio tema e' una dissolvenza tra due istantanee (View Transitions, js/theme.js):
+   prima body aveva una transition sui colori e ridipingeva tutta la pagina per 350ms */
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: .22s; }
 @media (max-width: 639px) { :root { --dm-cols: 4; } }
 body::before {
   content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
@@ -95,10 +123,10 @@ html .nav-header, html .section-title, html .pl-label, html .bio-block-label,
 html .pj-eyebrow, html .pj-sec:not(.fp-ch) h2, html .viz-label, html .fp-h, html .led-t,
 html .fp-stats span, html .pj-sec.fp-ch h2 .sub, html .facts div > span:first-child, html .fly-list .lv,
 html .fp-toc .s {
-  font-family: 'Doto', 'JetBrains Mono', monospace; font-weight: 800; font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase;
+  font-family: 'Doto', 'JetBrains Mono', monospace; font-weight: 800; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
 }
 html .pl-year, html .age-clock, html .project-year, html .profile-meta {
-  font-family: 'Doto', 'JetBrains Mono', monospace; font-weight: 800; font-size: 13px; letter-spacing: .5px; text-transform: uppercase;
+  font-family: 'Doto', 'JetBrains Mono', monospace; font-weight: 800; font-size: 11px; letter-spacing: .5px; text-transform: uppercase;
 }
 html .tagline-subtitle { font-family: 'Doto', 'JetBrains Mono', monospace; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; }
 html .tagline-subtitle::before { font-family: 'JetBrains Mono', monospace; font-weight: 400; letter-spacing: 0; }

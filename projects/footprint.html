@@ -9,24 +9,24 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Doto:wght@800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/project.css?v=20261118b">
+  <link rel="stylesheet" href="../css/project.css?v=20261120v2">
   <style>
 .pj{max-width:1180px;--hang:clamp(0px, calc((100vw - 1180px) / 2 + 12px), 110px)}
-.pj-lead{max-width:none;font-size:15px;line-height:1.85}
-.fp-text{font-size:13.5px;line-height:1.9;color:var(--fg-dim);margin-bottom:18px}
+.pj-lead{max-width:none;font-size:13px;line-height:1.8}
+.fp-text{font-size:12.5px;line-height:1.85;color:var(--fg-dim);margin-bottom:18px}
 .fp-text strong{color:var(--fg);font-weight:500}
 .fp-text a{color:var(--fg);text-decoration:underline;text-decoration-color:var(--border2);text-underline-offset:3px}
 .fp-text a:hover{color:var(--teal)}
 
 /* essay quotes */
 .fp-quote{margin:30px 0 6px;padding:22px 0 22px 24px;border-left:2px solid var(--teal)}
-.fp-quote p{font-size:clamp(15px,2vw,21px);font-weight:500;line-height:1.45;color:var(--fg);letter-spacing:.5px;text-transform:uppercase}
+.fp-quote p{font-size:clamp(14px,1.5vw,17px);font-weight:500;line-height:1.45;color:var(--fg);letter-spacing:.5px;text-transform:uppercase}
 .fp-quote .it{margin-top:12px;font-size:11.5px;font-weight:400;font-style:normal;text-transform:uppercase;color:var(--fg-muted);line-height:1.7;letter-spacing:.8px}
 .fp-quote cite{display:block;margin-top:10px;font-style:normal;font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--fg-muted)}
-.fp-shout{font-size:clamp(15px,2vw,21px);font-weight:500;letter-spacing:.5px;line-height:1.45;color:var(--fg);margin:6px 0 18px}
+.fp-shout{font-size:clamp(14px,1.5vw,17px);font-weight:500;letter-spacing:.5px;line-height:1.45;color:var(--fg);margin:6px 0 18px}
 
 /* chapter headings */
-.pj-sec{margin-top:64px}
+.pj-sec{margin-top:48px}
 
 /* chapters: clearer separation */
 .pj-sec.fp-ch{margin-top:0;padding-top:0;scroll-margin-top:56px;
@@ -36,8 +36,8 @@
   text-transform:none;letter-spacing:0;color:var(--fg)}
 .pj-sec.fp-ch h2::before{content:none}
 .pj-sec.fp-ch{padding-bottom:28px}
-.pj-sec.fp-ch h2 .num{grid-row:1/3;font-size:clamp(34px,5vw,56px);font-weight:300;color:var(--teal);letter-spacing:-1px;line-height:1}
-.pj-sec.fp-ch h2 .tt{font-size:clamp(20px,2.8vw,30px);font-weight:300;letter-spacing:-.3px;line-height:1.2}
+.pj-sec.fp-ch h2 .num{grid-row:1/3;font-size:clamp(28px,3.4vw,40px);font-weight:300;color:var(--teal);letter-spacing:-1px;line-height:1}
+.pj-sec.fp-ch h2 .tt{font-size:clamp(18px,2vw,23px);font-weight:300;letter-spacing:-.3px;line-height:1.2}
 .pj-sec.fp-ch h2 .sub{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--fg-muted);margin-top:6px}
 
 /* index */
@@ -50,7 +50,7 @@
 .fp-toc a:hover{background:var(--surface)}
 .fp-toc a:hover .t{color:var(--teal)}
 .fp-toc .n{grid-row:1/3;color:var(--teal);font-size:12px;padding-top:1px}
-.fp-toc .t{font-size:13px}
+.fp-toc .t{font-size:12px}
 .fp-toc .s{font-size:10.5px;color:var(--fg-muted)}
 
 /* sticky chapter bar */
@@ -78,15 +78,15 @@ html{scroll-behavior:smooth}
 .fp-stats{display:grid;grid-template-columns:repeat(4,1fr);margin-top:30px}
 .fp-stats div{padding:18px 18px 16px 0}
 .fp-stats div+div{padding-left:18px;border-left:1px solid var(--border)}
-.fp-stats b{display:block;font-size:clamp(22px,3vw,34px);font-weight:300;color:var(--fg);letter-spacing:-.5px;line-height:1.1}
+.fp-stats b{display:block;font-size:clamp(20px,2.2vw,26px);font-weight:300;color:var(--fg);letter-spacing:-.5px;line-height:1.1}
 .fp-stats span{display:block;margin-top:6px;font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--fg-muted);line-height:1.6}
 
 /* timeline: map + strip */
 .mp{position:relative;border-bottom:1px solid var(--border);background:#0b0a0d}
 .mp canvas{display:block;width:100%}
 .mp-hud{position:absolute;left:22px;top:18px;pointer-events:none}
-.mp-month{font-size:clamp(26px,4.4vw,54px);font-weight:300;letter-spacing:-1px;color:var(--fg);line-height:1}
-.mp-city{margin-top:8px;font-size:clamp(15px,2vw,22px);color:var(--teal);letter-spacing:.5px}
+.mp-month{font-size:clamp(22px,2.8vw,36px);font-weight:300;letter-spacing:-1px;color:var(--fg);line-height:1}
+.mp-city{margin-top:6px;font-size:clamp(13px,1.3vw,16px);color:var(--teal);letter-spacing:.5px}
 .mp-read{position:absolute;right:18px;top:18px;width:290px;font-size:11px;line-height:1.85;color:var(--fg-dim);
   background:rgba(14,13,16,.72);border:1px solid var(--border);border-radius:3px;padding:10px 12px;backdrop-filter:blur(3px)}
 .mp-read .k{color:var(--fg-muted);display:inline-block;min-width:74px}
@@ -106,7 +106,7 @@ html{scroll-behavior:smooth}
 .led-row:hover{background:linear-gradient(90deg,transparent,rgba(255,255,255,.015),transparent)}
 .led-n{font-size:11px;color:var(--teal);padding-top:3px}
 .led-t{display:block;font-size:9.5px;letter-spacing:1.8px;text-transform:uppercase;color:var(--fg-muted);margin-bottom:6px}
-.led-claim{font-size:15.5px;line-height:1.5;color:var(--fg)}
+.led-claim{font-size:13.5px;line-height:1.5;color:var(--fg)}
 .led-ev{font-size:11.5px;line-height:1.8;color:var(--fg-dim);padding-top:19px}
 .led-ev b{color:var(--fg);font-weight:500}
 .led-meta{display:flex;flex-direction:column;align-items:flex-end;gap:7px;text-align:right;font-size:10px;color:var(--fg-muted);padding-top:21px}
@@ -176,8 +176,8 @@ html{scroll-behavior:smooth}
 
 /* others */
 .big{display:grid;grid-template-columns:auto 1fr;gap:10px 36px;align-items:baseline;padding:22px 0;margin-bottom:22px}
-.big b{font-size:clamp(34px,6vw,64px);font-weight:300;letter-spacing:-1.5px;color:var(--fg);line-height:1}
-.big span{font-size:13px;color:var(--fg-dim);line-height:1.8}
+.big b{font-size:clamp(30px,4vw,46px);font-weight:300;letter-spacing:-1.5px;color:var(--fg);line-height:1}
+.big span{font-size:12px;color:var(--fg-dim);line-height:1.8}
 
 /* rhythm */
 .rh{display:grid;grid-template-columns:1fr 1fr}
@@ -201,6 +201,9 @@ html{scroll-behavior:smooth}
 .yt-row .n{color:var(--fg-muted);font-size:10px;text-align:right}
 
 /* method */
+/* the map opens the page, aligned with the hanging title */
+.fp-hero{margin:24px 0 0 calc(-1 * var(--hang))}
+.fp-hero + .viz-note{margin:10px 0 28px calc(-1 * var(--hang))}
 .pipe{font-size:11px;line-height:1.9;color:var(--fg-dim);white-space:pre;overflow-x:auto;border:1px solid var(--border2);border-radius:4px;background:var(--bg2);padding:14px 16px;margin-top:22px}
 .pipe .c{color:var(--fg-muted)} .pipe .t{color:var(--teal)} .pipe .x{color:var(--red)}
 
@@ -261,6 +264,20 @@ html{scroll-behavior:smooth}
     <header class="pj-head">
       <div class="pj-eyebrow">personal research · privacy · milan 2023 → florence 2026</div>
       <h1 class="pj-title">The Non-Ownership of Data</h1>
+      <div class="viz fp-hero">
+        <div class="viz-bar"><span class="viz-label">where my phone pointed · 2015 → 2026</span><span class="grow"></span>
+          <button id="tl-play" class="viz-btn">play</button></div>
+        <div class="mp">
+          <canvas id="mp" aria-label="map of Google Maps activity on a 5 km grid, month by month"></canvas>
+          <div class="mp-hud"><div class="mp-month" id="mp-month"></div><div class="mp-city" id="mp-city"></div></div>
+          <div class="mp-read" id="tl-read"></div>
+          <div class="mp-note">5 km grid · blurred on purpose</div>
+        </div>
+        <div class="mp-else" id="mp-else"></div>
+        <div class="mp-strip"><canvas id="tl" tabindex="0" aria-label="events per month; drag or use arrow keys to move through time"></canvas></div>
+        <div class="viz-foot" id="tl-legend"></div>
+      </div>
+      <p class="viz-note">Every square is a 5 km cell where Google Maps recorded activity. Bright ones are the last few months, dim ones are everywhere the data has ever pointed. The strip underneath is the volume of everything logged, by source, with the four phases a changepoint algorithm found <em>without being told anything about my life</em>. Drag it to move through time.</p>
       <p class="pj-lead">In May 2023, for a digital-products law exam at the University of Milan, I wrote an essay called <strong>The non-ownership of data</strong>. The argument was simple: what we produce online stops being ours the moment it is recorded. Platforms collect it, keep it, process it and sell access to it. The GDPR was the first real attempt to give some of that control back. Three years later I tested it. I asked <strong>Spotify, Instagram and Google</strong> for everything they had on me, merged it into one timeline of <strong id="fp-events">605,610 events</strong> over eleven years, and asked the question the essay only asked in theory: <strong>how much can someone work out about a person from their traces alone?</strong></p>
 
       <blockquote class="fp-quote">
@@ -289,21 +306,8 @@ html{scroll-behavior:smooth}
     <!-- 01 EXPLICIT / IMPLICIT -->
     <section class="pj-sec fp-ch" id="c01">
       <h2><span class="num">01</span><span class="tt">Explicit and Implicit Data</span><span class="sub">the map of where my phone pointed</span></h2>
-      <p class="fp-text">The essay separated two kinds of data. <strong>Explicit data</strong> is what you hand over yourself: name, birthday, email. <strong>Implicit data</strong> is what gets recorded while they watch what you do: every song, like, search, map view and message timestamp. My explicit data would fit on a business card. This is the implicit part, month by month.</p>
-      <div class="viz">
-        <div class="viz-bar"><span class="viz-label">where my phone pointed · 2015 → 2026</span><span class="grow"></span>
-          <button id="tl-play" class="viz-btn">play</button></div>
-        <div class="mp">
-          <canvas id="mp" aria-label="map of Google Maps activity on a 5 km grid, month by month"></canvas>
-          <div class="mp-hud"><div class="mp-month" id="mp-month"></div><div class="mp-city" id="mp-city"></div></div>
-          <div class="mp-read" id="tl-read"></div>
-          <div class="mp-note">5 km grid · blurred on purpose</div>
-        </div>
-        <div class="mp-else" id="mp-else"></div>
-        <div class="mp-strip"><canvas id="tl" tabindex="0" aria-label="events per month; drag or use arrow keys to move through time"></canvas></div>
-        <div class="viz-foot" id="tl-legend"></div>
-      </div>
-      <p class="viz-note">Every square is a 5 km cell where Google Maps recorded activity. Bright ones are the last few months, dim ones are everywhere the data has ever pointed. The strip underneath is the volume of everything logged, by source, with the four phases a changepoint algorithm found <em>without being told anything about my life</em>. Drag it to move through time.</p>
+      <p class="fp-text">The essay separated two kinds of data. <strong>Explicit data</strong> is what you hand over yourself: name, birthday, email. <strong>Implicit data</strong> is what gets recorded while they watch what you do: every song, like, search, map view and message timestamp. My explicit data would fit on a business card. The map at the top of the page is the implicit part, month by month.</p>
+
     </section>
 
     <!-- 02 INFERENCES -->
@@ -457,7 +461,7 @@ html{scroll-behavior:smooth}
   <script src="../js/projects/common.js?v=20260929b"></script>
   <script src="../js/projects/data/footprint.js?v=20261003k"></script>
   <script src="../js/projects/data/footprint-map.js?v=20260929d"></script>
-  <script src="../js/projects/footprint.js?v=20261003n"></script>
+  <script src="../js/projects/footprint.js?v=20261120b"></script>
   <script>
   // chapter bar: shows after the index, highlights the chapter in view
   (function () {

@@ -14,7 +14,6 @@
   const IN_MS = 1300, OUT_MS = 800;
   const WAIT_MS = 100;           // hover this long before the burst starts
   const HEAD = 0.03, TRAIL = 0.22; // in rain-time units: bright head, then a trail fading into the pixel's color
-  const HEAD_RGB = [240, 236, 221]; // --fg
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const cv = document.createElement('canvas');
@@ -50,7 +49,7 @@
     for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
       const i = (y * cols + x) * 4;
       const lum = (0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]) / 255;
-      // lift darks a little so the skin tones keep their warmth on the dark background
+      // lift darks a little so the skin tones keep their warmth (same on both themes)
       const rgb = [d[i], d[i + 1], d[i + 2]].map(v => Math.round(255 * Math.pow(v / 255, 0.8)));
       // cells stretch to cover the whole box, so no strip of photo is left at the edges
       const rx = Math.floor(x * w / cols), ry = Math.floor(y * h / rows);
@@ -58,7 +57,9 @@
       cells.push({
         rx, ry, rw, rh, x: rx, y: ry + rh * 0.8,
         ch: RAMP[Math.min(RAMP.length - 1, Math.floor(lum * RAMP.length))],
-        rgb, color: `rgb(${rgb})`, delay: 0,
+        // light theme: ink on paper, the darker the pixel the denser the char (blacks come out full)
+        inkCh: RAMP[Math.min(RAMP.length - 1, Math.floor((1 - lum) * RAMP.length))], raw: [d[i], d[i + 1], d[i + 2]],
+        rgb, delay: 0,
       });
     }
     shuffle({ u: 0.5, v: 0.5 });
@@ -80,32 +81,37 @@
   const glyph = (i, t) => GLYPHS[((Math.imul(i + 1, 2654435761) ^ Math.imul(Math.floor(t / 60) + 1, 40503)) >>> 0) % GLYPHS.length];
   const mix = (a, b, k) => `rgb(${a.map((v, j) => Math.round(v + (b[j] - v) * k))})`;
 
+  // same rain on both themes: cell background (--bg) and rain head (--fg) follow the theme
+  const rgbOf = hex => { const n = parseInt(hex.trim().slice(1), 16); return [n >> 16, (n >> 8) & 255, n & 255]; };
+
   function draw(t) {
     ctx.clearRect(0, 0, w, h);
     if (p <= 0) return;
+    const css = getComputedStyle(document.documentElement), light = document.documentElement.dataset.theme === 'light';
+    const BG = css.getPropertyValue('--bg').trim(), HEAD_RGB = rgbOf(css.getPropertyValue('--fg'));
     ctx.font = `600 ${CELL_H * 0.95}px 'JetBrains Mono', 'Hiragino Sans', monospace`;
 
     const T = p * (maxDelay + TRAIL);
     cells.forEach((c, i) => {
-      const lt = T - c.delay;
+      const lt = T - c.delay, rgb = light ? c.raw : c.rgb, ch = light ? c.inkCh : c.ch;
       if (lt < 0) return;
       // hard cut: once the rain reaches a cell, the photo under it is gone
       ctx.globalAlpha = 1;
-      ctx.fillStyle = '#0e0d10';
-      ctx.fillRect(c.rx, c.ry, c.rw, c.rh);
+      ctx.fillStyle = BG;
+      ctx.fillRect(c.rx, c.ry, c.rw + 1, c.rh + 1);   // +1: antialiased edges let the photo show through as a grid
       if (lt < HEAD) {
         ctx.globalAlpha = 1;
         ctx.fillStyle = `rgb(${HEAD_RGB})`;
         ctx.fillText(glyph(i, t), c.x, c.y);
       } else if (lt < TRAIL) {
         const k = (lt - HEAD) / (TRAIL - HEAD);
-        ctx.globalAlpha = c.ch === ' ' ? 1 - k : 1;
-        ctx.fillStyle = mix(HEAD_RGB, c.rgb, k);
-        ctx.fillText(k < 0.6 ? glyph(i, t) : c.ch, c.x, c.y);
-      } else if (c.ch !== ' ') {
+        ctx.globalAlpha = ch === ' ' ? 1 - k : 1;
+        ctx.fillStyle = mix(HEAD_RGB, rgb, k);
+        ctx.fillText(k < 0.6 ? glyph(i, t) : ch, c.x, c.y);
+      } else if (ch !== ' ') {
         ctx.globalAlpha = 1;
-        ctx.fillStyle = c.color;
-        ctx.fillText(c.ch, c.x, c.y);
+        ctx.fillStyle = `rgb(${rgb})`;
+        ctx.fillText(ch, c.x, c.y);
       }
     });
 

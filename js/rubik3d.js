@@ -6,7 +6,9 @@ function initRubikCube() {
   if (!canvas || !window.THREE) return;
 
   const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
-  renderer.setSize(480, 480, false);
+  // 960 di base; l'intro (js/boot.js) la alza finche' il cubo e' grande al centro
+  renderer.setSize(window.cubeRes || 960, window.cubeRes || 960, false);
+  window.rubikRes = px => renderer.setSize(px, px, false);
   renderer.setClearColor(0x000000, 0); // trasparente: sotto c'e' lo spazio
 
   const scene = new THREE.Scene();
@@ -295,9 +297,31 @@ function initRubikCube() {
   canvas.addEventListener('pointerup', () => { isDragging = false; autoRotate = true; });
   canvas.addEventListener('pointercancel', () => { isDragging = false; autoRotate = true; });
 
+  // invito a cliccare (intro): gira una faccia e la rimette a posto. Non e' interrompibile:
+  // rubikBusy() dice all'intro di aspettare, due mosse insieme rovinerebbero il cubo
+  let teasing = false;
+  window.rubikBusy = () => teasing || isMoving;
+  window.rubikTease = function () {
+    if (teasing || isMoving || state !== 'idle') return;
+    teasing = true;
+    const m = randomMove();
+    doMove(m, () => setTimeout(() => doMove(INVERSE[m], () => { teasing = false; }, 300), 140), 300);
+  };
+
+  // giro extra su comando (l'intro lo chiama mentre il cubo vola al suo posto):
+  // stessa curva ease-in-out del volo, cosi' rimpicciolimento e rotazione vanno insieme
+  let spin = null;
+  window.rubikSpin = function (dur, angle) { spin = { t0: performance.now(), dur, angle, done: 0 }; };
+  const easeInOut = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
   (function render() {
     requestAnimationFrame(render);
     if (autoRotate && !isMoving) cubeGroup.rotation.y += 0.004;
+    if (spin) {
+      const k = Math.min(1, (performance.now() - spin.t0) / spin.dur), a = spin.angle * easeInOut(k);
+      cubeGroup.rotation.y += a - spin.done; spin.done = a;
+      if (k === 1) spin = null;
+    }
     if (state === 'solving') showTime(performance.now() - solveStart);
     renderer.render(scene, camera);
   })();

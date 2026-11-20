@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Doto:wght@800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/project.css?v=20261118b">
+  <link rel="stylesheet" href="../css/project.css?v=20261120v2">
   <style>
 .viz-stage iframe{display:block;width:100%;aspect-ratio:1200/810;border:0;background:#000}
 </style>
@@ -28,10 +28,10 @@
     </header>
 
     <div class="viz">
-      <div class="viz-bar"><span class="viz-label">play</span><span class="grow"></span><span style="color:var(--fg-muted)">arrows / wasd · enter · p pause · c cheats</span></div>
-      <div class="viz-stage"><iframe src="pac-man/index.html" title="Pac-Man, playable" loading="lazy"></iframe></div>
+      <div class="viz-bar"><span class="viz-label">play</span><span class="grow"></span><span style="color:var(--fg-muted)">keyboard only · arrows / wasd · enter · p pause · c cheats</span></div>
+      <div class="viz-stage"><iframe id="pm-game" src="pac-man/index.html" title="Pac-Man, playable: keyboard only"></iframe></div>
     </div>
-    <p class="viz-note">The game's own Python, unchanged, compiled to WebAssembly with <code>pygbag</code>. Click the game first, then play with the keyboard. Desktop only.</p>
+    <p class="viz-note">The game's own Python, unchanged, compiled to WebAssembly with <code>pygbag</code>. Keyboard only, the mouse does nothing: arrows or WASD to move, Enter to start, P to pause. It starts on its own and already has the keyboard. Desktop only.</p>
 
     <section class="pj-sec">
       <h2>how it works</h2>
@@ -48,5 +48,12 @@
     </nav>
   </main>
   <script src="../js/space.js?v=20261118a"></script>
+  <script>
+    // the game takes the keyboard as soon as it loads: no click needed before the arrows work
+    (function () {
+      const f = document.getElementById('pm-game');
+      f.addEventListener('load', () => { try { f.contentWindow.focus(); } catch (e) {} });
+    })();
+  </script>
 </body>
 </html>

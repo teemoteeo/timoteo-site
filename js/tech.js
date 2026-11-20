@@ -16,9 +16,9 @@
     { label: 'Neovim',     icon: 'neovim.svg' },
     { label: 'Obsidian',   icon: 'obsidian.svg' },
     { label: 'Claude',     icon: 'claude.svg' },
-    { label: 'GPT',        icon: 'openai.svg' },
-    { label: 'MLX',        icon: 'mlx.png' },
-    { label: 'LM Studio',  icon: 'lmstudio.svg' },
+    { label: 'GPT',        icon: 'openai.svg', light: true },
+    { label: 'MLX',        icon: 'mlx.png', light: true },
+    { label: 'LM Studio',  icon: 'lmstudio.svg', light: true },
     { label: 'Qwen',       icon: 'qwen.svg' },
   ];
 
@@ -33,7 +33,8 @@
       img.src = I + item.icon;
       img.alt = item.label;
       img.loading = 'lazy';
-      if (item.invert) img.style.filter = 'invert(1)';
+      if (item.invert) img.className = 'inv';        // logo nero: invertito solo sul tema scuro
+      if (item.light) img.className = 'inv-light';  // logo bianco: invertito solo sul tema chiaro
       el.appendChild(img);
     } else {
       const m = document.createElement('div');

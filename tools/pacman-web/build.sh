@@ -20,3 +20,11 @@ rm -rf "$OUT" && cp -R "$TMP/build/web" "$OUT"
 WHEEL='addEventListener("wheel", e => { e.stopImmediatePropagation(); e.preventDefault(); parent.scrollBy(e.deltaX, e.deltaY * (e.deltaMode ? 16 : 1)) }, { capture: true, passive: false })'
 sed -i '' -e 's/ume_block : 1/ume_block : 0/' -e 's/can_close : 0/can_close : 1/' \
     -e 's/"#7f7f7f"/"#000"/' -e "s|</body>|<script>$WHEEL</script></body>|" "$OUT/index.html"
+# Portfolio look: the Python block still waits for a click (MM.UME) even with ume_block 0,
+# and the loader is powder blue with a green/blue box. Start at once, dark, quiet loader.
+sed -i '' -e 's/    if not platform.window.MM.UME:/    if False:  # portfolio: the game has no sound, start without waiting for a click/' \
+    -e 's/background-color:powderblue;/background-color:#000;/' \
+    -e 's/            background: green;/            background: transparent;/' \
+    -e 's/            color: blue;/            color: #9d9aa3;/' \
+    -e 's/            font-weight: bold;$/            font: 12px\/1.4 ui-monospace, monospace; letter-spacing: 1px;/' \
+    -e 's/Loading, please wait .../loading pac-man…/' "$OUT/index.html"

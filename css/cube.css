@@ -90,8 +90,8 @@
   min-width: 104px;
 }
 #sb-cube-canvas {
-  width: 220px;
-  height: 220px;
+  width: 170px;
+  height: 170px;
   display: block;
   cursor: grab;
 }
@@ -123,7 +123,7 @@
 /* ===== PLACEHOLDER + LAZY LOAD (three.js caricato solo quando serve) ===== */
 .sidebar-cube { position: relative; }
 #sb-cube-canvas { touch-action: none; }
-.cube-ph { display: block; width: 220px; height: 220px; }
+.cube-ph { display: block; width: 170px; height: 170px; }
 .sidebar-cube.is-live .cube-ph { display: none; }
 .sidebar-cube #sb-cube-canvas { display: none; }
 .sidebar-cube.is-live #sb-cube-canvas { display: block; animation: cube-in .35s ease-out; }
@@ -187,4 +187,55 @@
   #sb-cube-canvas, .cube-ph { width: 96px; height: 96px; }
   #sb-cube-btn { width: 116px; min-height: 28px; padding: 0; font-size: 9px; letter-spacing: 1px; white-space: nowrap; }
   .cube-timer { font-size: 9px; margin-top: 4px; }
+}
+
+/* ===== INTRO: il cubo grande al centro (js/boot.js) =====
+   la pagina c'e' gia' ma e' invisibile, tranne il cubo: cosi' il cubo puo' volare
+   nella sua posizione vera. visibility si eredita e un figlio la puo' riaccendere,
+   e funziona anche con il display:contents del layout mobile. */
+/* scrollbar-gutter: quando lo scroll si sbloccava compariva la barra, la pagina si
+   stringeva di ~15px e il punto d'arrivo del cubo saltava a meta' volo */
+html { scrollbar-gutter: stable; }
+html.intro { overflow: hidden; }
+html.intro .container * { visibility: hidden; }
+html.intro .sidebar-cube, html.intro .sidebar-cube * { visibility: visible; }
+html.intro .sidebar-cube, html.landing .sidebar-cube { position: relative; z-index: 20; }
+.sidebar-cube.flying { transition: transform .9s cubic-bezier(.65, 0, .35, 1); }
+/* i controlli del cubo compaiono quando il cubo e' atterrato */
+html.landing .sidebar-cube-controls { opacity: 0; }
+.sidebar-cube-controls { transition: opacity .3s; }
+#cube-intro {
+  position: fixed; inset: 0; z-index: 30; pointer-events: none;
+  transition: opacity .3s;
+}
+#cube-intro.out { opacity: 0; }
+#cube-intro button { pointer-events: auto; background: none; border: 0; cursor: pointer; font: inherit; color: inherit; }
+/* stessa voce del bottone del cubo in home (#sb-cube-btn): a meta' tra cubo e bordo */
+.ci-shuffle {
+  position: absolute; left: var(--ci-x, 50%); top: var(--ci-y, 70%); transform: translate(-50%, -50%);
+  font-family: 'JetBrains Mono', monospace !important; font-weight: 500 !important;
+  font-size: 13px !important; letter-spacing: 2px; text-transform: uppercase; white-space: nowrap;
+  line-height: 1.7; text-align: center;
+  color: var(--fg) !important; padding: 8px 0;
+  transition: color .2s;
+}
+/* scritta e skip reagiscono come il cubo: manina e +4% con la stessa curva; la scritta diventa anche verde */
+.ci-shuffle, .ci-skip { cursor: pointer; transition: scale .35s cubic-bezier(.2,.8,.2,1), color .2s !important; }
+.ci-shuffle:hover, .ci-skip:hover { scale: 1.04; }
+.ci-shuffle:hover { color: var(--teal) !important; }
+.ci-shuffle:focus-visible, .ci-skip:focus-visible { outline: 1px solid var(--teal); outline-offset: 4px; }
+/* il cubo invita al click: manina e un leggero ingrandimento al passaggio (scale sul canvas,
+   la transform di .sidebar-cube e' gia' usata per portarlo al centro) */
+html.intro .sidebar-cube { cursor: pointer; }
+html.intro #sb-cube-canvas, html.intro .cube-ph { cursor: pointer; transition: scale .35s cubic-bezier(.2,.8,.2,1); }
+html.intro .sidebar-cube:hover #sb-cube-canvas, html.intro .sidebar-cube:hover .cube-ph { scale: 1.04; }
+/* il dominio, in cima al centro, nella stessa voce */
+.ci-domain {
+  position: absolute; top: 26px; left: 50%; transform: translateX(-50%);
+  font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 13px; letter-spacing: 2px;
+  color: var(--fg-muted);
+}
+.ci-skip {
+  position: absolute; right: 24px; bottom: 22px;
+  font-size: 11px !important; letter-spacing: 1.5px; text-transform: uppercase; color: var(--fg-muted) !important;
 }
