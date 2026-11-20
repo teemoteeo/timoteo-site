@@ -377,7 +377,8 @@ function initEightBall() {
     dragging = false;
     const tap = moved < 6 && (performance.now() - pressT) < 500
       && Math.abs(e.clientX - pressX) < 6 && Math.abs(e.clientY - pressY) < 6;
-    if (tap) api.ask();
+    // senza domanda il tap non fa niente: ask() a vuoto metteva il focus sul campo e la pagina scattava
+    if (tap && document.getElementById('eb-input').value.trim()) api.ask();
   }
   canvas.addEventListener('pointerup', release);
   canvas.addEventListener('pointercancel', function () { dragging = false; });
