@@ -8,13 +8,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Doto:wght@800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/project.css?v=20261120v2">
+  <script>try { if (localStorage.getItem('theme') === 'light') document.documentElement.dataset.theme = 'light'; } catch (e) {}</script>
+  <link rel="stylesheet" href="../css/project.css?v=20261120v11">
   <style>
 .cdx{display:grid;grid-template-columns:1fr 300px}
 .cdx-table{border-right:1px solid var(--border)}
 .cdx-side{padding:14px;display:flex;flex-direction:column;gap:12px;min-width:0}
 .cdx-h{display:block;font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--fg-muted);margin-bottom:6px}
-.cdx-log{font-size:10.5px;line-height:1.75;color:var(--fg-muted);white-space:pre;overflow:hidden;min-height:170px}
+.cdx-log{font-size:10.5px;line-height:1.75;color:var(--fg-muted);white-space:pre;overflow:hidden;min-height:100px}
 .cdx-log .now{color:var(--fg)} .cdx-log .bad{color:var(--red)!important}
 .cdx-key{margin-top:auto;display:grid;gap:6px;font-size:10px;color:var(--fg-muted);border-top:1px solid var(--border);padding-top:12px}
 .cdx-key div{display:flex;align-items:center;gap:8px}
@@ -60,13 +61,15 @@
       <div class="pj-tags"><span>python</span><span>dfs</span><span>prim</span><span>kruskal</span><span>bidirectional bfs</span><span>curses</span><span>pip package</span></div>
     </header>
 
+    <div class="pj-main">
     <div class="viz">
   <div class="viz-bar"><span class="viz-label">carve → solve</span><span id="viz-algo"></span><span class="grow"></span>
    <button id="viz-skip" class="viz-btn">skip</button><button id="viz-play" class="viz-btn">pause</button></div>
   <div class="viz-stage"><canvas id="viz"></canvas></div>
   <div class="viz-foot"><span id="viz-phase" style="color:var(--fg-dim)"></span><span class="grow"></span><span class="lg"><i style="background:rgba(91,156,246,.5)"></i>search from entry</span><span class="lg"><i style="background:rgba(224,108,117,.5)"></i>search from exit</span><span class="lg"><i style="background:var(--yellow);opacity:.6"></i>42 pattern</span></div>
  </div>
- <p class="viz-note">Steps exported from the project's own <code>generator.py</code> (<code>carve_steps</code>) and <code>solver.py</code> (<code>bfs_bidir_layers</code>): 29×19 grid, seed 42.</p>
+      <aside class="pj-aside"><span class="pj-aside-k">carve → solve</span><h3 class="pj-aside-t">The maze being built, then solved</h3><p class="viz-note">Steps exported from the project's own <code>generator.py</code> (<code>carve_steps</code>) and <code>solver.py</code> (<code>bfs_bidir_layers</code>): 29×19 grid, seed 42.</p></aside>
+    </div>
 
     <section class="pj-sec">
       <h2>how it works</h2>
@@ -83,7 +86,7 @@
     </nav>
   </main>
 
-  <script src="../js/projects/common.js?v=20260918c"></script>
+  <script src="../js/projects/common.js?v=20261120d"></script>
   <script src="../js/projects/data/amazeing.js?v=20260918c"></script>
   <script src="../js/projects/amazeing.js?v=20260918c"></script>
   <script src="../js/space.js?v=20261118a"></script>

@@ -1,14 +1,17 @@
-@import './base.css?v=20261120v10';
+@import './base.css?v=20261120v12';
 
 /* project pages render immediately: no boot gate */
 body { min-height: 100vh; }
 .pj {
   max-width: 1180px;
   margin: 0 auto;
-  padding: 40px 32px 72px;
+  /* side margin = the hang + 40px: headings on the outer edge never touch the window */
+  padding: 40px calc(var(--hang, 28px) + 40px) 72px;
 }
-/* hanging headings: title and section labels stick out to the left of the text column */
-.pj { --hang: clamp(0px, calc((100vw - 1180px) / 2 + 12px), 110px); }
+/* spatial hierarchy: navigation, eyebrow, title and section headings sit on the outer edge,
+   everything they introduce (lead, tags, demo, text) is indented by --hang. A fixed step, not
+   the old window-dependent one that at some widths was a few px and looked like a mistake. */
+.pj { --hang: 28px; }
 .pj-head .pj-eyebrow, .pj-head .pj-title { margin-left: calc(-1 * var(--hang)); }
 .pj-top { margin-left: calc(-1 * var(--hang)); }   /* "← cd ~" in line with the titles */
 .pj-sec h2 { margin-left: calc(-1 * var(--hang)); }
@@ -16,7 +19,8 @@ body { min-height: 100vh; }
   display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
   font-size: 11px; color: var(--fg-muted);
 }
-.pj-top a { color: var(--fg); text-decoration: none; font-size: 15px; letter-spacing: .3px; }
+/* navigation, not content: quiet, so the title is the first thing you read */
+.pj-top a { color: var(--fg-muted); text-decoration: none; font-size: 12px; letter-spacing: .5px; transition: color .2s; }
 .pj-top a:hover { color: var(--teal); }
 .pj-crumb { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .pj-crumb b { color: var(--fg); font-weight: 500; }
@@ -24,7 +28,7 @@ body { min-height: 100vh; }
 .pj-head { margin: 20px 0 28px; }
 .pj-eyebrow {
   font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
-  color: var(--fg-muted); margin-bottom: 10px;
+  color: var(--teal); margin-bottom: 10px;   /* same voice as the cards on the home */
 }
 .pj-title {
   font-size: clamp(26px, 3.4vw, 34px); font-weight: 300; letter-spacing: -.5px;
@@ -33,15 +37,14 @@ body { min-height: 100vh; }
 /* a block as tall as the capitals, sitting on the baseline: the █ glyph hung below the letters */
 .pj-title::after { content: ''; display: inline-block; width: .42em; height: .7em; margin-left: 6px; background: var(--teal); animation: blink 1s step-end infinite; vertical-align: baseline; }
 .pj-lead {
-  margin-top: 18px; max-width: none;
+  margin-top: 16px; max-width: none;
   font-size: 12.5px; line-height: 1.8; color: var(--fg-dim);
 }
 .pj-lead strong { color: var(--fg); font-weight: 500; }
-.pj-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 18px; }
-.pj-tags span {
-  font-size: 11px; letter-spacing: .5px; color: var(--fg-dim);
-  border: 1px solid var(--border2); border-radius: 2px; padding: 2px 8px;
-}
+.pj-tags { display: flex; flex-wrap: wrap; gap: 4px 8px; margin-top: 14px; }
+/* tags as a quiet line, like the project rows on the home: boxes competed with the lead */
+.pj-tags span { font-size: 11px; letter-spacing: .5px; color: var(--fg-muted); }
+.pj-tags span:not(:last-child)::after { content: ' ·'; }
 
 /* visualization panel */
 .viz {
@@ -119,4 +122,25 @@ body { min-height: 100vh; }
 }
 
 /* like fly-in: the demo spans from the title on the left to the breadcrumb on the right */
-.pj > .viz, .pj > .viz-note, .pj > .mm-note { margin-left: calc(-1 * var(--hang)); }
+
+/* ===== LIGHT THEME (js/theme.js, set in <head> from localStorage) =====
+   the demo panels follow the theme too (variables + js/projects/common.js); only the
+   things that are pictures of something else stay dark: the Mac in BUSY, the Pac-Man game, the career map */
+
+/* ===== main demo (2/3) + what you are looking at (1/3) =====
+   static grid: the page loads at its final size, nothing resizes after load */
+.pj-main { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 0 36px; align-items: start; margin-top: 24px; }
+.pj-main > .viz, .pj-left > .viz { margin: 0 !important; }
+.pj-left { min-width: 0; }
+.pj-aside { position: sticky; top: 24px; padding-top: 4px; }
+.pj-aside-k {
+  display: block; font-family: 'Doto', 'JetBrains Mono', monospace; font-weight: 800;
+  font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--teal);
+}
+.pj-aside-t { font-size: 18px; font-weight: 400; line-height: 1.3; letter-spacing: -.2px; color: var(--fg); margin: 8px 0 12px; }
+.pj-aside .viz-note, .pj-aside .mm-note { margin: 0 !important; font-size: 12.5px; line-height: 1.8; color: var(--fg-dim); }
+.pj-aside .viz-note code { color: var(--fg); }
+@media (max-width: 1000px) {
+  .pj-main { grid-template-columns: minmax(0, 1fr); }
+  .pj-aside { position: static; padding-top: 16px; }
+}

@@ -8,7 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Doto:wght@800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/project.css?v=20261120v2">
+  <script>try { if (localStorage.getItem('theme') === 'light') document.documentElement.dataset.theme = 'light'; } catch (e) {}</script>
+  <link rel="stylesheet" href="../css/project.css?v=20261120v11">
   <style>
 .cdx{display:grid;grid-template-columns:1fr 300px}
 .cdx-table{border-right:1px solid var(--border)}
@@ -44,7 +45,7 @@
 .cmm-raw pre{color:var(--fg-dim);font-size:12px}
 .cmm-raw pre b{color:var(--red);font-weight:400}
 @media(max-width:760px){.cmm{grid-template-columns:1fr}.cmm-out{border-right:0;border-bottom:1px solid var(--border)}}
-.fly-wrap{display:grid;grid-template-columns:230px minmax(0,1fr);gap:24px;align-items:start}
+.fly-wrap{display:grid;grid-template-columns:230px minmax(0,1fr);gap:24px;align-items:center}   /* the map sits centred on the list */
 .fly{min-width:0}
 .fly-list{font-size:11.5px;position:sticky;top:20px}
 .fly-list .lv{display:block;font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--fg-muted);margin:14px 0 6px;padding-bottom:5px;border-bottom:1px solid var(--border)}
@@ -60,10 +61,11 @@
 .tui:focus{box-shadow:inset 0 0 0 1px var(--teal)}
 .tui .b{font-weight:600}.tui .d{opacity:.5}
 .tui .c1{color:#55555c}.tui .c2{color:#ef6b73}.tui .c3{color:#8fd46a}.tui .c4{color:#f0c35a}.tui .c5{color:#6aa8ff}.tui .c6{color:#d07ef0}.tui .c7{color:#5fd0d6}.tui .c8,.tui .c9,.tui .c10{color:#e6e6ea}
+html[data-theme="light"] .tui{background:#f7f5ef;color:#2a2830}
+html[data-theme="light"] .tui .c1{color:#9a97a0}html[data-theme="light"] .tui .c2{color:#c2333d}html[data-theme="light"] .tui .c3{color:#3b8a1c}html[data-theme="light"] .tui .c4{color:#a6740b}html[data-theme="light"] .tui .c5{color:#2360c4}html[data-theme="light"] .tui .c6{color:#8c3aae}html[data-theme="light"] .tui .c7{color:#14868d}html[data-theme="light"] .tui .c8,html[data-theme="light"] .tui .c9,html[data-theme="light"] .tui .c10{color:#1d1c21}
 .tui .r{color:#0b0b0d;background:#d4d4d8}.tui .r.c2{background:#ef6b73}.tui .r.c3{background:#8fd46a}.tui .r.c4{background:#f0c35a}.tui .r.c5{background:#6aa8ff}.tui .r.c6{background:#d07ef0}.tui .r.c7{background:#5fd0d6}.tui .r.c8,.tui .r.c9,.tui .r.c10{background:#e6e6ea}
 /* list + terminal span from the title on the left to the breadcrumb on the right */
-.fly-wrap{margin-left:calc(-1 * var(--hang))}
-.viz-note.fly{margin-left:calc(254px - var(--hang))}
+.viz-note.fly{margin-left:254px}
 .viz-sel{font-family:inherit;font-size:11px;color:var(--fg);background:var(--bg);border:1px solid var(--border2);border-radius:2px;padding:4px 8px;max-width:100%}
 .viz-sel:focus{outline:1px solid var(--teal)}
 </style>
@@ -107,7 +109,7 @@
     </nav>
   </main>
 
-  <script src="../js/projects/common.js?v=20260918c"></script>
+  <script src="../js/projects/common.js?v=20261120d"></script>
   <script src="../js/projects/data/flyin_tui.js?v=20261118b"></script>
   <script src="../js/projects/flyin_tui.js?v=20261118b"></script>
   <script src="../js/space.js?v=20261118a"></script>

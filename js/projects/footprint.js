@@ -59,8 +59,8 @@
 
   // ---------- timeline: map + volume strip ----------
   const G = D.grid, BASE = window.FP_BASE;
-  const tlC = $('tl'), tl = PJ.canvas(tlC, w => (w < 520 ? 104 : 116) / w);
-  const mpC = $('mp'), mp = PJ.canvas(mpC, w => (w < 700 ? 1.05 : 0.5));   // 0.5: whole map + HUD in the first screen
+  const tlC = $('tl'), tl = PJ.canvas(tlC, w => (w < 520 ? 92 : 96) / w);   // compact strip
+  const mpC = $('mp'), mp = PJ.canvas(mpC, () => (innerWidth < 700 ? 1.05 : 0.5));   // by window, not canvas width: the panel is 2/3 of the page on desktop
   let cur = M.length - 1, W = 0, H = 0;
   const pad = { l: 8, r: 8, t: 20, b: 34 };
   const maxT = Math.max(...M.map(tot));
@@ -75,7 +75,7 @@
     D.phases.forEach((p, k) => {
       const a = M.findIndex(m => m.m >= p.start), b = M.map(m => m.m <= p.end).lastIndexOf(true);
       const x0 = pad.l + a * cw, x1 = pad.l + (b + 1) * cw;
-      if (k % 2 === 0) { ctx.fillStyle = 'rgba(255,255,255,0.025)'; ctx.fillRect(x0, pad.t - 14, x1 - x0, ph + 14); }
+      if (k % 2 === 0) { ctx.fillStyle = C.a(0.025); ctx.fillRect(x0, pad.t - 14, x1 - x0, ph + 14); }
       ctx.strokeStyle = C.border2; ctx.beginPath(); ctx.moveTo(x0 + .5, pad.t - 14); ctx.lineTo(x0 + .5, pad.t + ph); ctx.stroke();
       ctx.fillStyle = phaseOf(M[cur].m) === k ? C.fg : C.muted;
       const full = '0' + (k + 1) + ' ' + p.label;
@@ -91,10 +91,10 @@
     });
     // dim the future
     const cx = Math.round(xOf(cur)) + .5;
-    ctx.fillStyle = 'rgba(14,13,16,0.55)'; ctx.fillRect(cx + cw / 2, pad.t - 14, W - cx, ph + 14);
+    ctx.fillStyle = C.light ? 'rgba(242,240,233,0.6)' : 'rgba(14,13,16,0.55)';   // the future, veiled in the page colour ctx.fillRect(cx + cw / 2, pad.t - 14, W - cx, ph + 14);
     const sy = pad.t + ph + 5;
     M.forEach((m, i) => {
-      ctx.fillStyle = m.city ? cityCol(m.city) : 'rgba(255,255,255,0.05)';
+      ctx.fillStyle = m.city ? cityCol(m.city) : C.a(0.05);
       ctx.globalAlpha = m.city ? (i <= cur ? .9 : .3) : 1;
       ctx.fillRect(pad.l + i * cw, sy, Math.max(1, cw - .5), 5);
     });
@@ -140,8 +140,8 @@
     const { w, h } = mp.fit(), ctx = mp.ctx, d = window.devicePixelRatio || 1, v = view(w, h);
     ctx.clearRect(0, 0, w, h);
     ctx.save(); ctx.setTransform(d * v.s, 0, 0, d * v.s, d * v.ox, d * v.oy);
-    ctx.fillStyle = '#1b1a20'; ctx.fill(basePath);
-    ctx.lineWidth = 0.8 / v.s; ctx.strokeStyle = 'rgba(255,255,255,0.13)'; ctx.stroke(basePath);
+    ctx.fillStyle = C.light ? '#e6e2d8' : '#1b1a20'; ctx.fill(basePath);
+    ctx.lineWidth = 0.8 / v.s; ctx.strokeStyle = C.a(0.13); ctx.stroke(basePath);
     ctx.restore();
     accumulate();
     const px = ([x, y]) => [x * v.s + v.ox, y * v.s + v.oy];
@@ -155,12 +155,12 @@
       ctx.fillRect(x - cs / 2, y - cs / 2, cs, cs);
     }
     // present: afterglow of the last months
-    ctx.globalCompositeOperation = 'lighter';
+    ctx.globalCompositeOperation = C.light ? 'source-over' : 'lighter';   // 'lighter' washes out on paper
     for (let c = 0; c < glow.length; c++) {
       if (glow[c] < .05) continue;
       const [x, y] = px(cellXY[c]); if (x < -20 || y < -20 || x > w + 20 || y > h + 20) continue;
       const a = Math.min(1, Math.sqrt(glow[c]) / 3.2);
-      ctx.fillStyle = C.teal;
+      ctx.fillStyle = C.lime;
       ctx.globalAlpha = a * .18; const g = cs * (2.5 + a * 4); ctx.fillRect(x - g / 2, y - g / 2, g, g);
       ctx.globalAlpha = .25 + a * .75; ctx.fillRect(x - cs / 2, y - cs / 2, cs, cs);
     }
@@ -172,7 +172,7 @@
     for (let i = 0; i <= cur; i++) if (LIVED.includes(M[i].city)) lived.add(M[i].city);
     const trips = (D.places || []).filter(p => p.first <= now && !lived.has(p.name));
     const halo = (t, x, y, col, a = 1) => {
-      ctx.save(); ctx.lineJoin = 'round'; ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(11,10,13,.9)';
+      ctx.save(); ctx.lineJoin = 'round'; ctx.lineWidth = 4; ctx.strokeStyle = C.light ? 'rgba(242,240,233,.9)' : 'rgba(11,10,13,.9)';
       ctx.strokeText(t, x, y); ctx.fillStyle = col; ctx.globalAlpha = a; ctx.fillText(t, x, y); ctx.restore();
     };
     const boxes = [];
@@ -352,7 +352,7 @@
 
     // the feed: what one week of ads was selling, and when
     S.cats.sort((a, b) => (a.c === 'everything else') - (b.c === 'everything else'));  // the leftovers go last
-    const AC = [C.teal, C.yellow, C.blue, C.red, C.violet, C.green], acol = (c, i) => c.c === 'everything else' ? 'rgba(255,255,255,0.16)' : AC[i % AC.length];
+    const AC = [C.teal, C.yellow, C.blue, C.red, C.violet, C.green], acol = (c, i) => c.c === 'everything else' ? C.a(0.16) : AC[i % AC.length];
     const nm = a => a.normalize('NFKC').split(' | ')[0];
     $('ad-cats').innerHTML = `<div class="ad-stack">${S.cats.map((c, i) => `<button type="button" data-i="${i}" aria-label="${c.c}: ${c.n} ads" style="flex:${c.n};background:${acol(c, i)}${c.c === 'everything else' ? ';color:var(--fg-dim)' : ''}">${pct(c.n / S.n)}</button>`).join('')}</div>
       <div class="ad-split"><table class="ad-t">${S.cats.map((c, i) => `<tr data-i="${i}"><td><i style="background:${acol(c, i)}"></i>${c.c}</td>
@@ -482,10 +482,10 @@
       keys.map((k, i) => `<i title="${k} ${pct(r[k], 1)}" style="width:${r[k] * 100}%;background:${cols[i]}"></i>`).join('')
     }</div><span class="n">${pct(keys.slice(0, 2).reduce((a, k) => a + r[k], 0))}</span></div>`).join('');
     const legend = (keys, cols, names) => keys.map((k, i) => `<span class="lg"><i style="background:${cols[i]}"></i>${names[i]}</span>`).join('');
-    const YK = ['searched', 'subscribed', 'served', 'ad'], YC = [C.teal, C.green, 'rgba(255,255,255,0.16)', C.red];
+    const YK = ['searched', 'subscribed', 'served', 'ad'], YC = [C.teal, C.green, C.a(0.16), C.red];
     $('pk-yt').innerHTML = stackRows(PY, YK, YC) + '<div class="yt-row" style="margin:0"><span></span><span style="font-size:10px;color:var(--fg-muted)">share of videos in my watch history</span><span class="n">chosen</span></div>';
     $('pk-yt-legend').innerHTML = legend(YK, YC, ['searched for it', 'channel I follow', 'feed / autoplay / links', 'ads']);
-    const SK = ['picked', 'queue', 'other'], SC = [C.teal, 'rgba(255,255,255,0.16)', 'rgba(255,255,255,0.06)'];
+    const SK = ['picked', 'queue', 'other'], SC = [C.teal, C.a(0.16), C.a(0.06)];
     $('pk-sp').innerHTML = stackRows(PS.map(r => ({ ...r, _: 0 })), ['picked', '_', 'queue', 'other'], [C.teal, C.teal, SC[1], SC[2]])
       + '<div class="yt-row" style="margin:0"><span></span><span style="font-size:10px;color:var(--fg-muted)">share of plays</span><span class="n">picked</span></div>';
     $('pk-sp-legend').innerHTML = legend(SK, SC, ['I tapped the song', 'queue: previous ended or skip', 'other']);

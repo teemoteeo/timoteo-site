@@ -1,10 +1,14 @@
 // Shared helpers for project visualizations
 window.PJ = (function () {
   const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  // light theme: the demos draw dark ink on paper; a(x) = the ink at alpha x
+  const light = document.documentElement.dataset.theme === 'light';
+  const a = x => (light ? 'rgba(0,0,0,' : 'rgba(255,255,255,') + x + ')';
   const C = {
     bg: css('--bg'), bg2: css('--bg2'), surface: css('--surface'),
     fg: css('--fg'), dim: css('--fg-dim'), muted: css('--fg-muted'),
-    border: 'rgba(255,255,255,0.08)', border2: 'rgba(255,255,255,0.16)',
+    border: a(0.08), border2: a(0.16), light, a,
+    lime: light ? '#5a7d00' : '#c8f06e',   // activations: fluo on dark, oliva on paper
     teal: css('--teal'), red: css('--red'), yellow: css('--yellow'),
     blue: css('--blue'), green: css('--green'), violet: css('--violet'),
   };

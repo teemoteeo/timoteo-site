@@ -23,10 +23,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Doto:wght@800&display=swap" rel="stylesheet">
   <script>try { if (localStorage.getItem('theme') === 'light') document.documentElement.dataset.theme = 'light'; } catch (e) {}</script>
-  <link rel="stylesheet" href="css/base.css?v=20261120v10">
-  <link rel="stylesheet" href="css/layout.css?v=20261120v2">
-  <link rel="stylesheet" href="css/components.css?v=20261120v21">
-  <link rel="stylesheet" href="css/cube.css?v=20261120v12">
+  <link rel="stylesheet" href="css/base.css?v=20261120v12">
+  <link rel="stylesheet" href="css/layout.css?v=20261120v3">
+  <link rel="stylesheet" href="css/components.css?v=20261120v24">
+  <link rel="stylesheet" href="css/cube.css?v=20261120v16">
   <link rel="stylesheet" href="css/eightball.css?v=20261006a">
 </head>
 <body>
@@ -214,7 +214,7 @@
         </div>
         <div class="feat-grid">
           <article class="feat feat--hero glass">
-            <div class="feat-img"><video class="pv" src="images/previews/fp.mp4?v=4#t=0.001" muted loop playsinline preload="auto" aria-hidden="true"></video></div>
+            <div class="feat-img"><video class="pv" data-pv="fp" muted loop playsinline preload="auto" aria-hidden="true"></video></div>
             <div class="feat-body">
               <div class="feat-eyebrow">research · privacy</div>
               <h2 class="feat-title"><a class="feat-link" href="projects/footprint.html">The Non-Ownership of Data</a></h2>
@@ -223,7 +223,7 @@
             <div class="feat-foot"><span class="feat-stat"><b>605,610</b> events</span><span class="feat-go">read →</span></div>
           </article>
           <article class="feat glass">
-            <div class="feat-img"><video class="pv pv-l" src="images/previews/pol.mp4?v=4#t=0.001" muted loop playsinline preload="auto" aria-hidden="true"></video></div>
+            <div class="feat-img"><video class="pv pv-l" data-pv="pol" muted loop playsinline preload="auto" aria-hidden="true"></video></div>
             <div class="feat-body">
               <div class="feat-eyebrow">nasa space apps 2026 · turin</div>
               <h2 class="feat-title"><a class="feat-link" href="https://polenta-fvg.vercel.app" target="_blank" rel="noopener">POLENTA</a></h2>
@@ -232,7 +232,7 @@
             <div class="feat-foot"><span class="feat-stat"><b>6</b> sites · <b>3</b> tests</span><span class="feat-go">live ↗</span></div>
           </article>
           <article class="feat glass">
-            <div class="feat-img"><video class="pv" src="images/previews/rag.mp4?v=4#t=0.001" muted loop playsinline preload="auto" aria-hidden="true"></video></div>
+            <div class="feat-img"><video class="pv" data-pv="rag" muted loop playsinline preload="auto" aria-hidden="true"></video></div>
             <div class="feat-body">
               <div class="feat-eyebrow">42 firenze · llm</div>
               <h2 class="feat-title"><a class="feat-link" href="projects/rag-against-the-machine.html">RAG against the machine</a></h2>
@@ -278,7 +278,7 @@
                         <span class="pr-text"><span class="pr-top"><span class="pr-name">pac-man</span></span><span class="pr-desc">Arcade-accurate Pac-Man on generated mazes, four ghost AIs, 10 levels. Plays in the browser.</span></span>
                       </a>
                       <a class="pr glass" href="projects/rag-against-the-machine.html">
-                        <span class="pr-media"><video class="pv" src="images/previews/rag.mp4?v=4#t=0.001" muted loop playsinline preload="auto" aria-hidden="true"></video></span>
+                        <span class="pr-media"><video class="pv" data-pv="rag" muted loop playsinline preload="auto" aria-hidden="true"></video></span>
                         <span class="pr-text"><span class="pr-top"><span class="pr-name">rag-against-the-machine</span></span><span class="pr-desc">RAG over the vLLM codebase: BM25 on 13,885 AST-aware chunks, 83–86% recall@5, no GPU.</span></span>
                       </a>
                     </div>
@@ -287,15 +287,15 @@
                     <div class="tree-dir"><svg class="tree-ic" viewBox="0 0 16 13" aria-hidden="true"><path d="M1 2.2C1 1.5 1.5 1 2.2 1h3.6l1.6 1.7h6.4c.7 0 1.2.5 1.2 1.2v7.9c0 .7-.5 1.2-1.2 1.2H2.2C1.5 13 1 12.5 1 11.8z"/></svg><span class="tree-name">milestone_3/</span><span class="tree-n">3</span></div>
                     <div class="tree-kids">
                       <a class="pr glass" href="projects/fly-in.html">
-                        <span class="pr-media"><video class="pv" src="images/previews/flyin.mp4?v=4#t=0.001" muted loop playsinline preload="auto" aria-hidden="true"></video></span>
+                        <span class="pr-media"><video class="pv" data-pv="flyin" muted loop playsinline preload="auto" aria-hidden="true"></video></span>
                         <span class="pr-text"><span class="pr-top"><span class="pr-name">fly-in</span></span><span class="pr-desc">Routes a drone fleet through a capacity-constrained graph in the fewest turns.</span></span>
                       </a>
                       <a class="pr glass" href="projects/codexion.html">
-                        <span class="pr-media"><video class="pv" src="images/previews/codexion.mp4?v=4#t=0.001" muted loop playsinline preload="auto" aria-hidden="true"></video></span>
+                        <span class="pr-media"><video class="pv" data-pv="codexion" muted loop playsinline preload="auto" aria-hidden="true"></video></span>
                         <span class="pr-text"><span class="pr-top"><span class="pr-name">codexion</span></span><span class="pr-desc">Multithreaded scheduler, dining-philosophers variant. FIFO/EDF queues, TSan-clean.</span></span>
                       </a>
                       <a class="pr glass" href="projects/call-me-maybe.html">
-                        <span class="pr-media"><video class="pv" src="images/previews/cmm.mp4?v=4#t=0.001" muted loop playsinline preload="auto" aria-hidden="true"></video></span>
+                        <span class="pr-media"><video class="pv" data-pv="cmm" muted loop playsinline preload="auto" aria-hidden="true"></video></span>
                         <span class="pr-text"><span class="pr-top"><span class="pr-name">call-me-maybe</span></span><span class="pr-desc">Function calling on Qwen3-0.6B via constrained decoding: DFA token masking.</span></span>
                       </a>
                     </div>
@@ -304,7 +304,7 @@
                     <div class="tree-dir"><svg class="tree-ic" viewBox="0 0 16 13" aria-hidden="true"><path d="M1 2.2C1 1.5 1.5 1 2.2 1h3.6l1.6 1.7h6.4c.7 0 1.2.5 1.2 1.2v7.9c0 .7-.5 1.2-1.2 1.2H2.2C1.5 13 1 12.5 1 11.8z"/></svg><span class="tree-name">milestone_2/</span><span class="tree-n">1</span></div>
                     <div class="tree-kids">
                       <a class="pr glass" href="projects/a-maze-ing.html">
-                        <span class="pr-media"><video class="pv" src="images/previews/amaze.mp4?v=4#t=0.001" muted loop playsinline preload="auto" aria-hidden="true"></video></span>
+                        <span class="pr-media"><video class="pv" data-pv="amaze" muted loop playsinline preload="auto" aria-hidden="true"></video></span>
                         <span class="pr-text"><span class="pr-top"><span class="pr-name">a-maze-ing</span></span><span class="pr-desc">Maze generator and solver (DFS, Prim, Kruskal, BFS) with a curses TUI, shipped as a pip package.</span></span>
                       </a>
                     </div>
@@ -315,7 +315,7 @@
             <div class="pl-group">
               <div class="pl-head"><span class="pl-label">client work</span><span class="pl-sub"></span></div>
               <a class="pr glass" href="https://hdgr.eu" target="_blank" rel="noopener">
-                <span class="pr-media"><video class="pv" src="images/previews/hdgr.mp4?v=4#t=0.001" muted loop playsinline preload="auto" aria-hidden="true"></video></span>
+                <span class="pr-media"><video class="pv" data-pv="hdgr" muted loop playsinline preload="auto" aria-hidden="true"></video></span>
                 <span class="pr-text"><span class="pr-top"><span class="pr-name">hdgr</span><span class="pr-tag">live ↗</span></span><span class="pr-desc">Website for an architecture studio. Brutalist layout, 3D transforms, scroll-driven motion.</span></span>
               </a>
             </div>
@@ -416,18 +416,18 @@
     <img id="neofetch-card" data-src="https://raw.githubusercontent.com/teemoteeo/teemoteeo/main/dark_mode.svg" width="985" height="530" alt="neofetch card: Timoteo Costantini Scala, freelance software developer, 42 Firenze">
   </div>
 
-  <script src="js/boot.js?v=20261120j"></script>
+  <script src="js/boot.js?v=20261120m"></script>
   <script src="js/ticker.js?v=20260919a"></script>
   <script src="js/ascii-pic.js?v=20261120f"></script>
   <script src="js/konami.js?v=20261029a"></script>
   <script src="js/rubik2d.js?v=20260919a"></script>
-  <script src="js/cube-loader.js?v=20261120a"></script>
+  <script src="js/cube-loader.js?v=20261120b"></script>
   <script src="js/eightball.js?v=20260930d"></script>
   <script src="js/mobile.js?v=20260919a"></script>
   <script src="js/tech.js?v=20261120b"></script>
   <script src="js/tree.js?v=20260919a"></script>
-  <script src="js/preview.js?v=20261120c"></script>
-  <script src="js/theme.js?v=20261120c"></script>
+  <script src="js/preview.js?v=20261120f"></script>
+  <script src="js/theme.js?v=20261120d"></script>
   <script src="js/space.js?v=20261118a"></script>
 
 </body>

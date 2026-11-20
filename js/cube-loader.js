@@ -29,6 +29,7 @@
   }
 
   if (btn) btn.addEventListener('click', load, { once: true });
+  window.cubeLoad = load;   // l'intro (js/boot.js) lo chiama durante le righe di boot
 
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver(function (entries) {

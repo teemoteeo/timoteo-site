@@ -6,7 +6,7 @@
   const D = window.CODEXION_DATA;
   const tableEl = document.getElementById('viz');
   const ganttEl = document.getElementById('viz-gantt');
-  const T = canvas(tableEl, w => w < 600 ? 1.0 : 0.62);
+  const T = canvas(tableEl, () => innerWidth < 600 ? 1.0 : 0.62);   // by window, not canvas width: the panel is 2/3 of the page on desktop
   const G = canvas(ganttEl, w => 0); // height set per scenario
   const logEl = document.getElementById('viz-log');
   const cmdEl = document.getElementById('viz-cmd');

@@ -29,9 +29,17 @@
   const b1 = document.getElementById('boot-line-1');
   const b2 = document.getElementById('boot-line-2');
   overlay.classList.add('gone'); bootSeq.classList.add('active');
+  // three.js si scarica durante le righe di boot: il cubo vero e' pronto quando entra
+  setTimeout(() => window.cubeLoad && window.cubeLoad(), 0);
   setTimeout(() => { b1.textContent = '> BOOTING SYSTEM...'; b1.classList.add('visible'); }, 25);
   setTimeout(() => { b2.textContent = '> LOADING PROFILE...'; b2.classList.add('visible'); }, 450);
   setTimeout(() => { overlay.remove(); bootSeq.remove(); startIntro(); }, 700);
+
+  // i blocchi che compongono la pagina: sono box veri sia su desktop sia su mobile,
+  // dove sidebar, main e i wrapper diventano display:contents
+  const COMPOSE = '.profile-pic-container, .profile-id, .sidebar-contacts, nav[data-boot], .oracle, '
+    + '.hero-copy-shell, .ticker-wrapper, .featured, [data-boot="projects"], .bio-block, '
+    + '.display-header, .display-section, .tech-grid-section, .other-section';
 
   function startIntro() {
     const cube = document.querySelector('.sidebar-cube');
@@ -68,6 +76,10 @@
     }
     place();
     addEventListener('resize', place);
+    // il cubo entra: dissolvenza da piccolo (css .cube-enter) e mezzo giro in 3D se e' gia' pronto
+    cube.classList.add('cube-enter');
+    if (window.rubikSpin) window.rubikSpin(1100, -Math.PI);
+    setTimeout(() => cube.classList.remove('cube-enter'), 1200);
     // il cubo si fa notare: ogni 2.6s gira una faccia e la rimette a posto
     const tease = setInterval(() => window.rubikTease && window.rubikTease(), 2600);
     setTimeout(() => window.rubikTease && window.rubikTease(), 900);
@@ -96,11 +108,14 @@
       cube.classList.add('flying');
       cube.style.transform = '';
       if (window.rubikSpin) window.rubikSpin(900, Math.PI * 2);   // un giro intero mentre vola
-      // la pagina si monta a cascata mentre il cubo vola (su mobile [data-boot] e' gia' visibile)
-      [['[data-boot="profile"]', 0], ['[data-boot="contacts"]', 80], ['[data-boot="nav"]', 160],
-       ['[data-boot="oracle"]', 240], ['[data-boot="bio"]', 120], ['[data-boot="featured"]', 260],
-       ['[data-boot="projects"]', 340], ['[data-boot="display"]', 420]]
-        .forEach(([sel, t]) => setTimeout(() => reveal(sel), t));
+      // la pagina si compone a pezzi mentre il cubo vola: ogni blocco entra in dissolvenza,
+      // in ordine di lettura (dall'alto, poi da sinistra), sia nel layout desktop sia mobile
+      const blocks = [...document.querySelectorAll(COMPOSE)].filter(e => e.getClientRects().length);
+      const pos = e => { const r = e.getBoundingClientRect(); return [Math.round(r.top / 60), r.left]; };
+      blocks.map(e => [e, pos(e)]).sort((a, b) => (a[1][0] - b[1][0]) || (a[1][1] - b[1][1]))
+        .forEach(([e], i) => e.style.setProperty('--d', (220 + Math.min(i, 10) * 70) + 'ms'));
+      root.classList.add('compose');
+      reveal('[data-boot]');
       setTimeout(() => {
         cube.classList.remove('flying'); root.classList.remove('landing'); ui.remove();
         window.cubeRes = 960; if (window.rubikRes) window.rubikRes(960);   // piccolo: risoluzione normale

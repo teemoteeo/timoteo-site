@@ -8,13 +8,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Doto:wght@800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/project.css?v=20261120v2">
+  <script>try { if (localStorage.getItem('theme') === 'light') document.documentElement.dataset.theme = 'light'; } catch (e) {}</script>
+  <link rel="stylesheet" href="../css/project.css?v=20261120v11">
   <style>
 .cdx{display:grid;grid-template-columns:1fr 300px}
 .cdx-table{border-right:1px solid var(--border)}
 .cdx-side{padding:14px;display:flex;flex-direction:column;gap:12px;min-width:0}
 .cdx-h{display:block;font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--fg-muted);margin-bottom:6px}
-.cdx-log{font-size:10.5px;line-height:1.75;color:var(--fg-muted);white-space:pre;overflow:hidden;min-height:170px}
+.cdx-log{font-size:10.5px;line-height:1.75;color:var(--fg-muted);white-space:pre;overflow:hidden;min-height:100px}
 .cdx-log .now{color:var(--fg)} .cdx-log .bad{color:var(--red)!important}
 .cdx-key{margin-top:auto;display:grid;gap:6px;font-size:10px;color:var(--fg-muted);border-top:1px solid var(--border);padding-top:12px}
 .cdx-key div{display:flex;align-items:center;gap:8px}
@@ -61,6 +62,7 @@
       <div class="pj-tags"><span>c</span><span>pthreads</span><span>mutex / condvar</span><span>min-heap</span><span>fifo / edf</span><span>threadsanitizer</span></div>
     </header>
 
+    <div class="pj-main">
     <div class="viz">
   <div class="viz-bar"><span class="viz-label">replay</span><span id="viz-scn"></span><span class="grow"></span>
    <span id="viz-outcome"></span><button id="viz-play" class="viz-btn">pause</button></div>
@@ -79,7 +81,8 @@
   <div class="cdx-gantt"><span class="cdx-h">timeline · click or drag to scrub</span><canvas id="viz-gantt"></canvas></div>
   <div class="viz-foot"><span class="lg"><i style="background:var(--yellow);opacity:.35"></i>waiting</span><span class="lg"><i style="background:var(--yellow);height:3px"></i>holding one dongle</span><span class="lg"><i style="background:var(--teal)"></i>compiling</span><span class="lg"><i style="background:var(--blue)"></i>debugging</span><span class="lg"><i style="background:var(--violet)"></i>refactoring</span><span class="lg"><i style="background:var(--red);border-radius:50%"></i>burnout</span></div>
  </div>
- <p class="viz-note">Two real runs with identical parameters, replayed: <code id="viz-cmd"></code>. With EDF every coder finishes; with FIFO one burns out. Thread timing varies, so every run is different. The log only says "has taken a dongle": the dongle ids come from the code, where coder <i>i</i> owns dongles <i>i</i> and <i>i+1</i> and always locks the lower one first.</p>
+      <aside class="pj-aside"><span class="pj-aside-k">replay</span><h3 class="pj-aside-t">Two real runs: EDF against FIFO</h3><p class="viz-note">Two real runs with identical parameters, replayed: <code id="viz-cmd"></code>. With EDF every coder finishes; with FIFO one burns out. Thread timing varies, so every run is different. The log only says "has taken a dongle": the dongle ids come from the code, where coder <i>i</i> owns dongles <i>i</i> and <i>i+1</i> and always locks the lower one first.</p></aside>
+    </div>
 
     <section class="pj-sec">
       <h2>how it works</h2>
@@ -96,9 +99,9 @@
     </nav>
   </main>
 
-  <script src="../js/projects/common.js?v=20260918c"></script>
-  <script src="../js/projects/data/codexion.js?v=20260918c"></script>
-  <script src="../js/projects/codexion.js?v=20260918c"></script>
+  <script src="../js/projects/common.js?v=20261120d"></script>
+  <script src="../js/projects/data/codexion.js?v=20261120a"></script>
+  <script src="../js/projects/codexion.js?v=20261120a"></script>
   <script src="../js/space.js?v=20261118a"></script>
 </body>
 </html>

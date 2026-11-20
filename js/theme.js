@@ -15,6 +15,7 @@
     if (light) root.dataset.theme = 'light'; else delete root.dataset.theme;
     if (meta) meta.content = light ? '#f2f0e9' : '#0e0d10';
     try { localStorage.setItem('theme', light ? 'light' : 'dark'); } catch (e) {}
+    document.dispatchEvent(new Event('themechange'));   // js/preview.js swaps the clips
   }
   function set(light, animate) {
     sws.forEach(s => s.setAttribute('aria-checked', String(light)));

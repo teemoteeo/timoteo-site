@@ -61,7 +61,7 @@
     for (const k in attrs) el.setAttribute(k, attrs[k]);
     parent.appendChild(el); return el;
   };
-  const gDirs = mk('g', { fill: 'none', stroke: 'rgba(255,255,255,.13)', 'stroke-width': .7 }, svg);
+  const gDirs = mk('g', { fill: 'none', stroke: C.a(.13), 'stroke-width': .7 }, svg);
   P0.dirs.forEach(([x, y, r]) => mk('circle', { cx: x, cy: y, r }, gDirs));
   const gLeaf = mk('g', {}, svg);
   const leaves = P0.leaves.map(([x, y, r], f) =>
@@ -93,8 +93,8 @@
     for (let f = 0; f < F; f++) {
       const el = leaves[f];
       let fill, op;
-      if (cur && cur[f]) { fill = C.teal; op = .95; }
-      else if (tops && tops.has(f)) { fill = C.teal; op = 1; }
+      if (cur && cur[f]) { fill = C.lime; op = .95; }
+      else if (tops && tops.has(f)) { fill = C.lime; op = 1; }
       else if (h[f] > 0) { fill = C.fg; op = (.14 + .86 * Math.pow(Math.min(1, h[f]), 1.25)) * (ranked ? .55 : 1); }
       else { fill = C.muted; op = .16; }
       if (el._fill !== fill) { el._fill = fill; el.setAttribute('fill', fill); }

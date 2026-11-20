@@ -8,13 +8,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Doto:wght@800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/project.css?v=20261120v2">
+  <script>try { if (localStorage.getItem('theme') === 'light') document.documentElement.dataset.theme = 'light'; } catch (e) {}</script>
+  <link rel="stylesheet" href="../css/project.css?v=20261120v11">
   <style>
 .cdx{display:grid;grid-template-columns:1fr 300px}
 .cdx-table{border-right:1px solid var(--border)}
 .cdx-side{padding:14px;display:flex;flex-direction:column;gap:12px;min-width:0}
 .cdx-h{display:block;font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--fg-muted);margin-bottom:6px}
-.cdx-log{font-size:10.5px;line-height:1.75;color:var(--fg-muted);white-space:pre;overflow:hidden;min-height:170px}
+.cdx-log{font-size:10.5px;line-height:1.75;color:var(--fg-muted);white-space:pre;overflow:hidden;min-height:100px}
 .cdx-log .now{color:var(--fg)} .cdx-log .bad{color:var(--red)!important}
 .cdx-key{margin-top:auto;display:grid;gap:6px;font-size:10px;color:var(--fg-muted);border-top:1px solid var(--border);padding-top:12px}
 .cdx-key div{display:flex;align-items:center;gap:8px}
@@ -60,6 +61,8 @@
       <div class="pj-tags"><span>python</span><span>qwen3-0.6b</span><span>constrained decoding</span><span>dfa</span><span>numpy</span><span>pydantic</span></div>
     </header>
 
+    <div class="pj-main">
+  <div class="pj-left">
     <div class="viz">
   <div class="viz-bar"><span class="viz-label">decoding trace</span><span id="viz-prompt"></span><span class="grow"></span>
    <button id="viz-step" class="viz-btn">step</button><button id="viz-play" class="viz-btn">pause</button></div>
@@ -71,7 +74,9 @@
   <div class="viz-foot"><span class="lg"><i style="background:var(--teal)"></i>chosen by the model</span><span class="lg"><i style="background:var(--red)"></i>masked: breaks the grammar</span><span class="lg"><i style="background:var(--violet)"></i>injected by the grammar, no forward pass</span></div>
  </div>
  <div class="cmm-raw"><span>same model, no constraints · <b style="color:var(--red);font-weight:400">red</b> = text after the object, the output is no longer valid json</span><pre id="cmm-raw"></pre></div>
- <p class="viz-note">A real trace recorded from the project's decoder running Qwen3-0.6B: the top-8 raw logits at each step, and which of them the grammar mask allowed.</p>
+  </div>
+      <aside class="pj-aside"><span class="pj-aside-k">decoding trace</span><h3 class="pj-aside-t">How the grammar steers every token</h3><p class="viz-note">A real trace recorded from the project's decoder running Qwen3-0.6B: the top-8 raw logits at each step, and which of them the grammar mask allowed.</p></aside>
+    </div>
 
     <section class="pj-sec">
       <h2>how it works</h2>
@@ -88,7 +93,7 @@
     </nav>
   </main>
 
-  <script src="../js/projects/common.js?v=20260918c"></script>
+  <script src="../js/projects/common.js?v=20261120d"></script>
   <script src="../js/projects/data/callmemaybe.js?v=20260918c"></script>
   <script src="../js/projects/callmemaybe.js?v=20260918c"></script>
   <script src="../js/space.js?v=20261118a"></script>

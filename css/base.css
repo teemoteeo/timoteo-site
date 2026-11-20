@@ -14,6 +14,8 @@
   --violet:   #8992a7;
   --teal:     #c8f06e;
   --orange:   #c8f06e;
+  --lime:     #c8f06e;   /* the fluo accent, the same on both themes: activations in the demos */
+  --on-lime:  #0e0d10;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -87,8 +89,10 @@ html[data-theme="light"] {
   --fg:       #17161a;
   --fg-dim:   #3d3b43;
   --fg-muted: #6b6872;
-  --teal:     #4a7a0c;   /* il lime su fondo chiaro non si legge */
-  --orange:   #4a7a0c;
+  --teal:     #5a7d00;   /* il lime su fondo chiaro non si legge: oliva giallo, scelto il 20/11 */
+  --orange:   #5a7d00;
+  --lime:     #5a7d00;   /* anche le attivazioni delle demo: il fluo sulla carta non aveva contrasto */
+  --on-lime:  #f7f5ef;
   --yellow:   #94650f;
   color-scheme: light;
 }
