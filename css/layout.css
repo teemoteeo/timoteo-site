@@ -1,3 +1,10 @@
+/* the domain, top centre (same voice as the intro and the project pages) */
+.site-domain {
+  position: absolute; top: 14px; left: 50%; transform: translateX(-50%); z-index: 2;
+  font-size: 12px; font-weight: 500; letter-spacing: 2px; color: var(--fg-muted); white-space: nowrap;
+}
+@media (max-width: 900px) { .site-domain { top: 4px; font-size: 11px; } }
+
 /* ===== SIDEBAR ===== */
 .sidebar {
   width: 300px;
@@ -6,10 +13,6 @@
   position: relative;
   display: flex;
   flex-direction: column;
-}
-/* divider that stops short of the page top and bottom (same 32px inset as the dot grid) */
-@media (min-width: 901px) {
-  .sidebar::after { content: ''; position: absolute; top: 32px; bottom: 32px; right: 0; width: 1px; background: var(--border); pointer-events: none; }
 }
 
 .profile { margin-bottom: 28px; }

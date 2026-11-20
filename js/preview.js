@@ -7,7 +7,7 @@
 (function () {
   const vids = [...document.querySelectorAll('video.pv[data-pv]')];
   const LIGHT = new Set(['fp', 'pol', 'rag', 'flyin', 'codexion', 'cmm', 'amaze']);   // polenta: clip scura con la luminosita' invertita; hdgr: solo scura
-  const src = n => 'images/previews/' + (document.documentElement.dataset.theme === 'light' && LIGHT.has(n) ? 'light/' : '') + n + '.mp4?v=6#t=0.001';
+  const src = n => 'images/previews/' + (document.documentElement.dataset.theme === 'light' && LIGHT.has(n) ? 'light/' : '') + n + '.mp4?v=7#t=0.001';
   function load() {
     vids.forEach(v => {
       const s = src(v.dataset.pv);

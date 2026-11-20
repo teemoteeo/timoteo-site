@@ -3,15 +3,15 @@
 /* project pages render immediately: no boot gate */
 body { min-height: 100vh; }
 .pj {
-  max-width: 1180px;
+  max-width: 1300px;
   margin: 0 auto;
-  /* side margin = the hang + 40px: headings on the outer edge never touch the window */
-  padding: 40px calc(var(--hang, 28px) + 40px) 72px;
+  /* side margin = the hang + 28px: headings 28px from the edge, content 20px further in */
+  padding: 40px calc(var(--hang, 20px) + 28px) 72px;
 }
 /* spatial hierarchy: navigation, eyebrow, title and section headings sit on the outer edge,
    everything they introduce (lead, tags, demo, text) is indented by --hang. A fixed step, not
    the old window-dependent one that at some widths was a few px and looked like a mistake. */
-.pj { --hang: 28px; }
+.pj { --hang: 20px; }
 .pj-head .pj-eyebrow, .pj-head .pj-title { margin-left: calc(-1 * var(--hang)); }
 .pj-top { margin-left: calc(-1 * var(--hang)); }   /* "← cd ~" in line with the titles */
 .pj-sec h2 { margin-left: calc(-1 * var(--hang)); }
@@ -19,6 +19,12 @@ body { min-height: 100vh; }
   display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
   font-size: 11px; color: var(--fg-muted);
 }
+/* the domain at the very top of the page, centred, above back link and path (same spot as the home) */
+.pj-top a.pj-domain {
+  position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+  font-weight: 500; letter-spacing: 2px; white-space: nowrap;
+}
+@media (max-width: 700px) { .pj-top a.pj-domain { top: 4px; font-size: 11px; } }
 /* navigation, not content: quiet, so the title is the first thing you read */
 .pj-top a { color: var(--fg-muted); text-decoration: none; font-size: 12px; letter-spacing: .5px; transition: color .2s; }
 .pj-top a:hover { color: var(--teal); }

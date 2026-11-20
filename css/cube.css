@@ -203,15 +203,16 @@ html.intro .sidebar-cube, html.landing .sidebar-cube { position: relative; z-ind
 .sidebar-cube.flying { transition: transform .9s cubic-bezier(.65, 0, .35, 1); }
 /* solo il compositore durante intro e volo: niente ridisegni a ogni frame (mobile laggava) */
 html.intro .sidebar-cube, .sidebar-cube.flying { will-change: transform; }
-/* la pagina si compone: ogni blocco entra in dissolvenza con un piccolo salto, ritardo in --d
-   (js/boot.js). Prima tutta la pagina compariva di colpo mentre il cubo volava. */
+/* la pagina si compone quando il cubo atterra: ogni blocco compare in 0.3s, ritardo in --d
+   (js/boot.js). Prima i blocchi scorrevano dal basso mentre il cubo era ancora in volo. */
 html.compose [data-boot] { animation: none; }
-html.compose .container :is(.profile-pic-container, .profile-id, .sidebar-contacts, nav[data-boot], .oracle,
+html.compose .container :is(.site-domain, .profile-pic-container, .profile-id, .sidebar-contacts, nav[data-boot], .oracle,
   .hero-copy-shell, .ticker-wrapper, .featured, [data-boot="projects"], .bio-block,
   .display-header, .display-section, .tech-grid-section, .other-section) {
-  animation: compose-in .7s cubic-bezier(.2, .8, .2, 1) var(--d, 0ms) both;
+  animation: compose-in .3s cubic-bezier(.2, .8, .2, 1) var(--d, 0ms) both;
 }
-@keyframes compose-in { from { opacity: 0; transform: translateY(14px); } }
+/* rapido e sul posto: un filo di scala che si assesta, niente scorrimento dal basso */
+@keyframes compose-in { from { opacity: 0; transform: scale(.985); } }
 /* il cubo appare dopo le righe di boot (js/boot.js): scale sul canvas, la transform del
    contenitore e' gia' usata per metterlo al centro */
 .sidebar-cube.cube-enter #sb-cube-canvas, .sidebar-cube.cube-enter .cube-ph { animation: cube-enter 1.1s cubic-bezier(.2, .8, .2, 1) both; }   /* batte .is-live (cube-in) */

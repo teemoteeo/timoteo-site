@@ -37,7 +37,7 @@
 
   // i blocchi che compongono la pagina: sono box veri sia su desktop sia su mobile,
   // dove sidebar, main e i wrapper diventano display:contents
-  const COMPOSE = '.profile-pic-container, .profile-id, .sidebar-contacts, nav[data-boot], .oracle, '
+  const COMPOSE = '.site-domain, .profile-pic-container, .profile-id, .sidebar-contacts, nav[data-boot], .oracle, '
     + '.hero-copy-shell, .ticker-wrapper, .featured, [data-boot="projects"], .bio-block, '
     + '.display-header, .display-section, .tech-grid-section, .other-section';
 
@@ -113,7 +113,8 @@
       const blocks = [...document.querySelectorAll(COMPOSE)].filter(e => e.getClientRects().length);
       const pos = e => { const r = e.getBoundingClientRect(); return [Math.round(r.top / 60), r.left]; };
       blocks.map(e => [e, pos(e)]).sort((a, b) => (a[1][0] - b[1][0]) || (a[1][1] - b[1][1]))
-        .forEach(([e], i) => e.style.setProperty('--d', (220 + Math.min(i, 10) * 70) + 'ms'));
+        // tutto si compone quando il cubo arriva (il volo dura 900ms): pochissimo scarto tra i blocchi
+        .forEach(([e], i) => e.style.setProperty('--d', (420 + Math.min(i, 10) * 22) + 'ms'));   // parte a meta' volo, finito quando il cubo si posa
       root.classList.add('compose');
       reveal('[data-boot]');
       setTimeout(() => {

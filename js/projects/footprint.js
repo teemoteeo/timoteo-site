@@ -9,7 +9,6 @@
   const pct = (x, d = 0) => (x * 100).toFixed(d) + '%';
   const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const mlabel = m => MON[+m.slice(5) - 1] + ' ' + m.slice(0, 4);
-  const rd = (s, w) => `<span class="rd">${s || '█'.repeat(w || 8)}</span>`;
 
   const SRC = [
     { k: 'sp', name: 'spotify', col: C.green },
@@ -60,7 +59,7 @@
   // ---------- timeline: map + volume strip ----------
   const G = D.grid, BASE = window.FP_BASE;
   const tlC = $('tl'), tl = PJ.canvas(tlC, w => (w < 520 ? 92 : 96) / w);   // compact strip
-  const mpC = $('mp'), mp = PJ.canvas(mpC, () => (innerWidth < 700 ? 1.05 : 0.5));   // by window, not canvas width: the panel is 2/3 of the page on desktop
+  const mpC = $('mp'), mp = PJ.canvas(mpC, () => (innerWidth < 700 ? 0.8 : 0.5));   // by window, not canvas width: the panel is 2/3 of the page on desktop
   let cur = M.length - 1, W = 0, H = 0;
   const pad = { l: 8, r: 8, t: 20, b: 34 };
   const maxT = Math.max(...M.map(tot));
@@ -284,69 +283,56 @@
   const ps4 = dev.find(d => /PlayStation/.test(d.name));
   const mus = D.music, itLo = mus.find(m => m.y === '2017'), itHi = mus.reduce((a, b) => (b.it_share > a.it_share ? b : a));
   const bday = D.facts.birthday, home = D.facts.home;
-  const circle = D.social.map(s => s.circle80), cMax = Math.max(...circle);
-  const spark = `<svg class="inf-spark" viewBox="0 0 ${D.social.length * 14} 34">${D.social.map((s, i) => {
-    const h = s.circle80 / cMax * 26, hot = s.y === '2025';
-    return `<rect x="${i * 14 + 2}" y="${30 - h}" width="10" height="${h}" fill="${hot ? C.teal : C.border2}"/>`;
-  }).join('')}<text x="0" y="34" font-size="0">inner circle size per year</text></svg>`;
   const spring = (y, k) => M.filter(m => m.m >= y + '-03' && m.m <= y + '-05').reduce((a, m) => a + m[k], 0);
   const ratio = k => spring('2020', k) / spring('2019', k);
 
   const CARDS = [
-    { t: 'birthday', c: 5, v: 'ok', src: 'instagram dms · keyword count',
-      claim: `I was born on ${+bday.md.slice(3)} ${['January','February','March','April','May','June','July','August','September','October','November','December'][+bday.md.slice(0, 2) - 1]}.`,
-      ev: `<b>${bday.n}</b> messages with "auguri" or "happy birthday" fall on a single day of the year. The next busiest day has <b>${bday.runner_up}</b>.` },
-    { t: 'moves', c: 5, v: 'ok', src: 'google maps · dominant city per month',
+    { t: 'birthday', v: 'ok',
+      claim: `Born on ${+bday.md.slice(3)} ${['January','February','March','April','May','June','July','August','September','October','November','December'][+bday.md.slice(0, 2) - 1]}.`,
+      ev: `<b>${bday.n}</b> "happy birthday" DMs on one day. Next busiest: <b>${bday.runner_up}</b>.` },
+    { t: 'moves', v: 'ok',
       claim: `Udine → Milan (${mlabel(firstOf('Milan'))}) → Paris (${mlabel(moves.filter(v => v.city === 'Paris').pop().m)}) → Florence (${mlabel(firstOf('Florence'))}).`,
-      ev: 'A new city takes over my map activity and stays for months. Moving house shows up in the data within about a month.' },
-    { t: 'home', c: 5, v: 'ok', src: 'google maps · late-night directions',
-      claim: `Lived in ${home.city}, ${home.street}, from ${mlabel(home.from)} to ${mlabel(home.to)}.`,
-      ev: `Between 11pm and 6am I asked Maps for directions to the same address <b>${home.n_directions}</b> times. Nobody needs directions at 3am unless they're going home.` },
-    { t: 'work', c: 3, v: 'ok', src: 'google maps · seasonality',
+      ev: 'A new city takes over the map within a month of moving.' },
+    { t: 'home', v: 'ok',
+      claim: `Lived in ${home.city}, ${home.street}, ${mlabel(home.from)} – ${mlabel(home.to)}.`,
+      ev: `<b>${home.n_directions}</b> late-night directions to the same address.` },
+    { t: 'work', v: 'ok',
       claim: 'Works in fashion.',
-      ev: `Before I moved there, Paris only shows up as my city in <b>${fw}</b>, year after year. Those are the months of Paris Men's Fashion Week. (I was walking in it.)` },
-    { t: 'relationship', c: 3, v: 'x', src: 'instagram dms · metadata only',
-      claim: 'In 2025 one person became the centre of my messaging.',
-      ev: `One thread takes <b>${pct(soc('2025').top_share)}</b> of all my DMs that year. In 2024 no thread was above <b>${pct(soc('2024').top_share, 1)}</b>, and the circle that gets 80% of my messages shrank from <b>${soc('2024').circle80}</b> to <b>${soc('2025').circle80}</b>. It reads like a new relationship. It isn't: the thread is ${rd("", 12)}, a group chat. Metadata alone can't tell a partner from a group chat.` + spark },
-    { t: 'phones', c: 5, v: 'ok', src: 'spotify · device string on every play',
+      ev: `Paris every ${fw}: Men's Fashion Week. I was walking in it.` },
+    { t: 'relationship', v: 'x',
+      claim: 'In 2025 one person became the centre of my DMs.',
+      ev: `One thread took <b>${pct(soc('2025').top_share)}</b> of them. It was a group chat.` },
+    { t: 'phones', v: 'ok',
       claim: phones.map(p => p.name.replace(' (model hidden by Spotify)', ' 16')).join(' → ') + '.',
-      ev: `Every play logged the device model, so the upgrades are dated to the month. Also: a PlayStation 4 from ${mlabel(ps4.from)} to ${mlabel(ps4.to)}. Then, from ${mlabel((phones.find(p => /hidden/.test(p.name)) || {}).from || '2022-10')}, Spotify stopped writing the model and only says "ios". So the iPhone 16 at the end is the one fact on this page the data couldn't give: I had to supply it myself.` },
-    { t: 'learning to code', c: 4, v: 'ok', src: 'youtube topics · spotify clients',
-      claim: `Started programming seriously in late 2025.`,
-      ev: `Tech & code goes from <b>${pct(yt('2024')['tech & code'], 1)}</b> of my YouTube in 2024 to <b>${pct(yt('2026')['tech & code'], 1)}</b> in 2026. A Linux Spotify client appears in ${mlabel(lin.from)}: school machines.` },
-    { t: 'sleep', c: 4, v: '', src: 'all sources · hour of day',
-      claim: `Night owl, and getting later.`,
-      ev: `My quietest 6 hours moved from <b>${hh(sl('2017').start)}–${hh(sl('2017').end)}</b> in 2017 to <b>${hh(sl('2026').start)}–${hh(sl('2026').end)}</b> in 2026. The share of DMs sent between midnight and 5am went from <b>${pct(soc('2017').night, 1)}</b> to <b>${pct(soc('2025').night)}</b>.` },
-    { t: 'travel', c: 4, v: 'ok', src: 'spotify · connection country',
+      ev: `Spotify logs the device on every play. Since ${mlabel((phones.find(p => /hidden/.test(p.name)) || {}).from || '2022-10')} only "ios": the 16 I added myself.` },
+    { t: 'coding', v: 'ok',
+      claim: 'Started programming in late 2025.',
+      ev: `Tech on YouTube: <b>${pct(yt('2024')['tech & code'], 1)}</b> → <b>${pct(yt('2026')['tech & code'], 1)}</b>. A Linux client appears: school machines.` },
+    { t: 'sleep', v: '',
+      claim: 'Night owl, getting later.',
+      ev: `Quietest hours: <b>${hh(sl('2017').start)}–${hh(sl('2017').end)}</b> in 2017, <b>${hh(sl('2026').start)}–${hh(sl('2026').end)}</b> in 2026.` },
+    { t: 'travel', v: 'ok',
       claim: `Been to ${cc.map(c => CCN[c.cc] || c.cc).join(', ')}.`,
-      ev: `Every play logs which country it was streamed from. A trip to Hungary in ${mlabel(hu.first)} left <b>${hu.n}</b> plays behind.` },
-    { t: 'roots', c: 4, v: 'ok', src: 'spotify · artist nationality',
-      claim: 'Italian, and listening more and more like one.',
-      ev: `Italian artists go from <b>${pct(itLo.it_share, 1)}</b> of my plays in 2017 to <b>${pct(itHi.it_share)}</b> in ${itHi.y}. My most played artist of 2024 is Italian, the first time that happens.` },
-    { t: 'lockdown', c: 4, v: 'ok', src: 'spotify + maps + instagram · volume',
-      claim: 'Spring 2020: I stopped going anywhere.',
-      ev: `Compared with March–May 2019, Spotify plays drop to <b>${pct(ratio('sp'))}</b> (no more music on the walk to school), Maps to <b>${pct(ratio('gm'))}</b>, while Instagram goes <b>up ${pct(ratio('ig') - 1)}</b>. The quietest hours shift two hours later that year. You can see the lockdown without reading any news.` },
+      ev: 'Spotify logs the country of every play.' },
+    { t: 'roots', v: 'ok',
+      claim: 'Italian, and listening more like one.',
+      ev: `Italian artists: <b>${pct(itLo.it_share, 1)}</b> of plays in 2017, <b>${pct(itHi.it_share)}</b> in ${itHi.y}.` },
+    { t: 'lockdown', v: 'ok',
+      claim: 'Spring 2020: stopped going anywhere.',
+      ev: `vs 2019: Spotify <b>${pct(ratio('sp'))}</b>, Maps <b>${pct(ratio('gm'))}</b>, Instagram <b>+${pct(ratio('ig') - 1)}</b>.` },
   ];
-  const V = { ok: ['ok', '✓ correct'], no: ['no', '✕ not confirming'], x: ['x', '✕ wrong'], '': ['', '· unverified'] };
-  $('inf').innerHTML = CARDS.map((c, i) => `
-    <article class="led-row">
-      <div class="led-n">${String(i + 1).padStart(2, '0')}</div>
-      <div class="led-claim"><span class="led-t">${c.t}</span>${c.claim}</div>
-      <div class="led-ev">${c.ev}</div>
-      <div class="led-meta"><span>${c.src}</span>
-        <span class="inf-conf" title="confidence ${c.c}/5">${[1, 2, 3, 4, 5].map(k => `<i class="${k <= c.c ? 'on' : ''}"></i>`).join('')}</span>
-        <span class="inf-verdict ${V[c.v][0]}">${V[c.v][1]}</span></div>
-    </article>`).join('');
+  const V = { ok: ['ok', '✓ right'], no: ['no', '✕ won\'t say'], x: ['x', '✕ wrong'], '': ['', '· unchecked'] };
+  $('inf').innerHTML = CARDS.map((c, i) => `<article class="led-row"><span class="led-n">${String(i + 1).padStart(2, '0')}</span><span class="led-t">${c.t}</span><span class="led-claim">${c.claim}</span><span class="led-ev">${c.ev}</span><span class="inf-verdict ${V[c.v][0]}">${V[c.v][1]}</span></article>`).join('');
 
   // ---------- meta's own profile of me ----------
   const MA = D.meta_ads;
   if (MA) {
     const S = MA.shown, esc = t => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
     $('ma-stats').innerHTML = [
-      [fmt(MA.adv_total), 'advertisers hold me in an audience'],
-      [fmt(S.n), `ads shown to me in ${MA.ads_window_days} days, ${MA.ads_per_day} a day`],
-      [S.advertisers, 'different advertisers paid for them'],
-      ['1 / ' + Math.round(MA.videos_per_day / MA.ads_per_day), 'one ad for every this many videos I watched'],
+      [fmt(MA.adv_total), 'advertisers have me'],
+      [fmt(S.n), `ads in ${MA.ads_window_days} days`],
+      [S.advertisers, 'advertisers paid'],
+      ['1 / ' + Math.round(MA.videos_per_day / MA.ads_per_day), 'ads per video watched'],
     ].map(([b, t]) => `<div><b>${b}</b><span>${t}</span></div>`).join('');
     $('ma-lists').textContent = fmt(MA.adv_lists);
 
@@ -373,7 +359,7 @@
     });
     adShow(0);
     const cn = k => S.cats.find(c => c.c === k).n;
-    $('ad-read').innerHTML = `Read without knowing me, that's someone who works with software and AI (<strong>${cn('AI & software')}</strong> ads), is weighing a master, a bootcamp or a new job (<strong>${cn('career & study')}</strong>), has some savings to put somewhere (<strong>${cn('money & investing')}</strong>), spends on clothes and watches (<strong>${cn('fashion, watches & luxury')}</strong>) and travels. Only <strong>${pct(cn('everything else') / S.n)}</strong> of the ads fell outside those groups. I never filled in a form saying any of this: it was all inferred from what I do.`;
+    $('ad-read').innerHTML = `Read blind, the ads say: works with AI (<strong>${cn('AI & software')}</strong>), weighing a career move (<strong>${cn('career & study')}</strong>), has savings (<strong>${cn('money & investing')}</strong>), buys fashion and watches (<strong>${cn('fashion, watches & luxury')}</strong>). I never told them any of it.`;
     const H = [...Array(24).keys()].map(i => (i + 6) % 24), hMax = Math.max(...S.by_hour);
     const late = h => h >= 22 || h < 2, lateN = H.filter(late).reduce((a, h) => a + S.by_hour[h], 0);
     $('ad-hours').innerHTML = H.map(h => `<i class="${late(h) ? 'on' : ''}" title="${String(h).padStart(2, '0')}:00 · ${S.by_hour[h]} ads" style="height:${S.by_hour[h] / hMax * 100}%"></i>`).join('');
@@ -434,7 +420,8 @@
   // ---------- rhythm ----------
   // heatmap and sleep chart share one height, so the two halves line up; sleep rows stay at least 15px
   const rhR = w => Math.max(.42, (D.sleep.length * 15 + 20) / w);
-  const heat = PJ.canvas($('rh-heat'), rhR), sleepC = PJ.canvas($('rh-sleep'), rhR);
+  // stacked on mobile: nothing to line up with, so the heatmap keeps short rows
+  const heat = PJ.canvas($('rh-heat'), w => (innerWidth <= 760 ? .3 : rhR(w))), sleepC = PJ.canvas($('rh-sleep'), rhR);
   let phase = D.phases.length - 1;
   const DOW = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
   function drawHeat() {
@@ -484,26 +471,26 @@
     const legend = (keys, cols, names) => keys.map((k, i) => `<span class="lg"><i style="background:${cols[i]}"></i>${names[i]}</span>`).join('');
     const YK = ['searched', 'subscribed', 'served', 'ad'], YC = [C.teal, C.green, C.a(0.16), C.red];
     $('pk-yt').innerHTML = stackRows(PY, YK, YC) + '<div class="yt-row" style="margin:0"><span></span><span style="font-size:10px;color:var(--fg-muted)">share of videos in my watch history</span><span class="n">chosen</span></div>';
-    $('pk-yt-legend').innerHTML = legend(YK, YC, ['searched for it', 'channel I follow', 'feed / autoplay / links', 'ads']);
+    $('pk-yt-legend').innerHTML = legend(YK, YC, ['searched', 'followed', 'feed', 'ads']);
     const SK = ['picked', 'queue', 'other'], SC = [C.teal, C.a(0.16), C.a(0.06)];
     $('pk-sp').innerHTML = stackRows(PS.map(r => ({ ...r, _: 0 })), ['picked', '_', 'queue', 'other'], [C.teal, C.teal, SC[1], SC[2]])
       + '<div class="yt-row" style="margin:0"><span></span><span style="font-size:10px;color:var(--fg-muted)">share of plays</span><span class="n">picked</span></div>';
-    $('pk-sp-legend').innerHTML = legend(SK, SC, ['I tapped the song', 'queue: previous ended or skip', 'other']);
+    $('pk-sp-legend').innerHTML = legend(SK, SC, ['tapped', 'queue', 'other']);
     const last = PY[PY.length - 1], notMine = last.served + last.ad;
     $('pk-big').textContent = pct(notMine);
-    $('pk-big-t').innerHTML = `of what YouTube logged as "watched" in ${last.y} I never searched for and don't subscribe to: <strong style="color:var(--fg)">${pct(last.served)}</strong> came from the feed, <strong style="color:var(--fg)">${pct(last.ad)}</strong> were ads.`;
+    $('pk-big-t').innerHTML = `of my ${last.y} YouTube I never searched for or followed. <strong>${pct(last.served)}</strong> came from the feed, <strong>${pct(last.ad)}</strong> were ads.`;
     $('pk-subs').textContent = D.picked.subs;
     const s0 = PS.find(r => r.y === '2019'), s1 = PS[PS.length - 1];
     const yc = last.searched + last.subscribed;
-    $('pk-after').innerHTML = `Music is a different story. On Spotify I tap the song myself <strong>${pct(s1.picked)}</strong> of the time in ${s1.y}, up from <strong>${pct(s0.picked)}</strong> in 2019, and most of the rest plays from queues and playlists, some mine and some Spotify's. On YouTube I pick <strong>${pct(yc)}</strong>. The shift to Italian rap has my fingerprints on it. The drift on YouTube mostly doesn't.`;
+    $('pk-after').innerHTML = `Music is different: on Spotify I tap the song myself <strong>${pct(s1.picked)}</strong> of the time, on YouTube <strong>${pct(yc)}</strong>. The Italian rap is my choice. The YouTube drift isn't.`;
   }
 
   // ---------- taste ----------
   const hMax = Math.max(...mus.map(m => m.hours));
   $('mu').innerHTML = '<tr><th>year</th><th>hours</th><th class="hide-s"></th><th>italian</th><th class="hide-s"></th><th>top artists</th></tr>' +
     mus.map(m => `<tr><td class="y">${m.y}</td>
-      <td><div class="bar"><i style="width:${m.hours / hMax * 100}%;background:${C.green}"></i></div></td><td class="num hide-s">${fmt(m.hours)}h</td>
-      <td><div class="bar"><i style="width:${m.it_share / 0.35 * 100}%;background:${C.teal}"></i></div></td><td class="num hide-s">${pct(m.it_share)}</td>
+      <td class="bc"><div class="bar"><i style="width:${m.hours / hMax * 100}%;background:${C.green}"></i></div></td><td class="num hide-s">${fmt(m.hours)}h</td>
+      <td class="bc"><div class="bar"><i style="width:${m.it_share / 0.35 * 100}%;background:${C.teal}"></i></div></td><td class="num hide-s">${pct(m.it_share)}</td>
       <td class="art" title="${m.top.join(', ')}">${m.top.slice(0, 3).join(' · ')}</td></tr>`).join('');
   const TC = [C.red, C.green, C.teal, C.yellow, C.blue, C.violet, '#b07cc6', '#6ec6c0', '#c89b6e', '#8a8f5e'];
   const cats = D.yt_topics.cats;

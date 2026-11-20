@@ -10,17 +10,16 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Doto:wght@800&display=swap" rel="stylesheet">
   <script>try { if (localStorage.getItem('theme') === 'light') document.documentElement.dataset.theme = 'light'; } catch (e) {}</script>
-  <link rel="stylesheet" href="../css/project.css?v=20261120v11">
+  <link rel="stylesheet" href="../css/project.css?v=20261120v14">
   <style>
-.pj{max-width:1180px}
-.pj-lead{max-width:none;font-size:13px;line-height:1.8}
-.fp-text{font-size:12.5px;line-height:1.85;color:var(--fg-dim);margin-bottom:18px}
+.pj-lead{max-width:none;font-size:14px;line-height:1.7;color:var(--fg)}
+.fp-text{font-size:13.5px;line-height:1.7;color:var(--fg);margin-bottom:14px}
 .fp-text strong{color:var(--fg);font-weight:500}
 .fp-text a{color:var(--fg);text-decoration:underline;text-decoration-color:var(--border2);text-underline-offset:3px}
 .fp-text a:hover{color:var(--teal)}
 
 /* essay quotes */
-.fp-quote{margin:30px 0 6px;padding:22px 0 22px 24px;border-left:2px solid var(--teal)}
+.fp-quote{margin:18px 0 4px;padding:12px 0 12px 20px;border-left:2px solid var(--teal)}
 .fp-quote p{font-size:clamp(14px,1.5vw,17px);font-weight:500;line-height:1.45;color:var(--fg);letter-spacing:.5px;text-transform:uppercase}
 .fp-quote .it{margin-top:12px;font-size:11.5px;font-weight:400;font-style:normal;text-transform:uppercase;color:var(--fg-muted);line-height:1.7;letter-spacing:.8px}
 .fp-quote cite{display:block;margin-top:10px;font-style:normal;font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--fg-muted)}
@@ -32,21 +31,23 @@
 /* chapters: clearer separation */
 .pj-sec.fp-ch{margin-top:0;padding-top:0;scroll-margin-top:56px;
 }
-.pj-sec.fp-ch h2{margin-left:calc(-1 * var(--hang)) !important;padding-top:28px !important;border-top:1px solid var(--border2) !important}
-.pj-sec.fp-ch h2{display:grid;grid-template-columns:auto 1fr;column-gap:18px;align-items:baseline;border:0;padding:0;margin:0 0 26px;
+.pj-sec.fp-ch h2{margin-left:calc(-1 * var(--hang)) !important;padding-top:18px !important;border-top:1px solid var(--border2) !important}
+/* one line: number, title, subtitle */
+.pj-sec.fp-ch h2{display:flex;flex-wrap:wrap;column-gap:14px;row-gap:2px;align-items:baseline;border:0;padding:0;margin:0 0 14px;
   text-transform:none;letter-spacing:0;color:var(--fg)}
 .pj-sec.fp-ch h2::before{content:none}
-.pj-sec.fp-ch{padding-bottom:28px}
-.pj-sec.fp-ch h2 .num{grid-row:1/3;font-size:clamp(28px,3.4vw,40px);font-weight:300;color:var(--teal);letter-spacing:-1px;line-height:1}
-.pj-sec.fp-ch h2 .tt{font-size:clamp(18px,2vw,23px);font-weight:300;letter-spacing:-.3px;line-height:1.2}
-.pj-sec.fp-ch h2 .sub{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--fg-muted);margin-top:6px}
+.pj-sec.fp-ch{padding-bottom:20px}
+.pj-sec.fp-ch>:last-child{margin-bottom:0}
+.pj-sec.fp-ch h2 .num{font-size:clamp(20px,2.4vw,28px);font-weight:300;color:var(--teal);letter-spacing:-1px;line-height:1}
+.pj-sec.fp-ch h2 .tt{font-size:clamp(17px,1.9vw,22px);font-weight:300;letter-spacing:-.3px;line-height:1.2}
+.pj-sec.fp-ch h2 .sub{display:none;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--fg-muted)}
 
 /* index */
-.fp-toc{margin-top:40px}
+.fp-toc{margin-top:28px}
 .fp-toc ol{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--border2)}
 .fp-toc li{border-bottom:1px solid var(--border)}
 .fp-toc li:not(:nth-child(3n+1)){border-left:1px solid var(--border)}
-.fp-toc a{display:grid;grid-template-columns:30px 1fr;gap:2px 10px;padding:14px 16px 14px 0;text-decoration:none;color:var(--fg);transition:background .15s}
+.fp-toc a{display:grid;grid-template-columns:30px 1fr;gap:2px 10px;padding:10px 16px 10px 0;text-decoration:none;color:var(--fg);transition:background .15s}
 .fp-toc li:not(:nth-child(3n+1)) a{padding-left:16px}
 .fp-toc a:hover{background:var(--surface)}
 .fp-toc a:hover .t{color:var(--teal)}
@@ -55,7 +56,7 @@
 .fp-toc .s{font-size:10.5px;color:var(--fg-muted)}
 
 /* sticky chapter bar */
-.fp-bar{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;gap:2px;padding:8px max(16px,calc((100vw - 1180px)/2 + 32px));
+.fp-bar{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;gap:2px;padding:8px max(16px,calc((100vw - 1300px)/2 + 48px));
   background:rgba(14,13,16,.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--border);
   transform:translateY(-100%);transition:transform .2s;overflow-x:auto;scrollbar-width:none}
 .fp-bar::-webkit-scrollbar{display:none}
@@ -68,16 +69,20 @@
 html{scroll-behavior:smooth}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 @media(max-width:760px){
-  .fp-toc ol{grid-template-columns:1fr}
+  .fp-toc ol{grid-template-columns:1fr 1fr}
   .fp-toc li:not(:nth-child(3n+1)){border-left:0}
   .fp-toc li:not(:nth-child(3n+1)) a{padding-left:0}
+  .fp-toc li:nth-child(even){border-left:1px solid var(--border)}
+  .fp-toc li:nth-child(even) a{padding-left:10px}
+  .fp-toc a{padding:8px 8px 8px 0;grid-template-columns:24px 1fr}
+  .fp-toc .s{display:none}
   .pj-sec.fp-ch{margin-top:0;--hang:0px}
   .fp-bar-t{display:none}
 }
 
 /* stat rows: full width, lines not boxes */
-.fp-stats{display:grid;grid-template-columns:repeat(4,1fr);margin-top:30px}
-.fp-stats div{padding:18px 18px 16px 0}
+.fp-stats{display:grid;grid-template-columns:repeat(4,1fr);margin-top:16px}
+.fp-stats div{padding:10px 18px 8px 0}
 .fp-stats div+div{padding-left:18px;border-left:1px solid var(--border)}
 .fp-stats b{display:block;font-size:clamp(20px,2.2vw,26px);font-weight:300;color:var(--fg);letter-spacing:-.5px;line-height:1.1}
 .fp-stats span{display:block;margin-top:6px;font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--fg-muted);line-height:1.6}
@@ -103,21 +108,21 @@ html{scroll-behavior:smooth}
 
 /* inference ledger: full-width rows */
 .led{border-top:1px solid var(--border2)}
-.led-row{display:grid;grid-template-columns:44px minmax(0,1.05fr) minmax(0,1.35fr) 190px;gap:22px;padding:20px 0;border-bottom:1px solid var(--border);align-items:start}
+/* one line per row: number, topic, conclusion, evidence, verdict */
+.led-row{display:grid;grid-template-columns:28px 130px minmax(0,1fr) minmax(0,1.3fr) 76px;gap:4px 18px;padding:9px 0;border-bottom:1px solid var(--border);align-items:baseline}
 .led-row:last-child{border-bottom:none}
-.led-row:hover{background:linear-gradient(90deg,transparent,rgba(255,255,255,.015),transparent)}
-.led-n{font-size:11px;color:var(--teal);padding-top:3px}
-.led-t{display:block;font-size:9.5px;letter-spacing:1.8px;text-transform:uppercase;color:var(--fg-muted);margin-bottom:6px}
-.led-claim{font-size:13.5px;line-height:1.5;color:var(--fg)}
-.led-ev{font-size:11.5px;line-height:1.8;color:var(--fg-dim);padding-top:19px}
+.led-n{font-size:11px;color:var(--teal)}
+.led-t{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--fg-muted)}
+.led-claim{font-size:13px;line-height:1.5;color:var(--fg)}
+.led-ev{font-size:12px;line-height:1.55;color:var(--fg-dim)}
 .led-ev b{color:var(--fg);font-weight:500}
-.led-meta{display:flex;flex-direction:column;align-items:flex-end;gap:7px;text-align:right;font-size:10px;color:var(--fg-muted);padding-top:21px}
+.led-row .inf-verdict{font-size:11px;text-align:right;white-space:nowrap}
 .inf-conf i{display:inline-block;width:6px;height:6px;border-radius:1px;margin-left:2px;background:var(--border2)}
 .inf-conf i.on{background:var(--teal)}
 .inf-verdict.ok{color:var(--teal)}
 .inf-verdict.no{color:var(--yellow)}
 .inf-verdict.x{color:var(--red)}
-.inf-spark{display:block;width:100%;max-width:220px;height:auto;margin-top:10px}
+.inf-spark{display:block;width:100%;max-width:180px;height:auto;margin-top:6px}
 .rd{background:var(--fg);color:transparent;border-radius:1px;padding:0 2px;user-select:none;-webkit-user-select:none;box-decoration-break:clone;-webkit-box-decoration-break:clone}
 .rd::selection{background:var(--fg);color:transparent}
 
@@ -131,21 +136,21 @@ html{scroll-behavior:smooth}
 .cl-box{position:relative;overflow-x:auto;overflow-y:hidden;padding:10px 14px 12px;scrollbar-width:thin;overscroll-behavior-x:contain;
   -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 60px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 60px),transparent)}
 .cl-box.end{-webkit-mask-image:none;mask-image:none}
-.cl{list-style:none;display:grid;grid-template-rows:repeat(8,auto);grid-auto-flow:column;grid-auto-columns:200px;column-gap:22px;font-size:11.5px;line-height:1.9;color:var(--fg-dim)}
+.cl{list-style:none;display:grid;grid-template-rows:repeat(6,auto);grid-auto-flow:column;grid-auto-columns:200px;column-gap:22px;font-size:11.5px;line-height:1.9;color:var(--fg-dim)}
 .cl li{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .cl li.hot{color:var(--fg)}
 .cl li.s{color:var(--teal)}
 .cl-q{font:inherit;font-size:11px;width:150px;color:var(--fg);background:var(--bg);border:1px solid var(--border2);border-radius:2px;padding:3px 7px;outline:none}
 .cl-q:focus{border-color:var(--teal)}
 @media(max-width:760px){.cl{grid-auto-columns:150px;column-gap:16px}.cl-q{width:100px}
-  .cl-az{display:grid;grid-template-columns:repeat(9,1fr)}.cl-az button{min-width:0}}
-.ma-h{margin:44px 0 14px;font-size:10px;font-weight:400;letter-spacing:2px;text-transform:uppercase;color:var(--teal)}
+  .cl-az button{min-width:30px;padding:7px 0}}
+.ma-h{margin:26px 0 10px;font-size:10px;font-weight:400;letter-spacing:2px;text-transform:uppercase;color:var(--teal)}
 .ad-stack{display:flex;height:26px;margin:16px 14px 4px;gap:2px}
 .ad-stack button{display:block;height:100%;border:0;padding:0;cursor:pointer;font:inherit;font-size:10px;color:#0e0d10;overflow:hidden;white-space:nowrap;transition:opacity .15s,transform .15s}
 .ad-stack button:first-child{border-radius:2px 0 0 2px}.ad-stack button:last-child{border-radius:0 2px 2px 0}
 .ad-cats.pick .ad-stack button:not(.on){opacity:.3}
 .ad-stack button.on{transform:scaleY(1.18)}
-.ad-split{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:0 22px;padding:8px 14px 12px}
+.ad-split{display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 22px;padding:8px 14px 12px}
 .ad-t{width:100%;border-collapse:collapse;font-size:11.5px;align-self:start}
 .ad-t td{padding:7px 8px 7px 0;border-bottom:1px solid var(--border);color:var(--fg-dim);white-space:nowrap;transition:color .15s}
 .ad-t tr:last-child td{border-bottom:0}
@@ -163,12 +168,12 @@ html{scroll-behavior:smooth}
 .ad-chips b{font-weight:400;color:var(--fg-muted);margin-left:6px}
 .ad-chips .big2{color:var(--fg);border-color:var(--border2)}
 .ad-det p{margin-top:10px;font-size:10.5px;color:var(--fg-muted)}
-.ad-hours{display:grid;grid-template-columns:repeat(24,1fr);gap:3px;align-items:end;height:130px;padding:14px 14px 0}
+.ad-hours{display:grid;grid-template-columns:repeat(24,1fr);gap:3px;align-items:end;height:84px;padding:12px 14px 0}
 .ad-hours i{display:block;background:var(--border2);border-radius:1px 1px 0 0;min-height:1px}
 .ad-hours i.on{background:var(--teal)}
 .ad-hours-x{display:grid;grid-template-columns:repeat(24,1fr);gap:3px;padding:6px 14px 10px;font-size:9.5px;color:var(--fg-muted)}
-.facts{border-top:1px solid var(--border2);margin-top:28px}
-.facts div{display:grid;grid-template-columns:220px 1fr;gap:22px;padding:14px 0;border-bottom:1px solid var(--border);font-size:12px;line-height:1.8;color:var(--fg-dim)}
+.facts{border-top:1px solid var(--border2);margin-top:18px}
+.facts div{display:grid;grid-template-columns:220px 1fr;gap:22px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;line-height:1.6;color:var(--fg)}
 .facts.two{display:grid;grid-template-columns:1fr 1fr;column-gap:32px;border-top:0}
 .facts.two div:nth-last-child(-n+2){border-bottom:0}
 .facts.two div{grid-template-columns:1fr;gap:4px;align-content:start}
@@ -177,9 +182,9 @@ html{scroll-behavior:smooth}
 .facts b{color:var(--fg);font-weight:500}
 
 /* others */
-.big{display:grid;grid-template-columns:auto 1fr;gap:10px 36px;align-items:baseline;padding:22px 0;margin-bottom:22px}
+.big{display:grid;grid-template-columns:auto 1fr;gap:10px 36px;align-items:baseline;padding:8px 0;margin-bottom:12px}
 .big b{font-size:clamp(30px,4vw,46px);font-weight:300;letter-spacing:-1.5px;color:var(--fg);line-height:1}
-.big span{font-size:12px;color:var(--fg-dim);line-height:1.8}
+.big span{font-size:13.5px;color:var(--fg);line-height:1.6}
 
 /* rhythm */
 .rh{display:grid;grid-template-columns:1fr 1fr}
@@ -189,16 +194,17 @@ html{scroll-behavior:smooth}
 
 /* taste */
 .mu{width:100%;border-collapse:collapse;font-size:11px}
-.mu td,.mu th{padding:7px 10px;border-bottom:1px solid var(--border);text-align:left;vertical-align:middle}
+.mu td,.mu th{padding:4px 10px;border-bottom:1px solid var(--border);text-align:left;vertical-align:middle}
 .mu th{font-weight:400;font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--fg-muted)}
 .mu td{color:var(--fg-dim)}
 .mu td.y{color:var(--fg);width:44px}
-.mu .bar{height:6px;background:var(--border);border-radius:1px;min-width:60px}
+.mu .bar{height:6px;background:var(--border);border-radius:1px;min-width:40px}
+.mu td.bc{width:56px}
 .mu .bar i{display:block;height:100%;border-radius:1px}
 .mu .num{color:var(--fg-muted);font-size:10px}
 .mu .art{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:0;width:44%}
-.yt-row{display:grid;grid-template-columns:44px 1fr 56px;align-items:center;gap:10px;font-size:11px;margin-bottom:8px}
-.yt-row .stack{display:flex;height:16px;border-radius:2px;overflow:hidden;background:var(--border)}
+.yt-row{display:grid;grid-template-columns:44px 1fr 56px;align-items:center;gap:10px;font-size:11px;margin-bottom:4px}
+.yt-row .stack{display:flex;height:12px;border-radius:2px;overflow:hidden;background:var(--border)}
 .yt-row .stack i{display:block;height:100%}
 .yt-row .n{color:var(--fg-muted);font-size:10px;text-align:right}
 
@@ -208,30 +214,36 @@ html{scroll-behavior:smooth}
 .fp-hero + .viz-note{margin:10px 0 28px calc(-1 * var(--hang))}
 .pipe{font-size:11px;line-height:1.9;color:var(--fg-dim);white-space:pre;overflow-x:auto;border:1px solid var(--border2);border-radius:4px;background:var(--bg2);padding:14px 16px;margin-top:22px}
 .pipe .c{color:var(--fg-muted)} .pipe .t{color:var(--teal)} .pipe .x{color:var(--red)}
+/* two charts side by side on wide screens */
+.fp-2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 22px;align-items:start}
+.fp-2.wl{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}
+@media(max-width:1000px){.fp-2,.fp-2.wl{grid-template-columns:minmax(0,1fr)}.fp-2>div+div{margin-top:14px}}
 
 @media(max-width:860px){
-  .led-row{grid-template-columns:32px minmax(0,1fr);gap:8px 14px}
-  .led-ev,.led-meta{grid-column:2;padding-top:0}
-  .led-meta{flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:6px 14px;text-align:left}
+  .led-row{grid-template-columns:24px minmax(0,1fr) auto;gap:2px 10px;padding:9px 0}
+  .led-t{grid-column:2}.led-row .inf-verdict{grid-column:3;grid-row:1}
+  .led-claim,.led-ev{grid-column:2/4}
   .facts div{grid-template-columns:1fr;gap:4px}
   .facts.two{grid-template-columns:1fr}
   .facts.two div:nth-last-child(2){border-bottom:1px solid var(--border)}
   .ad-split{grid-template-columns:minmax(0,1fr)}
-  .ad-det{border-left:0;border-top:1px solid var(--border);padding:14px 0 0;margin-top:6px;contain:none;height:240px}
+  .ad-det{border-left:0;border-top:1px solid var(--border);padding:14px 0 0;margin-top:6px;contain:none;height:170px}
 }
 @media(max-width:760px){
   .pj-lead{font-size:14px}
   .fp-stats{grid-template-columns:repeat(2,1fr)}
   .fp-stats div:nth-child(3){padding-left:0;border-left:0}
-  .mp-read{position:static;width:auto;border:0;border-top:1px solid var(--border);border-radius:0;background:transparent;backdrop-filter:none;padding:12px 14px}
+  .mp-read{position:static;width:auto;border:0;border-top:1px solid var(--border);border-radius:0;background:transparent;backdrop-filter:none;padding:8px 14px;line-height:1.65}
   .mp-hud{left:14px;top:12px}
   .mp-note{display:none}
   .mp-else{padding:5px 14px}
   .rh{grid-template-columns:1fr}
   .rh>div:first-child{border-right:0;border-bottom:1px solid var(--border)}
   .mu .hide-s{display:none}
-  .big{grid-template-columns:1fr}
-  .fp-quote{padding-left:16px}
+  .big{gap:6px 16px}
+  .big b{font-size:28px}
+  .fp-quote{padding-left:14px}
+  .fp-text{margin-bottom:14px}
 }
 
 /* indicatore laterale: un quadratino per blocco, verde = dove sei */
@@ -253,20 +265,20 @@ html[data-theme="light"] .fp-rail a:hover::after{color:var(--fg);background:rgba
 <body id="top">
   <nav class="fp-bar" id="fp-bar" aria-label="chapter navigation">
     <a class="fp-bar-top" href="#top">↑</a>
-    <a href="#c01" title="Explicit and Implicit Data">01</a>
-    <a href="#c02" title="What Can Be Inferred">02</a>
-    <a href="#c03" title="You Are the Product">03</a>
-    <a href="#c04" title="Other People's Data">04</a>
-    <a href="#c05" title="When I'm Awake">05</a>
-    <a href="#c06" title="Did I Choose This?">06</a>
-    <a href="#c07" title="Even Data Lies">07</a>
-    <a href="#c08" title="The Right I Wrote About">08</a>
-    <a href="#c09" title="Considerations">09</a>
+    <a href="#c02" title="What Can Be Inferred">01</a>
+    <a href="#c03" title="You Are the Product">02</a>
+    <a href="#c04" title="Other People's Data">03</a>
+    <a href="#c05" title="When I'm Awake">04</a>
+    <a href="#c06" title="Did I Choose This?">05</a>
+    <a href="#c07" title="Even Data Lies">06</a>
+    <a href="#c08" title="The Right I Wrote About">07</a>
+    <a href="#c09" title="Considerations">08</a>
     <span class="fp-bar-t" id="fp-bar-t"></span>
   </nav>
   <main class="pj">
     <div class="pj-top">
       <a href="../index.html">← cd ~</a>
+      <a class="pj-domain" href="../index.html">teemoteeo.dev</a>
       <span class="pj-crumb">~/research/<b>the non-ownership of data</b></span>
     </div>
 
@@ -287,59 +299,41 @@ html[data-theme="light"] .fp-rail a:hover::after{color:var(--fg);background:rgba
         <div class="mp-strip"><canvas id="tl" tabindex="0" aria-label="events per month; drag or use arrow keys to move through time"></canvas></div>
         <div class="viz-foot fp-legend" id="tl-legend"></div>
       </div>
-        <aside class="pj-aside"><span class="pj-aside-k">the map</span><h3 class="pj-aside-t">Where my phone pointed, month by month</h3><p class="viz-note">Every square is a 5 km cell where Google Maps recorded activity. Bright ones are the last few months, dim ones are everywhere the data has ever pointed. The strip underneath is the volume of everything logged, by source, with the four phases a changepoint algorithm found <em>without being told anything about my life</em>. Drag it to move through time.</p></aside>
+        <aside class="pj-aside"><span class="pj-aside-k">the map</span><h3 class="pj-aside-t">Where my phone pointed, month by month</h3><p class="viz-note">Each square is a 5 km cell where Google Maps logged me. The strip below is everything logged, by source. An algorithm split it into four phases without knowing anything about my life. Drag it.</p></aside>
       </div>
-      <p class="pj-lead">In May 2023, for a digital-products law exam at the University of Milan, I wrote an essay called <strong>The non-ownership of data</strong>. The argument was simple: what we produce online stops being ours the moment it is recorded. Platforms collect it, keep it, process it and sell access to it. The GDPR was the first real attempt to give some of that control back. Three years later I tested it. I asked <strong>Spotify, Instagram and Google</strong> for everything they had on me, merged it into one timeline of <strong id="fp-events">605,610 events</strong> over eleven years, and asked the question the essay only asked in theory: <strong>how much can someone work out about a person from their traces alone?</strong></p>
-
-      <blockquote class="fp-quote">
-        <p>These traces, once aggregated, are used by third parties to pursue their own interests.</p>
-        <cite>— my essay, Milan, 2023</cite>
-      </blockquote>
-
+      <p class="pj-lead">In 2023 I wrote an essay for a law exam: what we produce online stops being ours once it's recorded. In 2026 I tested it. I asked <strong>Spotify, Instagram and Google</strong> for everything they had on me, <strong id="fp-events">605,610 events</strong> over eleven years. <strong>How much can a stranger work out from the traces alone?</strong></p>
       <div class="fp-stats" id="fp-stats"></div>
     </header>
 
     <nav class="fp-toc" aria-label="chapters">
-      <span class="fp-h">index</span>
       <ol>
-        <li><a href="#c01"><span class="n">01</span><span class="t">Explicit and Implicit Data</span><span class="s">the map of where my phone pointed</span></a></li>
-        <li><a href="#c02"><span class="n">02</span><span class="t">What Can Be Inferred</span><span class="s">eleven conclusions, one of them wrong</span></a></li>
-        <li><a href="#c03"><span class="n">03</span><span class="t">You Are the Product</span><span class="s">Meta's own profile of me</span></a></li>
-        <li><a href="#c04"><span class="n">04</span><span class="t">Other People's Data</span><span class="s">Cambridge Analytica, at home</span></a></li>
-        <li><a href="#c05"><span class="n">05</span><span class="t">When I'm Awake</span><span class="s">daily rhythm and sleep</span></a></li>
-        <li><a href="#c06"><span class="n">06</span><span class="t">Did I Choose This?</span><span class="s">me or the feed</span></a></li>
-        <li><a href="#c07"><span class="n">07</span><span class="t">Even Data Lies</span><span class="s">errors a naive reading would make</span></a></li>
-        <li><a href="#c08"><span class="n">08</span><span class="t">The Right I Wrote About</span><span class="s">the GDPR in practice</span></a></li>
-        <li><a href="#c09"><span class="n">09</span><span class="t">Considerations</span><span class="s">what's left</span></a></li>
+        <li><a href="#c02"><span class="n">01</span><span class="t">What Can Be Inferred</span></a></li>
+        <li><a href="#c03"><span class="n">02</span><span class="t">You Are the Product</span></a></li>
+        <li><a href="#c04"><span class="n">03</span><span class="t">Other People's Data</span></a></li>
+        <li><a href="#c05"><span class="n">04</span><span class="t">When I'm Awake</span></a></li>
+        <li><a href="#c06"><span class="n">05</span><span class="t">Did I Choose This?</span></a></li>
+        <li><a href="#c07"><span class="n">06</span><span class="t">Even Data Lies</span></a></li>
+        <li><a href="#c08"><span class="n">07</span><span class="t">The Right I Wrote About</span></a></li>
+        <li><a href="#c09"><span class="n">08</span><span class="t">Considerations</span></a></li>
       </ol>
     </nav>
 
-    <!-- 01 EXPLICIT / IMPLICIT -->
-    <section class="pj-sec fp-ch" id="c01">
-      <h2><span class="num">01</span><span class="tt">Explicit and Implicit Data</span><span class="sub">the map of where my phone pointed</span></h2>
-      <p class="fp-text">The essay separated two kinds of data. <strong>Explicit data</strong> is what you hand over yourself: name, birthday, email. <strong>Implicit data</strong> is what gets recorded while they watch what you do: every song, like, search, map view and message timestamp. My explicit data would fit on a business card. The map at the top of the page is the implicit part, month by month.</p>
-
-    </section>
-
-    <!-- 02 INFERENCES -->
     <section class="pj-sec fp-ch" id="c02">
-      <h2><span class="num">02</span><span class="tt">What Can Be Inferred</span><span class="sub">eleven conclusions, one of them wrong</span></h2>
-      <p class="fp-text">In the essay, profiling was something platforms did to us. Here I did it to myself, with Python and a few evenings. Every line below comes from the data alone.</p>
+      <h2><span class="num">01</span><span class="tt">What Can Be Inferred</span></h2>
+      <p class="fp-text">Eleven conclusions from the data alone. One is wrong.</p>
       <div class="led" id="inf"></div>
     </section>
 
-    <!-- 03 PRODUCT -->
     <section class="pj-sec fp-ch" id="c03">
-      <h2><span class="num">03</span><span class="tt">You Are the Product</span><span class="sub">Meta's own profile of me</span></h2>
+      <h2><span class="num">02</span><span class="tt">You Are the Product</span></h2>
       <blockquote class="fp-quote" style="margin-top:0">
         <p>If you're not paying for it, you're not the customer, you are the product being sold.</p>
-        <cite>— quoted in my essay, Milan, 2023</cite>
+        <cite>— quoted in my essay, 2023</cite>
       </blockquote>
-      <p class="fp-text" style="margin-top:22px">I quoted that line in 2023. The Instagram export shows what it looks like from the inside, in two parts. The first is <strong>the list</strong>: every company that holds me in an audience. The second is <strong>the feed</strong>: every ad it actually put in front of me during the last week before the export. Reading them side by side shows what I'm being sold as, and how little of the reasoning I get to see.</p>
-      <div class="fp-stats" id="ma-stats" style="margin-top:6px"></div>
+      <div class="fp-stats" id="ma-stats"></div>
 
       <h3 class="ma-h">the list</h3>
-      <p class="fp-text"><strong id="ma-lists">902</strong> companies uploaded a file of their own (emails, phone numbers, past customers) and my profile matched a line in it. To them I'm not just an audience, I'm a line in their own files. Below is every one of them, as Meta lists it. The other <span id="ma-act">2,425</span> built an audience out of people who visited their site, used their app or interacted with them on Instagram.</p>
+      <p class="fp-text"><strong id="ma-lists">902</strong> companies uploaded their customer files and found me in them. <span id="ma-act">2,425</span> more targeted me for visiting their site or app.</p>
       <div class="viz">
         <div class="viz-bar"><span class="viz-label">companies that have me in their audience list</span><span class="grow"></span><input class="cl-q" id="cl-q" type="search" placeholder="filter" aria-label="filter the list"></div>
         <div class="cl-az" id="cl-az" aria-label="jump to letter"></div>
@@ -348,119 +342,108 @@ html[data-theme="light"] .fp-rail a:hover::after{color:var(--fg);background:rgba
       </div>
 
       <h3 class="ma-h">the feed</h3>
-      <p class="fp-text" id="ma-feed"></p>
+      <p class="fp-text" id="ad-read"></p>
       <div class="viz">
-        <div class="viz-bar"><span class="viz-label">what they sold me · one week of instagram ads</span></div>
+        <div class="viz-bar"><span class="viz-label">one week of instagram ads · click the bar</span></div>
         <div class="ad-cats" id="ad-cats"></div>
-        <div class="viz-foot"><span>grouped by advertiser and caption · click the bar to see who paid</span></div>
       </div>
-      <p class="fp-text" style="margin-top:22px" id="ad-read"></p>
-      <div class="viz">
-        <div class="viz-bar"><span class="viz-label">when the ads arrive · hour of day</span></div>
+      <div class="viz" style="margin-top:14px">
+        <div class="viz-bar"><span class="viz-label">when the ads arrive</span></div>
         <div class="ad-hours" id="ad-hours"></div>
         <div class="viz-foot" id="ad-hours-foot"></div>
       </div>
 
-      <div class="facts">
-        <div><span>they got some right</span><span>Prada in four regional accounts, Dior, Chanel and Zegna had me on their lists. I've modelled for Prada and Zegna. Whether that's why I'm on their lists, the export doesn't say. "Frequent travelers", "food and restaurants" (I was a waiter for years), "friends of recently moved".</span></div>
-        <div><span>and some wrong</span><span>Meta still says my profile is based in <b id="ma-based">Udine</b>. I moved away in 2021. Being wrong doesn't make the profile harmless: I'm still sold on that profile.</span></div>
-        <div class="warn"><span>consent</span><span>My consent for "processing by advertising partners" dates back to <b id="ma-consent">April 2018</b>, five weeks before the GDPR came into force. The banners of that spring were designed to be clicked through, which was one of the essay's complaints.</span></div>
-        <div class="warn"><span>the price of not being the product</span><span>Since late 2023 Meta has offered EU users a paid subscription with no ads. In the export its status is <b>not active</b>. I still don't pay for it, so the quote still applies to me.</span></div>
+      <div class="facts two">
+        <div><span>right</span><span>Prada, Dior, Chanel and Zegna have me on their lists. I've modelled for two of them.</span></div>
+        <div><span>wrong</span><span>Meta says I live in <b id="ma-based">Udine</b>. I left in 2021.</span></div>
+        <div class="warn"><span>consent</span><span>Given <b id="ma-consent">April 2018</b>, five weeks before the GDPR.</span></div>
+        <div class="warn"><span>ad-free plan</span><span><b>Not active.</b> I'm still the product.</span></div>
       </div>
-      <p class="viz-note">Source: <code>ads_information/</code> in the Instagram export. Ads and videos are measured over the only week Meta includes (11–18 September 2026). Ads are grouped by keyword rules on the advertiser's name and caption; examples are brands only, never private accounts. Advertisers in the list are a sample of recognisable brands out of the full list.</p>
     </section>
 
-    <!-- 04 OTHERS -->
     <section class="pj-sec fp-ch" id="c04">
-      <h2><span class="num">04</span><span class="tt">Other People's Data</span><span class="sub">Cambridge Analytica, at home</span></h2>
-      <p class="fp-text">The part of the essay I think about most is <strong>Cambridge Analytica</strong>. The quiz didn't only collect the data of whoever took it. It collected their friends' data too, and 87 million people ended up in a dataset they never agreed to. My own export has the same problem, on a small scale.</p>
-      <div class="big"><b id="ot-msgs">84,220</b><span>messages in my Instagram export were written by other people, across <strong style="color:var(--fg)"><span id="ot-people">811</span> conversations</strong>. None of those people asked for a copy of their words to end up in my zip file, and none of them could stop it.</span></div>
-      <p class="fp-text">That is why no name of anyone else appears on this page, and why the analysis only uses the <em>shape</em> of conversations: when, how often, with how many people. Never what was said. That shape is revealing, and it can also be wrong: see the relationship line in section 02.</p>
+      <h2><span class="num">03</span><span class="tt">Other People's Data</span></h2>
+      <p class="fp-text">Cambridge Analytica reached 87 million people through their friends. My export does the same, smaller:</p>
+      <div class="big"><b id="ot-msgs">84,220</b><span>messages written by other people, in <span id="ot-people">811</span> conversations, now in my zip file. None of them agreed. So no names here, and no message content.</span></div>
     </section>
 
-    <!-- 05 RHYTHM -->
     <section class="pj-sec fp-ch" id="c05">
-      <h2><span class="num">05</span><span class="tt">When I'm Awake</span><span class="sub">daily rhythm and sleep</span></h2>
+      <h2><span class="num">04</span><span class="tt">When I'm Awake</span></h2>
       <div class="viz">
         <div class="viz-bar"><span class="viz-label">activity · weekday × hour</span><span class="grow"></span><span id="rh-btns"></span></div>
         <div class="rh">
           <div><span class="fp-h" id="rh-title">heatmap</span><canvas id="rh-heat"></canvas></div>
-          <div><span class="fp-h">quietest 6 hours of the day, per year</span><canvas id="rh-sleep"></canvas></div>
+          <div><span class="fp-h">quietest 6 hours, per year</span><canvas id="rh-sleep"></canvas></div>
         </div>
-        <div class="viz-foot"><span>local time (Italy/France)</span><span class="grow"></span><span>brighter = more events</span></div>
       </div>
-      <p class="viz-note">Nobody logs their sleep on Instagram, and they don't need to. The 6-hour window with the least activity is a good proxy for sleep, and mine moved <span id="rh-shift">three hours later</span> over the decade.</p>
+      <p class="fp-text" style="margin-top:14px">The quietest 6 hours stand in for sleep. Mine moved <span id="rh-shift">three hours later</span>.</p>
     </section>
 
-    <!-- 06 TASTE / SOFT POWER -->
     <section class="pj-sec fp-ch" id="c06">
-      <h2><span class="num">06</span><span class="tt">Did I Choose This?</span><span class="sub">me or the feed</span></h2>
-      <p class="fp-text">The essay's biggest worry wasn't privacy. It was <strong>soft power</strong>: feeds decide what we see, what we see shapes what we think, and what we think feeds the algorithm again. My data shows my taste changing a lot. Italian rap goes from almost nothing to a third of my listening, and YouTube drifts toward streamers, podcasts and "money" content. So I checked <strong>who actually picked each video and each song</strong>: me, or the feed.</p>
+      <h2><span class="num">05</span><span class="tt">Did I Choose This?</span></h2>
+      <p class="fp-text">The essay's real worry was <strong>soft power</strong>: feeds decide what we see. So I checked who picked each video and song, me or the feed.</p>
       <div class="big"><b id="pk-big">96%</b><span id="pk-big-t"></span></div>
+      <div class="fp-2"><div>
       <div class="viz">
         <div class="viz-bar"><span class="viz-label">who picked it · youtube</span></div>
         <div style="padding:14px" id="pk-yt"></div>
         <div class="viz-foot" id="pk-yt-legend"></div>
       </div>
-      <p class="viz-note">A video counts as <em>searched</em> if I searched YouTube or Google for matching words in the 30 minutes before, and as <em>subscribed</em> if it comes from one of the <span id="pk-subs">53</span> channels I follow today. Everything else came from the home feed, Shorts, autoplay or a link someone sent me. Ads are the entries Google itself marks as "from Google Ads". Only 2024 onwards: before that the history is too sparse.</p>
-      <div class="viz" style="margin-top:18px">
+      <p class="viz-note">Searched: matching search in the 30 min before. Followed: one of my <span id="pk-subs">53</span> channels.</p>
+      </div><div>
+      <div class="viz">
         <div class="viz-bar"><span class="viz-label">who picked it · spotify</span></div>
         <div style="padding:14px" id="pk-sp"></div>
         <div class="viz-foot" id="pk-sp-legend"></div>
       </div>
-      <p class="viz-note">From Spotify's <code>reason_start</code> field: <em>picked</em> means I tapped the song, <em>queue</em> means it started because the previous one ended or I skipped forward. The queue can be my own playlist or Spotify's radio; the export doesn't say which, so "queue" is not all algorithm.</p>
-      <p class="fp-text" style="margin-top:22px" id="pk-after"></p>
+      </div></div>
+      <p class="fp-text" style="margin-top:14px" id="pk-after"></p>
+      <div class="fp-2 wl"><div>
       <div class="viz">
         <div class="viz-bar"><span class="viz-label">spotify · per year</span></div>
         <table class="mu" id="mu"></table>
       </div>
-      <p class="viz-note">Italian share is based on my own labels for the top 350 artists, who cover 95% of all plays. The rest counts as non-Italian, so the share is a lower bound.</p>
-      <div class="viz" style="margin-top:18px">
-        <div class="viz-bar"><span class="viz-label">youtube · what the watch history is about</span></div>
+      </div><div>
+      <div class="viz">
+        <div class="viz-bar"><span class="viz-label">youtube · topics</span></div>
         <div style="padding:14px" id="yt"></div>
         <div class="viz-foot" id="yt-legend"></div>
       </div>
-      <p class="viz-note">Labelled by channel and keyword rules. The grey part is the long tail no rule matched. Google only kept my full watch history from 2023 on.</p>
+      </div></div>
     </section>
 
-    <!-- 07 LIES -->
     <section class="pj-sec fp-ch" id="c07">
-      <h2><span class="num">07</span><span class="tt">Even Data Lies</span><span class="sub">errors a naive reading would make</span></h2>
-      <p class="fp-text">A profile doesn't have to be true to be used. These are the places where the data would have fooled me if I hadn't lived it.</p>
-      <div class="facts" style="margin-top:0">
-        <div class="warn"><span>my attention span didn't collapse</span><span>Spotify's skip rate jumps from 0% to 58% between 2021 and 2023. My listening didn't change, the field did: before 2022 the export doesn't record skips at all. A naive analysis would have written a story about TikTok.</span></div>
-        <div class="warn"><span>I lived in Paris</span><span>Spotify's connection country puts me in Italy for almost all of 2025, while Maps puts me in Paris. The reason is roaming: an Italian SIM gets an Italian IP.</span></div>
-        <div class="warn"><span>looking is not being</span><span>A map view means I looked at a place, not that I was there. Cities only count when they dominate a month.</span></div>
-        <div class="warn"><span>gaps look like silence</span><span>2015–2016 is almost empty because my first phone and old accounts logged little, not because I was offline. Missing data is missing, not zero.</span></div>
+      <h2><span class="num">06</span><span class="tt">Even Data Lies</span></h2>
+      <div class="facts two" style="margin-top:0">
+        <div class="warn"><span>skips 0% → 58%</span><span>Not TikTok brain. Spotify only started logging skips in 2022.</span></div>
+        <div class="warn"><span>"in Italy" all of 2025</span><span>I lived in Paris. Italian SIM, Italian IP.</span></div>
+        <div class="warn"><span>looking is not being</span><span>A map view is a place I looked at, not one I went to.</span></div>
+        <div class="warn"><span>empty 2015–16</span><span>Old phones logged little. Missing isn't zero.</span></div>
       </div>
     </section>
 
-    <!-- 08 GDPR -->
     <section class="pj-sec fp-ch" id="c08">
-      <h2><span class="num">08</span><span class="tt">The Right I Wrote About</span><span class="sub">the GDPR in practice</span></h2>
-      <p class="fp-text">This project exists because of two rights the GDPR introduced, the ones I listed in 2023. It also shows where they fall short.</p>
+      <h2><span class="num">07</span><span class="tt">The Right I Wrote About</span></h2>
       <div class="facts two" style="margin-top:0">
-        <div><span>art. 15 · access</span><span>Anyone can ask any company what it holds on them. Three requests, three exports, gigabytes of data, no lawyer.</span></div>
-        <div><span>art. 20 · portability</span><span>"Machine-readable", says the law. I got JSON, CSV, HTML and an mbox, and Instagram's JSON turns <b>più</b> into <b>piÃ¹</b>. Readable, with some work.</span></div>
-        <div><span>what the export doesn't say</span><span>I got back the <em>inputs</em>: what I did. Only Meta included any <em>outputs</em>, the labels and audiences, and only a sliver. What they're used for stays on their side.</span></div>
-        <div><span>fines as a cost of doing business</span><span>Meta's €1.2 billion fine in 2023, over EU data sent to the US, is a small share of its revenue. The fines are real. Their effect is less clear.</span></div>
+        <div><span>art. 15 · access</span><span>Three requests, three exports, no lawyer.</span></div>
+        <div><span>art. 20 · portability</span><span>JSON, CSV, HTML, mbox. Instagram turns <b>più</b> into <b>piÃ¹</b>.</span></div>
+        <div><span>what's missing</span><span>I got my inputs back. What they inferred stays with them.</span></div>
+        <div><span>fines</span><span>€1.2 billion for Meta in 2023. A small share of revenue.</span></div>
       </div>
       <div class="pipe"><span class="c"># how this page was built</span>
-<span class="t">1 parse   </span> spotify/*.json · instagram/** · takeout/**  →  timeline.csv, 605k rows
-<span class="t">2 features</span> one row per month, behaviour only: volume, night and weekend share, novelty, dominant city
-<span class="t">3 phases  </span> changepoint detection  →  breaks at 2017-04 · 2019-04 · 2022-11
-<span class="t">4 export  </span> gigabytes  →  97 KB of aggregates, the file this page loads <span class="c">(+ 172 KB of map outlines)</span>
-<span class="x">✕ no message text  ✕ no search queries  ✕ no names of other people  ✕ no location finer than 5 km, except one address, on purpose</span></div>
+<span class="t">1 parse   </span> spotify · instagram · takeout  →  605k rows
+<span class="t">2 phases  </span> changepoint detection  →  2017-04 · 2019-04 · 2022-11
+<span class="t">3 export  </span> gigabytes  →  97 KB of aggregates
+<span class="x">✕ no message text  ✕ no searches  ✕ no other names  ✕ nothing finer than 5 km, except one address</span></div>
     </section>
 
-    <!-- CLOSING -->
     <section class="pj-sec fp-ch" id="c09">
-      <h2><span class="num">09</span><span class="tt">Considerations</span><span class="sub">what's left</span></h2>
+      <h2><span class="num">08</span><span class="tt">Considerations</span></h2>
       <blockquote class="fp-quote" style="margin-top:0">
-        <p>It isn't only about writing better laws or building safer technology. Above all it's about building a society that is more aware and more responsible.</p>
-        <cite>— my essay, Milan, 2023</cite>
+        <p>It isn't only about better laws or safer technology. It's about a society that is more aware.</p>
+        <cite>— my essay, 2023</cite>
       </blockquote>
-      <p class="fp-text" style="margin-top:22px">In 2023 I ended the essay optimistic, but without an answer. Three years later I still don't have one. What I have is this page: the same argument, made with my own data instead of other people's scandals. If you want to see yours, ask for it: <a href="https://takeout.google.com" target="_blank" rel="noopener">Google Takeout</a>, <a href="https://www.spotify.com/account/privacy/" target="_blank" rel="noopener">Spotify</a> (ask for the extended streaming history), and Instagram under Accounts Center → Your information and permissions. It takes from a few hours to 30 days.</p>
+      <p class="fp-text" style="margin-top:14px">Three years later I still have no answer. Ask for yours: <a href="https://takeout.google.com" target="_blank" rel="noopener">Google Takeout</a>, <a href="https://www.spotify.com/account/privacy/" target="_blank" rel="noopener">Spotify</a> (extended history), Instagram → Accounts Center.</p>
     </section>
 
     <nav class="pj-nav">
@@ -472,7 +455,7 @@ html[data-theme="light"] .fp-rail a:hover::after{color:var(--fg);background:rgba
   <script src="../js/projects/common.js?v=20261120d"></script>
   <script src="../js/projects/data/footprint.js?v=20261003k"></script>
   <script src="../js/projects/data/footprint-map.js?v=20260929d"></script>
-  <script src="../js/projects/footprint.js?v=20261120g"></script>
+  <script src="../js/projects/footprint.js?v=20261120i"></script>
   <script>
   // chapter bar: shows after the index, highlights the chapter in view
   (function () {
