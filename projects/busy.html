@@ -12,9 +12,12 @@
   <link rel="stylesheet" href="../css/project.css?v=20261120v14">
   <style>
 /* the menu bar switch next to the title, sized with the title text: same easter egg as the home, it turns the light theme on (js/theme.js) */
-.pj-switch{position:relative;display:inline-block;box-sizing:content-box;width:1.28em;height:.64em;padding:0;margin-right:.3em;vertical-align:.06em;border:.04em solid rgba(255,255,255,.75);border-radius:.36em;background:#34c759;font-size:inherit;cursor:pointer;transition:background-color .2s}
-.pj-switch i{position:absolute;top:.06em;left:.06em;transform:translateX(.36em);will-change:transform;width:.8em;height:.52em;border-radius:.26em;background:linear-gradient(#f7f7f7,#dbdbdb);box-shadow:0 .02em .05em rgba(0,0,0,.35);transition:transform .2s cubic-bezier(.3,.7,.3,1.15)}
-.pj-switch[aria-checked="true"]{background:#ff3b30} .pj-switch[aria-checked="true"] i{transform:none}
+/* identical to the menu bar switch in BUSY 1.5 (StatusSwitchView): 1pt = .04em, system green/red.
+   the 1pt rim is an inset shadow, not a border: borders snap to device pixels and pushed the knob off centre */
+.pj-switch{position:relative;display:inline-block;box-sizing:border-box;width:1.28em;height:.64em;padding:0;border:0;box-shadow:inset 0 0 0 .04em rgba(255,255,255,.75);border-radius:999px;background:#30d158;cursor:pointer;transition:background-color .32s cubic-bezier(.25,1,.35,1);margin-right:.3em;vertical-align:.06em;font-size:inherit}
+.pj-switch i{position:absolute;top:.04em;bottom:.04em;left:calc(100% - .84em);box-sizing:border-box;width:.8em;border-radius:999px;border:.02em solid rgba(0,0,0,.15);background:linear-gradient(#f7f7f7,#dbdbdb);box-shadow:0 .02em .08em rgba(0,0,0,.25);transition:left .32s cubic-bezier(.25,1,.35,1)}
+.pj-switch[aria-checked="true"]{background:#ff453a} .pj-switch[aria-checked="true"] i{left:.04em}
+html[data-theme="light"] .pj-switch{background:#34c759} html[data-theme="light"] .pj-switch[aria-checked="true"]{background:#ff3b30}
 .pj-switch:focus-visible{outline:2px solid var(--teal);outline-offset:3px}
 /* the demo: an approximated macOS desktop */
 .bz-screen{position:relative;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;background:radial-gradient(120% 90% at 85% 100%,#b4587a 0%,transparent 55%),radial-gradient(90% 80% at 0% 0%,#1f3f7a 0%,transparent 60%),linear-gradient(160deg,#18224a,#3b2a63 60%,#7a3d6c)}
@@ -25,10 +28,11 @@
 .mb-icons{display:flex;align-items:center;gap:16px;color:#fff}
 .mb-icons svg{display:block}
 #bz-time{color:#fff;white-space:nowrap}
-.bz-switch{position:relative;width:32px;height:16px;border-radius:8px;border:1px solid rgba(255,255,255,.75);background:#8e8e93;transition:background .32s;flex-shrink:0}
-.bz-switch i{position:absolute;top:1px;left:5px;width:20px;height:12px;border-radius:6px;background:linear-gradient(#f7f7f7,#dbdbdb);box-shadow:0 .5px 1px rgba(0,0,0,.3);transition:left .32s cubic-bezier(.25,1,.35,1)}
-.bz-switch.green{background:#34c759} .bz-switch.green i{left:9px}
-.bz-switch.red{background:#ff3b30} .bz-switch.red i{left:1px}
+/* the menu bar switch, 1:1 with StatusSwitchView in BUSY 1.5: 32x16 incl. border, knob 20x14, travel 10, neutral grey in the middle */
+.bz-switch{position:relative;box-sizing:border-box;width:32px;height:16px;border-radius:8px;border:1px solid rgba(255,255,255,.75);background:#666;transition:background-color .32s cubic-bezier(.25,1,.35,1);flex-shrink:0}
+.bz-switch i{position:absolute;top:0;left:5px;box-sizing:border-box;width:20px;height:14px;border-radius:7px;border:.5px solid rgba(0,0,0,.15);background:linear-gradient(#f7f7f7,#dbdbdb);box-shadow:0 .5px 2px rgba(0,0,0,.25);transition:left .32s cubic-bezier(.25,1,.35,1),translate .32s cubic-bezier(.25,1,.35,1)}
+.bz-switch.green{background:#30d158} .bz-switch.green i{left:10px}
+.bz-switch.red{background:#ff453a} .bz-switch.red i{left:0}
 .bz-area{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px;padding:18px;align-items:start}
 .bz-desk{position:relative;height:380px;min-width:0;isolation:isolate}
 /* app windows: one per app, all open at once; the one in front is active, the others sit behind */

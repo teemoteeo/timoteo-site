@@ -27,10 +27,10 @@
   color: var(--fg-muted);
 }
 .oracle-field {
-  flex: 1;
+  flex: 1 0 100%;   /* full sidebar width; the ask button wraps below */
   min-width: 0;
   display: flex;
-  align-items: flex-start;
+  align-items: center;   /* $ and the return glyph sit in the middle, also when the text wraps */
   gap: 7px;
   padding: 0 8px;
   background: var(--bg2);
@@ -40,7 +40,7 @@
 }
 .oracle-field:focus-within { border-color: var(--teal); }
 .oracle.is-nagging .oracle-field { border-color: var(--red); }
-.oracle-prompt { color: var(--teal); font-size: 12px; line-height: 1.4; padding-top: 7px; flex-shrink: 0; }
+.oracle-prompt { color: var(--teal); font-size: 12px; line-height: 1.4; flex-shrink: 0; }
 .oracle-input {
   flex: 1;
   min-width: 0;
@@ -59,25 +59,19 @@
   overflow-wrap: anywhere;
 }
 .oracle-input::placeholder { color: var(--fg-muted); }
+/* on two lines (long question or the placeholder in a narrow sidebar) the text is centred */
+.oracle-field.is-multi .oracle-input { text-align: center; }
 
-.oracle-btn {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  background: none;
-  border: 1px solid var(--border2);
-  border-radius: 2px;
+/* no button: Enter asks. The return glyph says so, and lights up once there's a question */
+.oracle-enter {
+  flex-shrink: 0;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.4;
   color: var(--fg-muted);
-  padding: 7px 12px;
-  min-height: 31px;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: color 0.18s ease, border-color 0.18s ease, opacity 0.18s ease;
+  transition: color 0.18s ease;
 }
-.oracle-btn:hover { color: var(--fg); border-color: var(--teal); }
-.oracle-btn:focus-visible { outline: 1px solid var(--teal); outline-offset: 2px; }
-.oracle-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.oracle-input:not(:placeholder-shown) + .oracle-enter { color: var(--teal); }
 
 .oracle-status {
   margin-top: 9px;
@@ -113,8 +107,8 @@
   .oracle-form { max-width: 420px; }
   /* sotto i 16px iOS zooma sul focus */
   .oracle-input { font-size: 16px; padding: 9px 0; }
-  .oracle-prompt { font-size: 16px; padding-top: 9px; }
-  .oracle-btn { min-height: 38px; padding: 9px 16px; }
+  .oracle-prompt { font-size: 16px; }
+  .oracle-enter { font-size: 16px; }
   .oracle-status { font-size: 11px; }
 }
 

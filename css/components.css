@@ -495,21 +495,40 @@ html[data-theme="light"] .tech-grid-item img.inv-light { filter: invert(1); }
 /* stesso box della miniatura (padding 5px + colonna media): l'interruttore ci sta al centro */
 .bz-slot { position: absolute; left: 5px; top: 5px; width: 124px; height: 56px; display: grid; place-items: center; pointer-events: none; }
 .bz-sw {
-  /* lo stesso interruttore della pagina BUSY (.pj-switch), in em: font-size = scala */
-  pointer-events: auto; cursor: pointer; font-size: 46px;
-  position: relative; box-sizing: content-box; width: 1.28em; height: .64em; padding: 0;
-  border: .04em solid rgba(255,255,255,.75); border-radius: .36em;
-  background: #34c759; transition: background-color .2s;
+  /* identical to the menu bar switch in BUSY 1.5 (StatusSwitchView), in em: font-size = scale, 1pt = .04em;
+     the rim is an inset shadow, not a border: borders snap to device pixels and pushed the knob off centre */
+  pointer-events: auto; font-size: 46px;
+  position: relative;
+  display: inline-block;
+  box-sizing: border-box;
+  width: 1.28em;
+  height: .64em;
+  padding: 0;
+  border: 0;
+  box-shadow: inset 0 0 0 .04em rgba(255,255,255,.75);
+  border-radius: 999px;
+  background: #30d158;
+  cursor: pointer;
+  transition: background-color .32s cubic-bezier(.25,1,.35,1);
 }
 .bz-sw i {
-  position: absolute; top: .06em; left: .06em; width: .8em; height: .52em; border-radius: .26em;
-  background: linear-gradient(#f7f7f7, #dbdbdb); box-shadow: 0 .02em .05em rgba(0,0,0,.35);
-  transform: translateX(.36em); will-change: transform;
-  transition: transform .2s cubic-bezier(.3,.7,.3,1.15);
+  position: absolute;
+  top: .04em;
+  bottom: .04em;
+  left: calc(100% - .84em);
+  box-sizing: border-box;
+  width: .8em;
+  border-radius: 999px;
+  border: .02em solid rgba(0,0,0,.15);
+  background: linear-gradient(#f7f7f7,#dbdbdb);
+  box-shadow: 0 .02em .08em rgba(0,0,0,.25);
+  transition: left .32s cubic-bezier(.25,1,.35,1);
 }
 .bz-sw:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
-.bz-sw[aria-checked="true"] { background: #ff3b30; }
-.bz-sw[aria-checked="true"] i { transform: none; }
+.bz-sw[aria-checked="true"] { background: #ff453a; }
+html[data-theme="light"] .bz-sw { background: #34c759; }
+html[data-theme="light"] .bz-sw[aria-checked="true"] { background: #ff3b30; }
+.bz-sw[aria-checked="true"] i { left: .04em; }
 
 /* pac-man gira in wasm e headless non lo registra: svg, su hover mangia i puntini */
 .pr-pm { display: grid; place-items: center; height: 100%; }

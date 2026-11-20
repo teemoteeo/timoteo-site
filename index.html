@@ -25,9 +25,9 @@
   <script>try { if (localStorage.getItem('theme') === 'light') document.documentElement.dataset.theme = 'light'; } catch (e) {}</script>
   <link rel="stylesheet" href="css/base.css?v=20261120v12">
   <link rel="stylesheet" href="css/layout.css?v=20261120v5">
-  <link rel="stylesheet" href="css/components.css?v=20261120v24">
+  <link rel="stylesheet" href="css/components.css?v=20261120v28">
   <link rel="stylesheet" href="css/cube.css?v=20261120v18">
-  <link rel="stylesheet" href="css/eightball.css?v=20261006a">
+  <link rel="stylesheet" href="css/eightball.css?v=20261120c">
 </head>
 <body>
 
@@ -149,12 +149,12 @@
           <canvas id="eb-canvas" width="560" height="560" aria-hidden="true"></canvas>
         </div>
         <form class="oracle-form" id="eb-form">
-          <label class="oracle-label" for="eb-input">ask the 8-ball</label>
+          <label class="oracle-label" for="eb-input">ask the 8-ball anything</label>
           <div class="oracle-field">
             <span class="oracle-prompt" aria-hidden="true">$</span>
-            <textarea class="oracle-input" id="eb-input" rows="1" maxlength="120" autocomplete="off" spellcheck="false" enterkeyhint="send" placeholder="ask for a prediction"></textarea>
+            <textarea class="oracle-input" id="eb-input" rows="1" maxlength="120" autocomplete="off" spellcheck="false" enterkeyhint="send" placeholder="ask for a prediction&#10;press enter" aria-keyshortcuts="Enter"></textarea>
+            <kbd class="oracle-enter" aria-hidden="true">↵</kbd>
           </div>
-          <button class="oracle-btn" id="eb-btn" type="submit">ask</button>
         </form>
         <p class="oracle-status" id="eb-status" role="status"></p>
         <p class="oracle-sr" id="eb-answer" aria-live="polite"></p>
@@ -268,7 +268,7 @@
               <details class="pr-fold">
                 <summary class="pr glass">
                   <span class="pr-media pr-42" aria-hidden="true"><svg class="logo42" viewBox="32 -51.1 896 629.1"><polygon points="32,412.6 362.1,412.6 362.1,578 526.8,578 526.8,279.1 197.3,279.1 526.8,-51.1 362.1,-51.1 32,279.1"/><polygon points="597.9,114.2 762.7,-51.1 597.9,-51.1"/><polygon points="762.7,114.2 597.9,279.1 597.9,443.9 762.7,443.9 762.7,279.1 928,114.2 928,-51.1 762.7,-51.1"/><polygon points="928,279.1 762.7,443.9 928,443.9"/></svg></span>
-                  <span class="pr-text"><span class="pr-top"><span class="pr-name">common core</span><span class="pr-tag">6 projects <i class="pr-caret">▸</i></span></span><span class="pr-desc">Every project of the Common Core, milestone 2 to 4. C, Python, graphs, threads, LLMs. <a href="https://github.com/teemoteeo/quarantadue" target="_blank" rel="noopener">repo ↗</a></span></span>
+                  <span class="pr-text"><span class="pr-top"><span class="pr-name">Common Core</span><span class="pr-tag">6 projects <i class="pr-caret">▸</i></span></span><span class="pr-desc">Every project of the Common Core, milestone 2 to 4. C, Python, graphs, threads, LLMs. <a href="https://github.com/teemoteeo/quarantadue" target="_blank" rel="noopener">repo ↗</a></span></span>
                 </summary>
                 <div class="pr-fold-rows">
                   <div class="tree-ms">
@@ -423,7 +423,7 @@
   <script src="js/konami.js?v=20261029a"></script>
   <script src="js/rubik2d.js?v=20260919a"></script>
   <script src="js/cube-loader.js?v=20261120b"></script>
-  <script src="js/eightball.js?v=20261120a"></script>
+  <script src="js/eightball.js?v=20261120c"></script>
   <script src="js/mobile.js?v=20260919a"></script>
   <script src="js/tech.js?v=20261120b"></script>
   <script src="js/tree.js?v=20260919a"></script>

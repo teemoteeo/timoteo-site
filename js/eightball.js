@@ -10,7 +10,6 @@
 
   const form   = document.getElementById('eb-form');
   const input  = document.getElementById('eb-input');
-  const btn    = document.getElementById('eb-btn');
   const status = document.getElementById('eb-status');
   const srOut  = document.getElementById('eb-answer');
   const shell  = document.getElementById('eb-ball');
@@ -98,14 +97,12 @@
       return;
     }
     busy = true;
-    btn.disabled = true;
     srOut.textContent = '';
     if (presenter.mirrorToSr) setStatus('');
 
     const answer = ANSWERS[pick(ANSWERS.length)];
     presenter.run(answer, { reduceMotion: reduceMotion.matches }, function () {
       busy = false;
-      btn.disabled = false;
       // Con la palla 3D il testo vive dentro il triangolo: per gli screen
       // reader lo rimando in una live region, e la riga di stato resta libera.
       if (presenter.mirrorToSr) {
@@ -120,6 +117,10 @@
   // the question wraps and the box grows with it, so a long one stays readable
   function grow() {
     input.style.height = 'auto'; input.style.height = input.scrollHeight + 'px';
+    // more than one line: centre the text (see .is-multi in css/eightball.css)
+    const cs = getComputedStyle(input);
+    const one = parseFloat(cs.lineHeight) + parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+    input.parentNode.classList.toggle('is-multi', input.scrollHeight > one + 2);
   }
   input.addEventListener('keydown', function (e) {
     if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); ask(); }   // Enter still asks, no new lines
@@ -171,7 +172,6 @@
   }
 
   input.addEventListener('focus', load3d, { once: true });
-  btn.addEventListener('click', load3d, { once: true });
 
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver(function (entries) {
