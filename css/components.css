@@ -227,7 +227,35 @@
 
 .tech-grid-section {
   margin-top: 24px;
+  position: relative;   /* la domanda di js/break.js si centra qui */
 }
+/* ===== EASTER EGG: break (js/break.js) ===== */
+.brk-btn, .brk-ask {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+  background: none; border: 1px solid var(--border2); border-radius: 2px; color: var(--fg-muted);
+  cursor: pointer; transition: color .18s ease;
+}
+.brk-btn { display: block; margin: 10px 0 0 auto; width: 104px; min-height: 30px; padding: 7px 0; }
+.brk-btn:hover, .brk-ask:hover { color: var(--fg); }
+.brk-btn:disabled { cursor: default; }
+.brk-ask {
+  position: absolute; left: 50%; top: 50%; translate: -50% -50%;
+  width: max-content; max-width: 90%; padding: 10px 14px; letter-spacing: 1.5px; line-height: 1.5;
+  color: var(--fg); animation: brk-ask-in .4s ease-out;
+}
+@keyframes brk-ask-in { from { opacity: 0; } }
+.brk-w { white-space: nowrap; }
+.brk-l { display: inline-block; }
+/* !important: batte le animazioni che certi blocchi hanno gia' (compose-in, cube-enter, con selettori piu' forti) */
+.brk { animation: brk-shake .2s linear var(--s) infinite, brk-fall var(--t) cubic-bezier(.55, 0, 1, .45) var(--d) forwards !important; }
+@keyframes brk-shake {
+  0%, 100% { transform: translate(1px, -1px) rotate(2deg); }
+  25% { transform: translate(-2px, 1px) rotate(-3deg); }
+  50% { transform: translate(1px, 2px) rotate(1deg); }
+  75% { transform: translate(-1px, -2px) rotate(-2deg); }
+}
+@keyframes brk-fall { to { transform: translateY(var(--y)) rotate(var(--r)); visibility: hidden; } }
+html.brk-all { overflow: hidden; }
 .tech-grid-section .section-title {
   font-size: 10.35px;
   letter-spacing: 2.5px;

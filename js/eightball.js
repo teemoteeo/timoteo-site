@@ -116,11 +116,16 @@
 
   // the question wraps and the box grows with it, so a long one stays readable
   function grow() {
+    // empty: measure the placeholder as if it were typed. Safari leaves the placeholder out of
+    // scrollHeight, so the box stayed one line tall and cut the two-line placeholder in half
+    const empty = !input.value;
+    if (empty) input.value = input.placeholder;
     input.style.height = 'auto'; input.style.height = input.scrollHeight + 'px';
     // more than one line: centre the text (see .is-multi in css/eightball.css)
     const cs = getComputedStyle(input);
     const one = parseFloat(cs.lineHeight) + parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
     input.parentNode.classList.toggle('is-multi', input.scrollHeight > one + 2);
+    if (empty) input.value = '';
   }
   input.addEventListener('keydown', function (e) {
     if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); ask(); }   // Enter still asks, no new lines
