@@ -349,12 +349,15 @@
     white-space: normal;
     max-width: none;
   }
-  .tagline-subtitle { font-size: 11.5px; white-space: normal; letter-spacing: 0.4px; }
+  /* il sottotitolo sempre su due righe, a capo prima di "&" */
+  .tagline-subtitle { font-size: clamp(9px, 2.85vw, 11.5px); white-space: nowrap; }   /* "└─ ACQUIRING KNOWLEDGE" deve stare nella colonna anche a 320px */
+  .ts-2 { display: block; }
 
   /* blocco identita' in colonna 1, cubo accanto in colonna 2 (stessa riga) */
   /* centrato verticalmente nella riga: stessa distanza dalla foto sopra
      e dal ticker sotto (l'altezza della riga la detta il cubo accanto) */
-  .profile-id   { order: 4; grid-column: 1; grid-row: 3; align-self: center; margin: 2px 0 0; }
+  /* nome (riga 3) e ticker (riga 4) fanno blocco a sinistra del cubo, che copre tutte e due le righe */
+  .profile-id   { order: 4; grid-column: 1; grid-row: 3; align-self: end; margin: 0; }
   .profile-name { text-align: left; line-height: 1.35; }
   /* in mezza colonna queste due andavano a capo male: una riga sola, piu' piccole */
   .profile-meta { text-align: left; font-size: 11px; white-space: nowrap; margin-top: 5px; }
@@ -374,12 +377,15 @@
   .ct:not(.ct-cv) span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   .ct .ic { width: 18px; height: 18px; }
 
-  /* margin-top: the cube timer hangs under its button, the longest ticker line (the cities) ran under it */
-  .ticker-wrapper, .hero .ticker-wrapper { order: 7; grid-column: 1 / -1; margin: 20px 0 28px; }
+  /* il ticker sta sotto il nome, accanto al cubo: prima partiva sotto il timer e lasciava ~50px vuoti.
+     200px = larghezza del blocco nome; la riga lunga (le citta') va a capo, e l'altezza in piu'
+     la assorbe la riga del cubo, quindi niente salti */
+  .ticker-wrapper, .hero .ticker-wrapper { order: 7; grid-column: 1 / -1; grid-row: 4; align-self: start; align-items: baseline; max-width: 200px; margin: 12px 0 0; }   /* baseline: con la riga a capo il $ restava a meta' */
+  .interest-list li.active { white-space: normal; }
 
   /* --- cubo, subito dopo l'header --- */
   .hero-cube-shell {
-    order: 5; grid-column: 1 / -1; grid-row: 3;
+    order: 5; grid-column: 1 / -1; grid-row: 3 / span 2;
     align-self: start;
     min-height: 0; margin: 14px -20px 0 0;
     /* 200px = larghezza del blocco nome (riga meta nowrap): il cubo si
@@ -394,7 +400,8 @@
   .sidebar-cube { position: relative; transform: none; margin: 0; }
   .sidebar-cube-controls { min-width: 0; }
 
-  .featured { order: 8; grid-column: 1 / -1; margin: 0 0 40px; }
+  /* il timer del cubo pende ~18px sotto il bottone, ma a destra: il titolo a sinistra gli passa accanto */
+  .container .featured { order: 8; grid-column: 1 / -1; margin: 24px 0 40px; }   /* .container: components.css arriva dopo e rimetteva 4px */
   .feat-grid { gap: 16px; }
   .bio-block { order: 9; grid-column: 1 / -1; margin-bottom: 28px; }
   [data-boot="projects"] { order: 10; grid-column: 1 / -1; }
@@ -426,18 +433,21 @@
    e i contatti passano su una riga intera sotto. */
 @media (max-width: 600px) {
   .container, .container.visible { grid-template-rows: auto auto; }
-  .profile-pic-container { grid-row: 1; }
+  .profile-pic-container { grid-row: 1; align-self: center; }   /* centrata sul claim accanto */
   .hero-copy-shell { grid-row: 1; align-self: center; }
-  /* tutti e cinque su una riga: CV largo, quattro icone */
+  /* tutti e cinque su una riga, sulla griglia dell'header: CV largo quanto la foto (42%),
+     le quattro icone si dividono la colonna del claim. 10px + gap 8px = column-gap 18px */
   .sidebar-contacts {
     grid-column: 1 / -1; grid-row: 2;
-    grid-template-columns: 1fr repeat(4, 44px);
+    display: flex; gap: 8px;
     margin: 16px 0 0;
   }
-  .ct.ct-cv { grid-column: auto; }
+  .ct.ct-cv { flex: 0 0 42%; margin-right: 10px; }
+  .ct:not(.ct-cv) { flex: 1 1 0; }
 }
 
 @media (max-width: 380px) {
   .container, .container.visible { column-gap: 14px; padding: 18px 16px 48px; }
-  .sidebar-contacts { grid-template-columns: 1fr repeat(4, 40px); gap: 6px; }
+  .sidebar-contacts { gap: 6px; }
+  .ct.ct-cv { margin-right: 8px; }   /* 8 + 6 = column-gap 14px */
 }
