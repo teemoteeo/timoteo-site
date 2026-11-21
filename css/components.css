@@ -489,11 +489,12 @@ html[data-theme="light"] .tech-grid-item img.inv-light { filter: invert(1); }
 
 /* busy: l'interruttore della menu bar, da solo, fermo, sul vetro della card */
 .pr-busy { background: transparent; }
-.pr-x { position: relative; }
+.pr-x { position: relative; --w: 124px; --h: 56px; }   /* --w/--h: box della miniatura (slot, hint, area di tap) */
 .pl-group > .pr-x { margin-top: 8px; }
 .pl-head + .pr-x { margin-top: 2px; }
 /* stesso box della miniatura (padding 5px + colonna media): l'interruttore ci sta al centro */
-.bz-slot { position: absolute; left: 5px; top: 5px; width: 124px; height: 56px; display: grid; place-items: center; pointer-events: none; }
+/* alto quanto la card: la miniatura e' centrata in verticale (align-items), cosi' anche l'interruttore */
+.bz-slot { position: absolute; left: 5px; top: 0; bottom: 0; width: var(--w); display: grid; place-items: center; pointer-events: none; }
 .bz-sw {
   /* identical to the menu bar switch in BUSY 1.5 (StatusSwitchView), in em: font-size = scale, 1pt = .04em;
      the rim is an inset shadow, not a border: borders snap to device pixels and pushed the knob off centre */
@@ -507,7 +508,7 @@ html[data-theme="light"] .tech-grid-item img.inv-light { filter: invert(1); }
   border: 0;
   box-shadow: inset 0 0 0 .04em rgba(255,255,255,.75);
   border-radius: 999px;
-  background: #30d158;
+  background: var(--sw-on);
   cursor: pointer;
   transition: background-color .32s cubic-bezier(.25,1,.35,1);
 }
@@ -525,10 +526,30 @@ html[data-theme="light"] .tech-grid-item img.inv-light { filter: invert(1); }
   transition: left .32s cubic-bezier(.25,1,.35,1);
 }
 .bz-sw:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
-.bz-sw[aria-checked="true"] { background: #ff453a; }
-html[data-theme="light"] .bz-sw { background: #34c759; }
-html[data-theme="light"] .bz-sw[aria-checked="true"] { background: #ff3b30; }
+.bz-sw[aria-checked="true"] { background: var(--sw-off); }
+/* i colori dell'interruttore: li usa anche la parola "switch" della scritta */
+.pr-x { --sw-on: #30d158; --sw-off: #ff453a; }
+html[data-theme="light"] .pr-x { --sw-on: #34c759; --sw-off: #ff3b30; }
 .bz-sw[aria-checked="true"] i { left: .04em; }
+/* l'invito a non cliccare: fuori dalla card, nel margine verso la sidebar, punta all'interruttore */
+.bz-hint {
+  position: absolute; right: calc(100% + 8px); top: 50%; translate: 0 -50%;
+  white-space: nowrap; font-size: 9px; line-height: 1; letter-spacing: .3px;
+  color: var(--fg-muted); pointer-events: none;
+}
+/* la freccia (svg simmetrico, il glifo aveva i margini storti) al centro dello spazio tra il bordo
+   interno della card (1px, -4px nelle coordinate dello slot) e l'interruttore (largo 1.28 * 46px) */
+.bz-arrow { position: absolute; top: 50%; left: calc((var(--w) - 1.28 * 46px - 8px) / 4); translate: -50% -50%; width: 18px; height: auto; color: var(--fg-muted); }
+.bz-hint b { font-weight: inherit; color: var(--sw-on); transition: color .32s cubic-bezier(.25,1,.35,1); }
+.pr-x:has(.bz-sw[aria-checked="true"]) .bz-hint b { color: var(--sw-off); }
+@media (max-width: 900px) {
+  /* niente sidebar: la scritta va sotto la card */
+  .bz-hint { right: auto; left: 12px; top: calc(100% + 4px); translate: none; }
+  /* su touch risponde tutta la miniatura: la card sotto non si apre per sbaglio */
+  /* freccia in su, al centro tra il fondo dell'interruttore (50% + .32 * 46px) e il bordo interno (100% - 1px) */
+  .bz-arrow { left: 50%; top: calc(75% + .16 * 46px - .5px); rotate: -90deg; width: 13px; }   /* lo spazio sotto e' ~17px */
+  .bz-sw::after { content: ''; position: absolute; left: 50%; top: 50%; translate: -50% -50%; width: var(--w); height: var(--h); }
+}
 
 /* pac-man gira in wasm e headless non lo registra: svg, su hover mangia i puntini */
 .pr-pm { display: grid; place-items: center; height: 100%; }
@@ -539,5 +560,5 @@ html[data-theme="light"] .bz-sw[aria-checked="true"] { background: #ff3b30; }
 @media (max-width: 600px) {
   .pr { grid-template-columns: 104px minmax(0, 1fr); column-gap: 12px; }
   .pr-media { height: 54px; }
-  .bz-slot { width: 104px; height: 54px; }
+  .pr-x { --w: 104px; --h: 54px; }
 }
