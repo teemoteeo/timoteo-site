@@ -121,6 +121,8 @@ body::before {
 
 /* ===== SPAZIO: stelle disegnate da js/space.js su una canvas fissa ===== */
 #space { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+/* astronavi ASCII di js/ships.js: sopra le stelle e la griglia, sotto la pagina; restano anche sul tema chiaro */
+#ships { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
 
 /* ===== ETICHETTE E SOTTOTITOLI IN DOTO ===== */
 html .nav-header, html .section-title, html .pl-label, html .bio-block-label,

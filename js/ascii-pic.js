@@ -6,11 +6,18 @@
   const box = document.querySelector('.profile-pic-container');
   const img = box && box.querySelector('.profile-pic');
   if (!box || !img) return;
+  // data-ascii: the ascii layer shows a different picture (the avatar) instead of the photo itself.
+  // The avatar has the photo's size and the face in the same spot and size (Vision: jaw width,
+  // eye-chin), so the same object-fit/position puts both heads in the same place
+  let src = img;
+  if (img.dataset.ascii) { src = new Image(); src.src = img.dataset.ascii; }
 
-  const RAMP = ' .:-=+*#%@';     // brighter pixel, denser char
+  // brighter pixel, denser char (Paul Bourke's ramp: more steps, more detail)
+  const RAMP = " .'`^\",:;Il!i~+_-?][}{1)(|tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$";
   const GLYPHS = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789';
-  const CELL_W = 5;              // css px per column
+  const CELL_W = 2.5;            // css px per column
   const CELL_H = CELL_W * 1.75;
+  const EDGE = 1.3;              // sobel magnitude (on 0-1 luminance) above which a cell becomes a line char
   const IN_MS = 1300, OUT_MS = 800;
   const WAIT_MS = 100;           // hover this long before the burst starts
   const HEAD = 0.03, TRAIL = 0.22; // in rain-time units: bright head, then a trail fading into the pixel's color
@@ -27,14 +34,14 @@
 
   function sample() {
     w = box.clientWidth; h = box.clientHeight;
-    if (!w || !img.naturalWidth) return;
+    if (!w || !src.naturalWidth) return;
     const dpr = devicePixelRatio || 1;
     cv.width = w * dpr; cv.height = h * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     cols = Math.floor(w / CELL_W); rows = Math.floor(h / CELL_H);
 
     // replicate object-fit: cover + object-position of the <img>
-    const iw = img.naturalWidth, ih = img.naturalHeight;
+    const iw = src.naturalWidth, ih = src.naturalHeight;
     const s = Math.max(w / iw, h / ih);
     const [px, py] = getComputedStyle(img).objectPosition.split(' ').map(v => parseFloat(v) / 100);
     const sw = w / s, sh = h / s, sx = (iw - sw) * px, sy = (ih - sh) * py;
@@ -42,23 +49,48 @@
     const off = document.createElement('canvas');
     off.width = cols; off.height = rows;
     const o = off.getContext('2d');
-    o.drawImage(img, sx, sy, sw, sh, 0, 0, cols, rows);
+    o.drawImage(src, sx, sy, sw, sh, 0, 0, cols, rows);
     const d = o.getImageData(0, 0, cols, rows).data;
+
+    // stretch contrast over the visible pixels only (2nd-98th percentile): dark skin gets the whole ramp
+    const L = i => (0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]) / 255;
+    const seen = [];
+    for (let i = 0; i < d.length; i += 4) if (d[i + 3] > 127) seen.push(L(i));
+    seen.sort((a, b) => a - b);
+    const lo = seen[Math.floor(seen.length * 0.02)] || 0, hi = seen[Math.floor(seen.length * 0.98)] || 1;
+
+    const S = i => Math.min(1, Math.max(0, (L(i) - lo) / (hi - lo || 1)));
+    // strong edges (glasses, mouth, cap brim, jaw) get a line char along the edge: features drawn, not just shaded
+    const at = (x, y) => S((Math.min(rows - 1, Math.max(0, y)) * cols + Math.min(cols - 1, Math.max(0, x))) * 4);
+    const edge = (x, y) => {
+      const gx = at(x + 1, y - 1) + 2 * at(x + 1, y) + at(x + 1, y + 1) - at(x - 1, y - 1) - 2 * at(x - 1, y) - at(x - 1, y + 1);
+      const gy = at(x - 1, y + 1) + 2 * at(x, y + 1) + at(x + 1, y + 1) - at(x - 1, y - 1) - 2 * at(x, y - 1) - at(x + 1, y - 1);
+      if (Math.hypot(gx, gy) < EDGE) return null;
+      // edge runs perpendicular to the gradient; y grows downward on screen
+      return '|/-\\'[Math.round(((Math.atan2(gy, gx) * 4 / Math.PI) % 4 + 4) % 4) % 4];
+    };
+
+    // no line chars on and round the lips: the lip line came out as thin dashes, a gap in the mouth.
+    // Lips: pink, red well above green and blue about as green (skin is orange: blue well below green)
+    const pink = (x, y) => { if (x < 0 || y < 0 || x >= cols || y >= rows) return false; const k = (y * cols + x) * 4; return d[k + 1] > 70 && d[k] > 1.3 * d[k + 1] && d[k + 2] > 0.88 * d[k + 1]; };   // > 70: dark reddish shadows are not lips
+    const lips = (x, y) => { for (let v = -2; v <= 2; v++) for (let u = -1; u <= 1; u++) if (pink(x + u, y + v)) return true; return false; };
 
     cells = [];
     for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
-      const i = (y * cols + x) * 4;
-      const lum = (0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]) / 255;
-      // lift darks a little so the skin tones keep their warmth (same on both themes)
+      const i = (y * cols + x) * 4, empty = d[i + 3] <= 127;
+      const lum = S(i), e = empty || src === img || lips(x, y) ? null : edge(x, y);
+      // photo colors, darks lifted a little: a glyph only inks part of its cell, so true colors read darker
+      // (the shadows under the cap are also lifted in the avatar file itself)
       const rgb = [d[i], d[i + 1], d[i + 2]].map(v => Math.round(255 * Math.pow(v / 255, 0.8)));
       // cells stretch to cover the whole box, so no strip of photo is left at the edges
       const rx = Math.floor(x * w / cols), ry = Math.floor(y * h / rows);
       const rw = Math.floor((x + 1) * w / cols) - rx, rh = Math.floor((y + 1) * h / rows) - ry;
       cells.push({
-        rx, ry, rw, rh, x: rx, y: ry + rh * 0.8,
-        ch: RAMP[Math.min(RAMP.length - 1, Math.floor(lum * RAMP.length))],
+        rx, ry, rw, rh, x: x * w / cols, y: ry + rh * 0.8,   // text at the exact column (rx is floored: gaps every few chars)
+        // min density 0.4: shadows stay drawn instead of turning into holes
+        ch: empty ? ' ' : e || RAMP[Math.min(RAMP.length - 1, Math.floor((0.4 + 0.6 * lum) * RAMP.length))],
         // light theme: ink on paper, the darker the pixel the denser the char (blacks come out full)
-        inkCh: RAMP[Math.min(RAMP.length - 1, Math.floor((1 - lum) * RAMP.length))], raw: [d[i], d[i + 1], d[i + 2]],
+        inkCh: empty ? ' ' : e || RAMP[Math.min(RAMP.length - 1, Math.floor((1 - lum) * RAMP.length))], raw: [d[i], d[i + 1], d[i + 2]],
         rgb, delay: 0,
       });
     }
@@ -92,13 +124,14 @@
     ctx.font = `600 ${CELL_H * 0.95}px 'JetBrains Mono', 'Hiragino Sans', monospace`;
 
     const T = p * (maxDelay + TRAIL);
+    // hard cut: once the rain reaches a cell, the photo under it is gone.
+    // All backgrounds first, then all glyphs: drawn per cell, the next cell's rect clipped the previous
+    // glyph by a sub-pixel amount that drifts along the row, so half the portrait looked different
+    ctx.fillStyle = BG;
+    cells.forEach(c => { if (T >= c.delay) ctx.fillRect(c.rx, c.ry, c.rw + 1, c.rh + 1); });   // +1: antialiased edges let the photo show through as a grid
     cells.forEach((c, i) => {
       const lt = T - c.delay, rgb = light ? c.raw : c.rgb, ch = light ? c.inkCh : c.ch;
       if (lt < 0) return;
-      // hard cut: once the rain reaches a cell, the photo under it is gone
-      ctx.globalAlpha = 1;
-      ctx.fillStyle = BG;
-      ctx.fillRect(c.rx, c.ry, c.rw + 1, c.rh + 1);   // +1: antialiased edges let the photo show through as a grid
       if (lt < HEAD) {
         ctx.globalAlpha = 1;
         ctx.fillStyle = `rgb(${HEAD_RGB})`;
@@ -159,6 +192,6 @@
   });
 
   const ready = () => document.fonts.ready.then(sample);
-  if (img.complete) ready(); else img.addEventListener('load', ready);
-  new ResizeObserver(() => { if (img.complete) sample(); }).observe(box);
+  if (src.complete) ready(); else src.addEventListener('load', ready);
+  new ResizeObserver(() => { if (src.complete) sample(); }).observe(box);
 })();

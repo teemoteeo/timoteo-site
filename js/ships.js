@@ -2,42 +2,74 @@
 // SHIPS: low-poly starships flying through the space behind the page, as ASCII
 // ============================
 // ships live in world space (x right, y down, z away from the viewer) and are seen through one
-// perspective camera. Each ship's mesh is rasterized (z-buffer, supersampled) into its own grid
-// of cells, the same size as the avatar's ASCII (js/ascii-pic.js), turned into tinted glyphs and
-// cached as a sprite. Per frame sprites only move; a ship is re-rasterized when its pose or its
-// size changed enough, within a time budget (big ones over several frames).
+// perspective camera. Each ship's mesh is rasterized (z-buffer, 2x4 samples per cell, shadows from
+// a shadow map, light falling off with depth) into its own grid of cells, the same size as the
+// avatar's ASCII (js/ascii-pic.js), turned into tinted glyphs and cached as a sprite. Lit surfaces
+// get the glyph ramp; dim ones, and the outline, get braille dots, one per sample, so shade and
+// silhouette keep the samples' resolution. Per frame sprites only move; a ship is re-rasterized
+// when its pose or its size changed enough, within a time budget (big ones over several frames).
 // ?shiplab=xwing|tie|ywing|falcon|destroyer: one ship large on a turntable (&ang=<rad> freezes it, &elev=<rad>)
-// ?shipdebug=1: draws the corridor and each ship's recent trail on top
+// once per page view, one group after the other comes in filling the biggest empty part of the page,
+// then flies away towards the top right: the Star Destroyer with its TIEs, then the Falcon with
+// X-wings and Y-wings, who jump to lightspeed
 (function () {
   const INTENSITY = 0.65;         // the knob: glyph strength over the page bg, dark theme (0-1)
   const INK = 0.4;                // same on the light theme
   const CELL_W = 2.5, CELL_H = CELL_W * 1.75;   // css px per cell, as the avatar
-  const MAX_ALIVE = 8;
-  const TARGET = 6;               // visible ships the arrivals aim for (3 on small screens)
-  const ARRIVAL = [2, 4.5];       // s between arrivals while below the target
-  const DIVIDE = 18;              // css px between the two carriageways on screen (plus each ship's own half size)
-  const AVOID = 1;                // s of look-ahead for ships about to cover each other on screen
-  // near the camera ships enter and leave through the screen edge at full strength, at about this
-  // on-screen length (css px): the depth of the edge crossing is chosen from it, so sprites stay sane
-  const EDGE_PX = { near: 300, mid: 430, far: 720 };
-  const MIX = { xwing: 0.3, tie: 0.32, ywing: 0.2, falcon: 0.13, destroyer: 0.05 };   // arrival weights (one Star Destroyer at most)
-  const SIZE = { tie: 0.7, ywing: 1.15 };   // x the lane's ship length: a TIE is smaller than an X-wing, a Y-wing longer
-  const GROUP = 0.2;              // chance an arrival brings company: a pair, an escort, a chase
-  const FAR_DIM = 0.6;            // the far end of the road is this much fainter: a faint stream, near ships clear
   const RERASTER = 0.02;          // change of heading/roll/view (rad) before a sprite is redrawn
   const SCALE_STEP = 0.025;       // ... or of on-screen size
   const BUDGET = 2.5;             // ms of rasterizing per frame (moving, drawing and the last step of a job come on top)
-  const CELL_CAP = [4000, 16000]; // above these cell counts: 2x2, then 1x1 samples per cell (else 2x3)
+  const CELL_CAP = [30000, 80000]; // above these cell counts: 2x2, then 1x1 samples per cell (else 2x4, a braille cell)
   const FOCAL = 1.15;             // focal length in viewport heights
   const DT_MAX = 0.05;
-  const FIRST_SPAWN = 1;          // s after the page shows: the road starts empty, the first ship comes in from below
-  const FILL = 15;                // s over which the empty road fills up: single ships at an even pace, no groups
-  const LIMIT = 1.15;             // hard cap on any ship's on-screen length, x EDGE_PX of its lane
-  const SETTLE = 1.5;             // s after an away ship comes into view before lane hops, weave, avoidance and the carriageway clamp have full say
-  const AMB = 0.05, DIF = 0.95, RIM = 0.2, GAMMA = 1.4;
-  const LIGHT = norm([-0.45, -0.75, -0.5]);  // towards the key light, world space
+  const FIRST_SPAWN = 1;          // s after the page shows before the first group comes in
+  const GAP = [3, 6];             // s of empty sky between two groups
+  // one group at a time. lead: kind, length (world units), its on-screen length when it fills the
+  // empty box (x box width, capped at px css), s for the whole pass.
+  // escort: [kind, length, ahead, up, right], offsets in lead lengths in the lead's own frame
+  // (ahead < 0 is behind the lead, so nearer the camera and bigger)
+  const GROUPS = [
+    // TIEs at about 1:37 of the Destroyer (the real one is 1:250, which would leave dots); the
+    // hull is 0.65 lead lengths wide, so the flankers fly past its rim
+    { lead: 'destroyer', len: 60, edge: 0.75, px: 1500, time: 19, swing: 0.04, sway: 0.03, escort: [
+      ['tie', 1.6, -0.1, 0.1, 0.4], ['tie', 1.6, -0.18, 0.06, 0.47], ['tie', 1.6, -0.26, 0.13, 0.36], ['tie', 1.6, 0.1, 0.08, 0.44],
+      ['tie', 1.6, 0, -0.05, -0.4], ['tie', 1.6, -0.1, 0, -0.5], ['tie', 1.6, 0.3, 0.14, -0.1], ['tie', 1.6, -0.34, 0.16, -0.24],
+    ] },
+    // a V trailing the Falcon; at `jump` of the pass they jump to lightspeed, the Falcon first
+    { lead: 'falcon', len: 8, edge: 0.3, px: 420, time: 15, swing: 0.1, sway: 0.2, jump: 0.5, escort: [
+      ['xwing', 3, -0.8, 0.08, 0.5], ['xwing', 3, -0.85, -0.04, -0.52],
+      ['ywing', 3.6, -1.4, 0.12, 0.95], ['ywing', 3.6, -1.45, 0, -1],
+    ] },
+  ];
+  // the lead's course, in world space so perspective does the rest. Coming in: from nearer and
+  // lower left, heading along `enter` (nearly across: no near end looming), slowing down to `slow` of its speed as it reaches the box
+  // centre at the size that fills the box (`lead`: that leg's length, x the depth there), in the
+  // first `stay` of the pass. Going away: it turns for the vanishing point `vanish` (viewport
+  // fractions, top right) and speeds up (`ease`) until it is `depth` times deeper. The escort
+  // drifts round its slot by up to `sway` lead lengths on every axis, depth included
+  const PATH = { vanish: [0.94, 0.04], enter: [1, -0.04, 0.12], lead: 0.3, stay: 0.32, slow: 0.35, depth: 8, ease: 2.2 };
+  // the jump to lightspeed, in three beats. Slow: over `brake` s before the lead's jump the group
+  // brakes to `idle` of its speed. Charge: meanwhile each ship's engines swell to `glow` times,
+  // pulsing `pulse` times a second (only the engines: the hull keeps its light), and it trembles
+  // up to `shake` css px. Go: each shoots off along the heading, ever faster (a lead lengths x
+  // (e^(rate s) - 1) after s seconds), the lead first, the escort `after` s behind it; gone after
+  // `gone` s. The streak is glyphs: `lines` lines across the ship, from where it was `trail` s ago to where it is
+  const JUMP = { brake: 1.8, idle: 0.06, glow: 3.5, pulse: 2.5, shake: 2.2, a: 0.05, rate: 11, after: [0.35, 0.45, 0.6, 0.7], gone: 0.7, trail: 0.4, lines: 9 };
+  const BOX_MIN = 0.3;            // an empty box narrower than this (x viewport width) is not used: lower left instead
+  const HORIZON = 0.22;           // the vanishing point's height (viewport fraction): high, so ships flying level
+                                  // climb the screen and show their decks, as from a camera looking down
+  const FADE = 0.62;              // fraction of the pass after which the group fades out
+  const FAR_DIM = 0.55;           // light lost with distance over the pass: far ships dissolve into dots
+  const BANK = 1.1;               // roll per rad/s of turn: ships lean into their curves
+  const AMB = 0.05, DIF = 0.95, RIM = 0.2, GAMMA = 1.2;
+  const EXPOSE = 0.95;            // the brightest 5% of a ship's hull is scaled to this (up to 2.5x): full range at any light angle
+  const LIGHT = norm([-0.8, -0.42, -0.42]);  // towards the key light, world space: low and from the left, so slopes part and greebles cast long shadows
+  const SHADOW = 0.12;            // diffuse light left in a cast shadow
+  const ZFOG = 0.5;               // light lost from the nearest to the farthest point of a ship
+  const DOTS = 0.3;               // ink below which a cell is drawn as braille dots
   const CREASE = 0.25;            // cos of the angle between faces that draws an edge char
   const LEVELS = 4;               // brightness buckets per glyph
+  const DITHER = [0, 4, 6, 2, 1, 5, 7, 3].map(v => (v + 0.5) / 8);   // per braille dot (row-major 2x4): ordered threshold
   // Bourke's ramp (as in ascii-pic.js) without the bars, slashes and brackets: those read as edges at this size
   const RAMP = " .'`,:;~+icrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$";
   const EDGES = '|/-\\';
@@ -48,34 +80,12 @@
     blue: ['#86a2cf', '#2f5596'], glowBlue: ['#9fd0ff', '#1d5fbf'], glowWarm: ['#ffab7a', '#c2410c'],
     glass: ['#92c6d8', '#1f6f8b'], window: ['#ffd47e', '#a86500'],
   };
-  // lanes: lw = ship length in world units, z = depth range of a pass, speed = world units/s at the
-  // near end, fog = depths where the ship starts fading and is gone
-  const LANES = {
-    near: { lw: 3.2, z: [10, 75], speed: 4.5, fog: [25, 75], dim: 1 },
-    mid:  { lw: 9, z: [24, 140], speed: 6, fog: [50, 140], dim: 0.95 },
-    far:  { lw: 70, z: [80, 380], speed: 8, fog: [160, 380], dim: 0.85 },
-  };
-  // the highway: a corridor along the diagonal, as fractions of the viewport (so every lane's
-  // depth range lands on the same stretch of screen), bending slowly over minutes
-  const CORRIDOR = { from: [0.1, 1.0], to: [0.86, 0.16], w: 0.11, h: 0.08, bend: 0.08, period: 240 };
-  const LOOK = 0.12;              // ships steer at a point this far ahead along the corridor (0-1)
-  const DEPTH_SPEED = 0.55;       // speed grows with depth as (z / z near)^this: close passes last longer
-  const SEPARATION = 1.8;         // keep this many ship lengths apart (soft push)
-  const BANK = 1.1;               // roll per rad/s of turn: ships lean into their curves
-  const ROLL_LAG = 0.35;          // s for the roll to catch up with the turn
-  const BARREL = 0.3;             // chance of a barrel roll per fighter
-  // personalities, rolled per ship from these ranges: cruise (x lane speed), vary (speed swell),
-  // turn (max rad/s), accel (x cruise per s), hop (s between lane changes), weave (corridor
-  // fraction), wfreq (rad/s), bank (x BANK), climb (chance to overtake over/under instead of beside)
-  const PERSONA = {
-    near: { cruise: [0.8, 1.3], vary: [0.04, 0.25], turn: [0.7, 1.6], accel: 1.0, hop: [3, 8], weave: [0.05, 0.45], wfreq: [0.5, 1.4], bank: [0.8, 1.4], climb: 0.5 },
-    mid:  { cruise: [0.85, 1.1], vary: [0.02, 0.08], turn: [0.22, 0.4], accel: 0.35, hop: [7, 15], weave: [0, 0.15], wfreq: [0.15, 0.3], bank: [0.6, 1], climb: 0.3 },
-    far:  { cruise: [0.92, 1.05], vary: [0, 0.03], turn: [0.04, 0.08], accel: 0.1, hop: [20, 40], weave: [0, 0.06], wfreq: [0.04, 0.09], bank: [0.4, 0.7], climb: 0 },
-  };
 
   const lab = new URLSearchParams(location.search).get('shiplab');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reduced && !lab) return;
+  // desktop only for now: a mouse and a wide window when the page loads
+  if (!lab && !matchMedia('(min-width: 1024px) and (hover: hover) and (pointer: fine)').matches) return;
 
   // ---------- vectors ----------
   function norm(v) { const l = Math.hypot(v[0], v[1], v[2]); return l ? [v[0] / l, v[1] / l, v[2] / l] : v; }
@@ -150,15 +160,29 @@
     fan(top, C, o.top || fl, o.col); fan(bot, C, fl, o.col);
   }
   const box = (x0, x1, y0, y1, z0, z1, o) => ext([[x0, z0], [x1, z0], [x1, z1], [x0, z1]], y0, y1, o);
+  // a straight hull through sections [x, [[y, z]...]] (convex rings, same point count), flat quads,
+  // end caps; o.fls / o.cols: flag and colour per side of the ring
+  function hull(secs, o = {}) {
+    const P = secs.map(([x, pts]) => pts.map(([y, z]) => [x, y, z])), n = P[0].length;
+    const ctr = ps => ps.reduce((s, p) => add(s, p, 1 / ps.length), [0, 0, 0]);
+    for (let i = 0; i < P.length - 1; i++) {
+      const c = ctr([...P[i], ...P[i + 1]]);
+      for (let k = 0; k < n; k++) {
+        const k1 = (k + 1) % n, fl = o.fls ? o.fls[k] : o.fl || 0, col = o.cols ? o.cols[k] : o.col;
+        fid++; tri(P[i][k], P[i + 1][k], P[i + 1][k1], c, fid, fl, col); tri(P[i][k], P[i + 1][k1], P[i][k1], c, fid, fl, col);
+      }
+    }
+    fan(P[0], ctr([...P[0], ...P[1]]), o.fl || 0, o.col); fan(P[P.length - 1], ctr([...P[P.length - 1], ...P[P.length - 2]]), o.fl || 0, o.col);
+  }
   const both = f => { f(1); f(-1); };
   // a nozzle facing aft (-x) with its rim at x: outer bell, dark inner wall, glowing disc set
   // back inside, and an exhaust cone behind it
-  function engine(x, y, z, r, len, col, xf = id) {
+  function engine(x, y, z, r, len, col, xf = id, plume = 4.5) {
     const place = q => xf([q[0], q[1] + y, q[2] + z]); place.R = xf.R;
     loft([[x, 0, 0, r, r], [x + len * 0.35, 0, 0, r * 1.02, r * 1.02], [x + len, 0, 0, r * 0.8, r * 0.8]], { n: 14, xf: place, fl: SMOOTH, col: 'hullDark', cap0: false });
     loft([[x + 0.01, 0, 0, r * 0.88, r * 0.88], [x + len * 0.5, 0, 0, r * 0.78, r * 0.78]], { n: 14, xf: place, inward: true, fl: DARK, col: 'hullDark', cap0: false, cap1: false });
     fan(Array.from({ length: 14 }, (_, k) => { const a = k * 2 * Math.PI / 14; return place([x + len * 0.5, r * 0.78 * Math.sin(a), r * 0.78 * Math.cos(a)]); }), place([x + len, 0, 0]), EMIT, col);
-    loft([[x + len * 0.45, 0, 0, r * 0.7, r * 0.7], [x - r * 1.5, 0, 0, r * 0.45, r * 0.45], [x - r * 4.5, 0, 0, 0.02, 0.02]], { n: 10, xf: place, fl: EXH, col, w: [1, 0.6, 0] });
+    loft([[x + len * 0.45, 0, 0, r * 0.7, r * 0.7], [x - r * 1.5, 0, 0, r * 0.45, r * 0.45], [x - r * plume, 0, 0, 0.02, 0.02]], { n: 10, xf: place, fl: EXH, col, w: [1, 0.6, 0] });
   }
   const gun = (x0, x1, y, z, r, xf = id) => { const pl = q => xf([q[0], q[1] + y, q[2] + z]); pl.R = xf.R; loft([[x0, 0, 0, r, r], [x1, 0, 0, r, r], [x1 + r * 3, 0, 0, r * 0.6, r * 0.6]], { n: 6, xf: pl, col: 'hullDark' }); };
   const dots = (pts, s, col, xf) => pts.forEach(([x, y, z]) => box(x - s, x + s, y - s * 0.7, y + s * 0.7, z - s, z + s, { fl: EMIT, col, xf }));
@@ -198,53 +222,90 @@
 
   // engine light: blue for the Rebels (Falcon, X-wing, Y-wing), red for the Empire (Star Destroyer, TIE)
   const BUILD = {
-    // Imperial Star Destroyer: flat hexagonal dagger (16:4:1) with the dark seam round its edge,
-    // plated slopes, a trench down the deck, terraced superstructure with turbolaser batteries and
-    // window rows, bridge tower with the T-shaped bridge and its two shield domes, ventral hangar,
-    // engine block with three big and four small engines
+    // Imperial Star Destroyer, after the blueprint and the studio models (.ships-work/refs): a wedge
+    // 32 long and 0.65 as wide, a low ridge down the deck and a deeper keel, a recessed wall round
+    // the rim between two overhanging lips, packed with greebles and window rows; plated slopes,
+    // turbolaser batteries on the shoulders, a stepped superstructure with lit window bands, the
+    // bridge tower with the T-shaped bridge, its two shield domes and the tractor array; ventral
+    // hangar and reactor dome; engine block with three big and four small engines
     destroyer() {
       PANEL = 1.6; sd = 11;
-      const RY = x => x < -12 ? 1.05 + 0.05 * (-12 - x) / 4 : 1.05 - 0.97 * (x + 12) / 28;
-      const RZ = x => x < -12 ? 4.4 + 0.2 * (-12 - x) / 4 : 4.4 - 4.28 * (x + 12) / 28;
-      const top = x => 0.866 * RY(x);                 // deck height (flat top of the hex)
-      loft([[-16, 0, 0, 1.1, 4.6], [-12, 0, 0, 1.05, 4.4], [16, 0, 0, 0.08, 0.12]], { n: 6 });
-      ext([[-16, -4.65], [-12, -4.45], [16, -0.16], [16, 0.16], [-12, 4.45], [-16, 4.65]], -0.07, 0.07, { fl: DARK, col: 'hullDark' });   // hull seam
-      box(0, 13.5, -0.03, 0.03, -0.14, 0.14, { xf: at(-1, top(-1) + 0.01, 0, 0, 0, -Math.atan(0.866 * 0.97 / 28)), fl: DARK, col: 'hullDark' });   // deck trench
-      box(-7, 3, -0.2, 0.05, -0.9, 0.9, { xf: at(0, -top(-2), 0), fl: DARK, col: 'hullDark' });   // ventral hangar
+      const X0 = -16, X1 = 16, f = x => Math.max(0.012, (X1 - x) / (X1 - X0));
+      const W = x => 10.4 * f(x), UP = x => 2.2 * f(x), DN = x => 2.8 * f(x), RH = x => 0.1 + 0.28 * f(x);
+      const WALL = x => W(x) - 0.4 * f(x) - 0.04;                       // the rim wall, set back under the lips
+      const top = (x, u) => UP(x) - (UP(x) - RH(x)) * u;                // deck height, u = 0 on the ridge, 1 at the wall
+      const bot = (x, u) => -DN(x) + (DN(x) - RH(x)) * u;
+      const ring = x => [[UP(x), 0], [RH(x), WALL(x)], [-RH(x), WALL(x)], [-DN(x), 0], [-RH(x), -WALL(x)], [RH(x), -WALL(x)]];
+      hull([[X0, ring(X0)], [X1, ring(X1)]], { fls: [0, DARK, 0, 0, DARK, 0], cols: ['hull', 'hullDark', 'hull', 'hull', 'hullDark', 'hull'] });
+      const RIM = Math.atan2(W(X0), X1 - X0);                            // the rim's angle to the axis
       both(s => {
-        // plating on the upper slopes: boxes standing on the face, aimed along its normal
-        for (let i = 0; i < 110; i++) {
-          const x = srr(-12, 12), u = srr(0.12, 0.88), ry_ = RY(x), rz_ = RZ(x), k = Math.min(1, rz_ / 3);
-          const w = srr(0.2, 0.9) * k / 2, d = srr(0.12, 0.45) * k / 2;
-          box(-w, w, -0.1, srr(0.04, 0.16), -d, d, { xf: at(x, 0.866 * ry_ * (1 - u), (rz_ / 2) * (1 + u) * s, Math.atan2(0.866 * ry_, rz_ / 2) * s), fl: G, col: srnd() < 0.3 ? 'hullDark' : 'hull' });
+        // lips: thin plates along the edge, overhanging the wall
+        const lip = (y0, y1) => hull([X0, X1].map(x => [x, [[y1(x), WALL(x) * 0.93 * s], [y1(x), W(x) * s], [y0(x), W(x) * s], [y0(x), WALL(x) * 0.93 * s]]]), { col: 'hull' });
+        lip(x => RH(x) - 0.1 * f(x) - 0.03, x => RH(x) + 0.04);
+        lip(x => -RH(x) - 0.04, x => -RH(x) + 0.1 * f(x) + 0.03);
+        // the wall: greebles and window rows in a frame turned with the rim (local z out of the wall)
+        const onWall = (x, y) => at(x, y, WALL(x) * s, 0, RIM * s, 0);
+        for (let i = 0; i < 260; i++) {
+          const x = srr(X0 + 0.3, X1 - 2.5), h = RH(x), w = srr(0.1, 0.45) * (0.5 + f(x)), d = srr(0.05, 0.3) * f(x) + 0.03;
+          box(-w, w, -h * srr(0.3, 0.9), h * srr(0.3, 0.9), 0, d * s, { xf: onWall(x, srr(-0.3, 0.3) * h), fl: G, col: srnd() < 0.4 ? 'hullDark' : 'hull' });
         }
-        [-1, 3, 7].forEach(x => { const z = (2.2 - 2.14 * (x + 12) / 28 - 0.35) * s; box(x - 0.3, x + 0.3, top(x) - 0.1, top(x) + 0.25, z - 0.25, z + 0.25, { inset: 0.2 }); gun(x, x + 0.8, top(x) + 0.15, z, 0.05); });
+        for (let x = X0 + 0.4; x < X1 - 4; x += 0.2) {
+          if (srnd() < 0.45) continue;
+          const row = srnd() < 0.5 ? 0 : srnd() < 0.5 ? 0.5 : -0.5, h = RH(x);
+          box(-0.06, 0.06, row * h - 0.05, row * h + 0.05, 0, 0.02 * s, { xf: onWall(x, 0), fl: EMIT, col: 'window' });
+        }
+        // plating on the upper slopes, finer towards the bow: boxes on the face, aimed along its normal
+        for (let i = 0; i < 420; i++) {
+          const x = srr(X0 + 0.4, X1 - 1.5), u = srr(0.06, 0.94), k = 0.35 + 0.65 * f(x);
+          const w = srr(0.25, 1.1) * k / 2, d = srr(0.15, 0.6) * k / 2, ang = Math.atan2(UP(x) - RH(x), WALL(x));
+          box(-w, w, -0.1, srr(0.03, 0.14) * k, -d, d, { xf: at(x, top(x, u), WALL(x) * u * s, ang * s), fl: G, col: srnd() < 0.3 ? 'hullDark' : 'hull' });
+        }
+        for (let i = 0; i < 90; i++) {   // and a little under the keel
+          const x = srr(X0 + 0.4, X1 - 3), u = srr(0.1, 0.9), k = 0.35 + 0.65 * f(x), w = srr(0.3, 1) * k / 2, d = srr(0.2, 0.6) * k / 2;
+          box(-w, w, -srr(0.03, 0.12) * k, 0.1, -d, d, { xf: at(x, bot(x, u), WALL(x) * u * s, -Math.atan2(DN(x) - RH(x), WALL(x)) * s), fl: G, col: 'hullDark' });
+        }
+        // turbolaser batteries on the shoulders, beside the superstructure
+        [-12.5, -9.5, -6.5, -3.5].forEach(x => {
+          const u = (5.8 - 4.8 * (x + 15.8) / 14.3 + 1.1) / WALL(x), z = WALL(x) * u * s, y = top(x, u);   // just outside the first terrace
+          box(x - 0.45, x + 0.45, y - 0.1, y + 0.3, z - 0.4, z + 0.4, { inset: 0.25 });
+          gun(x, x + 1.1, y + 0.2, z - 0.12, 0.06); gun(x, x + 1.1, y + 0.2, z + 0.12, 0.06);
+        });
       });
-      // terraces, each narrower and shorter towards the stern: [x0, x1, half width at x0, at x1, y0, y1]
-      const TER = [[-15.5, -3, 2.8, 0.55, 0.85, 1.6], [-15.2, -7, 2.1, 0.6, 1.6, 2.35], [-14.8, -10, 1.5, 0.6, 2.35, 3.0]];
+      // ventral hangar (a dark wedge just under the keel) and the reactor dome
+      const ys = (x, z) => bot(x, z / WALL(x));
+      hull([-5, 1].map(x => [x, [[-DN(x) - 0.03, 0], [ys(x, 1.3) - 0.03, -1.3], [ys(x, 1.3) - 0.03, 1.3]]]), { fl: DARK, col: 'hullDark' });
+      orb(1.7, { n: 16, m: 9, xf: at(-9, -DN(-9) + 0.6, 0) });
+      // superstructure: terraces, each narrower and shorter towards the stern: [x0, x1, half width at x0, at x1, y0, y1]
+      const TER = [[-15.8, -1.5, 5.8, 1.0, 1.0, 2.9], [-15.6, -5.5, 4.6, 1.2, 2.9, 3.8], [-15.4, -8.5, 3.4, 1.2, 3.8, 4.6], [-15.2, -11, 2.3, 1.0, 4.6, 5.3]];
       TER.forEach(([x0, x1, w0, w1, y0, y1], i) => {
         ext([[x0, -w0], [x1, -w1], [x1, w1], [x0, w0]], y0, y1, { inset: 0.04 + 0.02 * i });
         const w = x => w0 + (w1 - w0) * (x - x0) / (x1 - x0);
-        for (let n = 0; n < 34; n++) { const x = srr(x0 + 0.3, x1 - 0.4), z = srr(-0.8, 0.8) * w(x) * 0.85; box(x - 0.12, x + 0.12, y1 - 0.05, y1 + srr(0.03, 0.12), z - 0.12, z + 0.12, { fl: G, col: srnd() < 0.3 ? 'hullDark' : 'hull' }); }
+        for (let n = 0; n < 50; n++) { const x = srr(x0 + 0.3, x1 - 0.4), z = srr(-0.8, 0.8) * w(x) * 0.85; box(x - 0.14, x + 0.14, y1 - 0.05, y1 + srr(0.03, 0.14), z - 0.14, z + 0.14, { fl: G, col: srnd() < 0.3 ? 'hullDark' : 'hull' }); }
+        box(x0 + 0.4, x1 - 0.3, y1 - 0.02, y1 + 0.05, -w1 * 0.25, w1 * 0.25, { fl: DARK, col: 'hullDark' });   // a dark seam down each terrace
         both(s => {
-          for (let x = x0 + 0.6; x < x1 - 0.4; x += 0.32) dots([[x, (y0 + y1) / 2, (w(x) - 0.03) * s]], 0.045, 'window');   // window row
-          if (i < 2) for (let x = x0 + 1.2; x < x1 - 1; x += 2.2) { const z = w(x) * 0.8 * s; box(x - 0.35, x + 0.35, y1, y1 + 0.22, z - 0.28, z + 0.28, { inset: 0.2 }); gun(x, x + 1.0, y1 + 0.15, z - 0.1, 0.05); gun(x, x + 1.0, y1 + 0.15, z + 0.1, 0.05); }
+          for (let x = x0 + 0.5; x < x1 - 0.4; x += 0.26) if (srnd() < 0.7) dots([[x, y0 + (y1 - y0) * (srnd() < 0.5 ? 0.35 : 0.65), (w(x) - 0.03) * s]], 0.05, 'window');   // window bands
+          if (i < 2) for (let x = x0 + 1.2; x < x1 - 1; x += 2.4) { const z = w(x) * 0.8 * s; box(x - 0.35, x + 0.35, y1, y1 + 0.22, z - 0.28, z + 0.28, { inset: 0.2 }); gun(x, x + 1.0, y1 + 0.15, z - 0.1, 0.05); gun(x, x + 1.0, y1 + 0.15, z + 0.1, 0.05); }
         });
       });
-      box(-14.1, -12.6, 3.0, 4.7, -0.38, 0.38, { inset: 0.05 });                 // tower neck
-      both(s => ext([[-14.4, 0.38 * s], [-12.8, 0.38 * s], [-13.3, 1.1 * s], [-14.4, 1.1 * s]], 3.0, 3.6, { inset: 0.1 }));   // neck shoulders
-      box(-14.5, -12.3, 4.7, 5.35, -2.4, 2.4, { inset: 0.04 });                  // the T bridge
-      box(-12.32, -12.28, 4.88, 5.08, -2.2, 2.2, { fl: EMIT, col: 'window' });   // bridge windows
-      box(-14.2, -12.9, 5.35, 5.42, -0.5, 0.5, { fl: EMIT, col: 'window' });    // lit band on top
-      box(-13.9, -13.6, 5.35, 6.4, -0.04, 0.04); box(-13.3, -13.2, 5.35, 6.0, 0.3, 0.36);   // masts
+      // bridge tower
+      box(-14.4, -12.6, 5.3, 7.7, -0.55, 0.55, { inset: 0.05 });                 // neck
+      both(s => ext([[-14.6, 0.5 * s], [-12.8, 0.5 * s], [-13.4, 1.4 * s], [-14.6, 1.4 * s]], 5.3, 6.0, { inset: 0.1 }));   // neck shoulders
+      box(-14.9, -12.1, 7.7, 8.55, -3.0, 3.0, { inset: 0.04 });                   // the T bridge
+      greeble(30, -14.7, -12.3, -2.8, 2.8, 0.3, 0.08, at(0, 7.72, 0));            // its underside
+      box(-12.13, -12.08, 7.95, 8.28, -2.8, 2.8, { fl: EMIT, col: 'window' });    // bridge windows
+      both(s => dots(Array.from({ length: 9 }, (_, i) => [-14.6 + i * 0.3, 8.12, 2.98 * s]), 0.05, 'window'));   // its flanks
+      box(-14.3, -12.9, 8.55, 8.62, -0.6, 0.6, { fl: EMIT, col: 'window' });     // lit band on top
+      box(-13.9, -13.0, 8.55, 8.8, -0.6, 0.6); box(-14.1, -12.8, 8.8, 8.86, -1.0, 1.0);   // tractor array
+      box(-13.7, -13.6, 8.86, 9.6, -0.04, 0.04);                                  // mast
       both(s => {
-        box(-13.7, -13.5, 5.35, 5.75, 1.7 * s - 0.08, 1.7 * s + 0.08);
-        orb(0.5, { n: 12, m: 7, xf: at(-13.6, 6.15, 1.7 * s) });                // shield domes
+        box(-13.7, -13.4, 8.55, 9.05, 2.1 * s - 0.1, 2.1 * s + 0.1);
+        orb(0.6, { n: 12, m: 7, xf: at(-13.55, 9.55, 2.1 * s) });                  // shield domes
       });
-      box(-16.9, -14.5, -0.85, 1.75, -4.1, 4.1, { inset: 0.04 });               // engine block
-      greeble(18, -16.6, -14.8, -3.8, 3.8, 0.45, 0.1, at(0, 1.75, 0));
-      [-2.15, 0, 2.15].forEach(z => engine(-17.3, 0.45, z, 0.95, 1.0, 'red'));
-      both(s => { engine(-17.0, -0.4, 3.65 * s, 0.36, 0.5, 'red'); engine(-17.0, 1.3, 3.65 * s, 0.36, 0.5, 'red'); });
+      // engine block: three big engines on the rim line, four small ones above and below between them
+      box(-16.9, -15.9, -1.9, 2.0, -6.0, 6.0, { inset: 0.03 });
+      greeble(26, -16.8, -16.0, -5.6, 5.6, 0.45, 0.12, at(0, 2.0, 0));
+      [-4.0, 0, 4.0].forEach(z => engine(-17.6, 0.15, z, 1.15, 1.2, 'red', id, 2));   // short plumes: the glow is in the nozzles
+      both(s => both(t => engine(-17.3, 1.15 * t, 2.0 * s, 0.5, 0.7, 'red', id, 2)));
     },
     // Millennium Falcon: flat saucer with radial ribs and plated rings, the two forward mandibles
     // and the slot between them, cockpit tube on the starboard side, quad gun turrets top and
@@ -416,14 +477,16 @@
       f[i] = t[4]; fl[i] = t[5]; fc[t[4]] = t[6]; ff[t[4]] = t[5];
       if (!(t[5] & EXH)) for (let v = 0; v < 3; v++) for (let c = 0; c < 3; c++) { lo[c] = Math.min(lo[c], t[v][c]); hi[c] = Math.max(hi[c], t[v][c]); }
     });
-    return (MESH[kind] = { n, p, nr, vn, f, fl, fc, ff, panel: PANEL, faces: fid + 1, len: Math.max(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2]) });   // len: largest extent
+    return (MESH[kind] = { n, p, nr, vn, f, fl, fc, ff, panel: PANEL, faces: fid + 1, len: Math.max(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2]),   // len: largest extent
+      c: mix(lo, hi, 0.5), r: Math.hypot(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2]) / 2 });   // bounding sphere, for the shadow map
   }
 
   // ---------- glyphs ----------
   // cells keep their exact css size: cell c spans device px floor(c * cwF) .. floor((c + 1) * cwF),
   // as in ascii-pic.js; the glyph masks are drawn once with the avatar's font
-  let dpr = 1, cwF = 2.5, chF = 4.375, MW = 4, MH = 6, masks = null, bg = [14, 13, 16], pal = [], light = false;
+  let dpr = 1, cwF = 2.5, chF = 4.375, MW = 4, MH = 6, masks = null, dotm = null, bg = [14, 13, 16], pal = [], light = false;
   function readTheme() {
+    atlas = null;
     const css = getComputedStyle(document.documentElement);
     const rgb = s => { s = s.trim(); const n = parseInt(s.slice(1), 16); return [n >> 16, (n >> 8) & 255, n & 255]; };
     light = document.documentElement.dataset.theme === 'light';
@@ -432,6 +495,7 @@
     pal = COLS.map(k => { const c = PALETTE[k][light ? 1 : 0]; return c ? rgb(c) : fg; });
   }
   function buildMasks(scale) {
+    atlas = null;
     dpr = Math.min(devicePixelRatio || 1, 2);
     cwF = CELL_W * scale * dpr; chF = CELL_H * scale * dpr;
     MW = Math.ceil(cwF) + 1; MH = Math.ceil(chF) + 1;
@@ -446,21 +510,63 @@
       for (let i = 0; i < m.length; i++) m[i] = d[i * 4 + 3];
       masks[g] = m;
     }
+    // braille: drawn, not taken from the font (exact dots at any size): bit row * 2 + col
+    const rd = Math.max(0.6, Math.min(cwF / 2, chF / 4) * 0.5);
+    dotm = Array.from({ length: 256 }, (_, bits) => {
+      const m = new Uint8Array(MW * MH);
+      for (let b = 0; b < 8; b++) if (bits >> b & 1) {
+        const cx = ((b & 1) + 0.5) * cwF / 2, cy = ((b >> 1) + 0.5) * chF / 4;
+        for (let y = 0; y < MH; y++) for (let x2 = 0; x2 < MW; x2++) {
+          const v = Math.max(0, Math.min(1, rd + 0.5 - Math.hypot(x2 + 0.5 - cx, y + 0.5 - cy)));
+          if (v) m[y * MW + x2] = Math.max(m[y * MW + x2], v * 255);
+        }
+      }
+      return m;
+    });
   }
 
   // ---------- rasterizer ----------
   const hash = (a, b, c) => { let h = Math.imul(a | 0, 374761393) ^ Math.imul(b | 0, 668265263) ^ Math.imul(c | 0, 2147483647); h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296; };
   const TONE = [0.82, 0.9, 0.97, 1.04];   // plating: a few tones, one per panel
   let F = 1000;                            // focal length, css px
+  // shadow map: the hull seen from the light (L, ship space), per texel the depth towards the
+  // light of what is nearest it. Kept in sm (one per ship) while the light stays put in the ship's frame
+  function* shadow(m, L, S, sm) {
+    if (sm.S === S && dot(sm.L, L) > 0.9998) return sm;
+    const a = norm(cross(L, Math.abs(L[1]) < 0.9 ? [0, 1, 0] : [1, 0, 0])), b = cross(L, a), k = S / (2 * m.r);
+    const A = a.map(v => v * k), B = b.map(v => v * k), au = S / 2 - dot(m.c, A), bv = S / 2 - dot(m.c, B);
+    const map = sm.map && sm.map.length === S * S ? sm.map : new Float32Array(S * S);
+    map.fill(-Infinity);
+    const P = m.p, u = [0, 0, 0], v = [0, 0, 0], d = [0, 0, 0];
+    let work = 0;
+    for (let t = 0; t < m.n; t++) {
+      if (m.fl[t] & (EXH | EMIT)) continue;
+      for (let j = 0; j < 3; j++) { const o = t * 9 + j * 3, p0 = P[o], p1 = P[o + 1], p2 = P[o + 2]; u[j] = p0 * A[0] + p1 * A[1] + p2 * A[2] + au; v[j] = p0 * B[0] + p1 * B[1] + p2 * B[2] + bv; d[j] = p0 * L[0] + p1 * L[1] + p2 * L[2]; }
+      const area = (u[1] - u[0]) * (v[2] - v[0]) - (v[1] - v[0]) * (u[2] - u[0]);
+      if (Math.abs(area) < 1e-9) continue;
+      const ia = 1 / area, i0 = Math.max(0, Math.floor(Math.min(u[0], u[1], u[2]))), i1 = Math.min(S - 1, Math.ceil(Math.max(u[0], u[1], u[2])));
+      const j0 = Math.max(0, Math.floor(Math.min(v[0], v[1], v[2]))), j1 = Math.min(S - 1, Math.ceil(Math.max(v[0], v[1], v[2])));
+      for (let j = j0; j <= j1; j++) for (let i = i0; i <= i1; i++) {
+        const px = i + 0.5, py = j + 0.5;
+        const w0 = ((u[1] - px) * (v[2] - py) - (v[1] - py) * (u[2] - px)) * ia, w1 = ((u[2] - px) * (v[0] - py) - (v[2] - py) * (u[0] - px)) * ia, w2 = 1 - w0 - w1;
+        if (w0 < 0 || w1 < 0 || w2 < 0) continue;
+        const z = w0 * d[0] + w1 * d[1] + w2 * d[2], s = j * S + i;
+        if (z > map[s]) map[s] = z;
+      }
+      if ((work += (i1 - i0 + 1) * (j1 - j0 + 1) + 20) > 40000) { work = 0; yield; }
+    }
+    return Object.assign(sm, { S, L, map, A, B, au, bv, bias: 2.5 / k });
+  }
   // a job: yields often so a big ship can be spread over frames.
   // R: ship->world rotation, C: world position of the ship's origin, k: world units per ship unit,
   // buf: the ship's scratch buffers, cvs: its sprite. Returns the sprite and where C lands in it (device px)
-  function* render(kind, R, C, k, buf, cvs, flick = 1) {
+  // dim: light left at this distance; sm: the ship's shadow map cache
+  function* render(kind, R, C, k, buf, cvs, flick = 1, dim = 1, sm = {}) {
     const m = mesh(kind), P = m.p, N = m.n, Fd = F * dpr;
     buf.stage = 'setup';
     if (!buf.V || buf.V.length < N * 9) { buf.V = new Float32Array(N * 9); buf.fn = new Float32Array(m.faces * 3); }   // reused: less garbage
     const V = buf.V, cx0 = Fd * C[0] / C[2], cy0 = Fd * C[1] / C[2];
-    let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+    let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9, zn = 1e9, zf = -1e9;
     for (let i = 0; i < N * 3; i++) {
       const px = P[i * 3], py = P[i * 3 + 1], pz = P[i * 3 + 2];
       const Z = Math.max(0.5, C[2] + k * (R[2][0] * px + R[2][1] * py + R[2][2] * pz));
@@ -468,10 +574,11 @@
       const Y = Fd * (C[1] + k * (R[1][0] * px + R[1][1] * py + R[1][2] * pz)) / Z - cy0;
       V[i * 3] = X; V[i * 3 + 1] = Y; V[i * 3 + 2] = Z;
       if (X < x0) x0 = X; if (X > x1) x1 = X; if (Y < y0) y0 = Y; if (Y > y1) y1 = Y;
+      if (Z < zn) zn = Z; if (Z > zf) zf = Z;
     }
     const ox = x0 - cwF, oy = y0 - chF;
     const cols = Math.ceil((x1 - x0) / cwF) + 2, rows = Math.ceil((y1 - y0) / chF) + 2, nc = cols * rows;
-    const SX = nc > CELL_CAP[1] ? 1 : 2, SY = nc > CELL_CAP[1] ? 1 : nc > CELL_CAP[0] ? 2 : 3, NS = SX * SY;
+    const SX = nc > CELL_CAP[1] ? 1 : 2, SY = nc > CELL_CAP[1] ? 1 : nc > CELL_CAP[0] ? 2 : 4, NS = SX * SY;
     const W = cols * SX, H = rows * SY, sw = cwF / SX, sh = chF / SY;
     if (!buf.zb || buf.zb.length < W * H) { const s = Math.ceil(W * H * 1.6); buf.zb = new Float32Array(s); buf.lb = new Float32Array(s); buf.fb = new Int32Array(s); buf.gb = new Float32Array(s); buf.gc = new Uint8Array(s); }
     const { zb, lb, fb, gb, gc } = buf;
@@ -479,8 +586,15 @@
     const fn = buf.fn;
     // panel seams only when a panel spans several cells; narrower than that they turn into noise
     const unitPx = Fd * k / C[2], seam = m.panel * unitPx / cwF > 7 ? Math.max(0.04, 0.6 * cwF / (m.panel * unitPx)) : 0;
-    const lv = [0, 0, 0];
+    // the light in ship space (R is a rotation: its transpose undoes it) and its shadow map, about as fine as the samples
+    const L = [0, 1, 2].map(j => R[0][j] * LIGHT[0] + R[1][j] * LIGHT[1] + R[2][j] * LIGHT[2]);
+    const SM = yield* shadow(m, L, Math.min(512, Math.max(64, 2 ** Math.ceil(Math.log2(Math.max(W, H) * 0.7)))), sm);
+    const map = SM.map, S = SM.S, A = SM.A, B = SM.B, au = SM.au, bv = SM.bv, bias = SM.bias;
+    // light falls off with depth across the ship, and with its distance (dim)
+    const zi = ZFOG / Math.max(1e-3, zf - zn);
+    const la = [0, 0, 0], ld = [0, 0, 0];
     let work = 0;
+    buf.stage = 'tri';
     for (let pass = 0; pass < 2; pass++) for (let t = 0; t < N; t++) {
       const fl = m.fl[t];
       if (!(fl & EXH) !== !pass) continue;   // hull first, exhaust glow second
@@ -490,26 +604,28 @@
       // world view ray to the face (camera at the origin)
       const vx = (V[a] + V[a + 3] + V[a + 6]) / 3 + cx0, vy = (V[a + 1] + V[a + 4] + V[a + 7]) / 3 + cy0, vz = Fd;
       const vl = Math.hypot(vx, vy, vz);
+      const dk = fl & DARK ? 0.35 : 1;
       if (!pass) {
         const facing = -(nx * vx + ny * vy + nz * vz) / vl;
         if (facing < -0.02) continue;
         const fi = m.f[t];
         fn[fi * 3] = nx; fn[fi * 3 + 1] = ny; fn[fi * 3 + 2] = nz;
         for (let v = 0; v < 3; v++) {
-          if (fl & EMIT) { lv[v] = 1; continue; }
+          if (fl & EMIT) { la[v] = 1; ld[v] = 0; continue; }
           const q0 = m.vn[a + v * 3], q1 = m.vn[a + v * 3 + 1], q2 = m.vn[a + v * 3 + 2];
           const wx = R[0][0] * q0 + R[0][1] * q1 + R[0][2] * q2, wy = R[1][0] * q0 + R[1][1] * q1 + R[1][2] * q2, wz = R[2][0] * q0 + R[2][1] * q1 + R[2][2] * q2;
           const fc = Math.max(0, -(wx * vx + wy * vy + wz * vz) / vl);
-          lv[v] = (AMB + DIF * Math.max(0, wx * LIGHT[0] + wy * LIGHT[1] + wz * LIGHT[2]) + RIM * (1 - fc) ** 3) * (fl & DARK ? 0.35 : 1);
+          la[v] = (AMB + RIM * (1 - fc) ** 3) * dk;
+          ld[v] = DIF * Math.max(0, wx * LIGHT[0] + wy * LIGHT[1] + wz * LIGHT[2]) * dk;
         }
-      } else for (let v = 0; v < 3; v++) lv[v] = m.vn[a + v * 3] * flick;
+      } else for (let v = 0; v < 3; v++) { la[v] = m.vn[a + v * 3] * flick; ld[v] = 0; }
       const ax = (V[a] - ox) / sw, ay = (V[a + 1] - oy) / sh, bx = (V[a + 3] - ox) / sw, by = (V[a + 4] - oy) / sh, cx = (V[a + 6] - ox) / sw, cy = (V[a + 7] - oy) / sh;
       const area = (bx - ax) * (cy - ay) - (by - ay) * (cx - ax);
       if (Math.abs(area) < 1e-6) continue;
-      const ia = 1 / area, fi = m.f[t], col = m.fc[fi], plate = !pass && !(fl & EMIT);
+      const ia = 1 / area, fi = m.f[t], col = m.fc[fi], plate = !pass && !(fl & EMIT), lit = plate && (ld[0] + ld[1] + ld[2]) > 0;
       const i0 = Math.max(0, Math.floor(Math.min(ax, bx, cx))), i1 = Math.min(W - 1, Math.ceil(Math.max(ax, bx, cx)));
       const j0 = Math.max(0, Math.floor(Math.min(ay, by, cy))), j1 = Math.min(H - 1, Math.ceil(Math.max(ay, by, cy)));
-      const za = V[a + 2], zbv = V[a + 5], zc = V[a + 8], l0 = lv[0], l1 = lv[1], l2 = lv[2];
+      const za = V[a + 2], zbv = V[a + 5], zc = V[a + 8];
       for (let j = j0; j <= j1; j++) {
         const py = j + 0.5;
         for (let i = i0; i <= i1; i++) {
@@ -520,14 +636,22 @@
           if (w0 < 0 || w1 < 0 || w2 < 0) continue;
           const z = w0 * za + w1 * zbv + w2 * zc, s = j * W + i;
           if (z >= zb[s]) continue;
-          let l = w0 * l0 + w1 * l1 + w2 * l2;
+          let l = w0 * la[0] + w1 * la[1] + w2 * la[2];
           if (pass) { if (l > gb[s]) { gb[s] = l; gc[s] = col; } continue; }
           if (plate) {
+            const sx = w0 * P[a] + w1 * P[a + 3] + w2 * P[a + 6], sy = w0 * P[a + 1] + w1 * P[a + 4] + w2 * P[a + 7], sz = w0 * P[a + 2] + w1 * P[a + 5] + w2 * P[a + 8];
+            // direct light, unless something nearer the light covers this point in the shadow map
+            if (lit) {
+              const u = (sx * A[0] + sy * A[1] + sz * A[2] + au) | 0, v = (sx * B[0] + sy * B[1] + sz * B[2] + bv) | 0;
+              const occ = u >= 0 && v >= 0 && u < S && v < S && sx * L[0] + sy * L[1] + sz * L[2] < map[v * S + u] - bias;
+              l += (w0 * ld[0] + w1 * ld[1] + w2 * ld[2]) * (occ ? SHADOW : 1);
+            }
             // plating: panels in ship space, a tone each, seams between them when big enough
-            const qx = (w0 * P[a] + w1 * P[a + 3] + w2 * P[a + 6]) / (m.panel * 1.6), qy = (w0 * P[a + 1] + w1 * P[a + 4] + w2 * P[a + 7]) / m.panel, qz = (w0 * P[a + 2] + w1 * P[a + 5] + w2 * P[a + 8]) / m.panel;
+            const qx = sx / (m.panel * 1.6), qy = sy / m.panel, qz = sz / m.panel;
             const fx = Math.floor(qx), fy = Math.floor(qy), fz = Math.floor(qz);
             l *= TONE[(hash(fx, fy, fz) * 4) | 0];
             if (seam && (qx - fx < seam * 0.6 || qz - fz < seam)) l *= 0.62;
+            l *= 1 - (z - zn) * zi;
           }
           zb[s] = z; fb[s] = fi; lb[s] = l;
         }
@@ -538,18 +662,37 @@
     // resolve cells: coverage, mean light, nearest face, exhaust glow
     const cov = buf.cov && buf.cov.length >= nc ? buf.cov : (buf.cov = new Float32Array(nc * 1.6)), lum = buf.lum && buf.lum.length >= nc ? buf.lum : (buf.lum = new Float32Array(nc * 1.6));
     const fc = buf.fc && buf.fc.length >= nc ? buf.fc : (buf.fc = new Int32Array(nc * 1.6)), glow = buf.gl && buf.gl.length >= nc ? buf.gl : (buf.gl = new Float32Array(nc * 1.6)), gcol = buf.gcl && buf.gcl.length >= nc ? buf.gcl : (buf.gcl = new Uint8Array(nc * 1.6));
+    // braille bits per cell: the dots over covered samples (the outline), and those whose ink beats the dither (the shade)
+    const cb = buf.cb && buf.cb.length >= nc ? buf.cb : (buf.cb = new Uint8Array(nc * 1.6)), db = buf.db && buf.db.length >= nc ? buf.db : (buf.db = new Uint8Array(nc * 1.6)), eb = buf.eb && buf.eb.length >= nc ? buf.eb : (buf.eb = new Uint8Array(nc * 1.6));
+    const ff = m.ff;
+    // exposure: the hull's 95th percentile of light (every 5th sample, 64 bins) to EXPOSE, then the distance dimming
+    const hist = new Uint32Array(64);
+    let hn = 0;
+    for (let s = 0; s < W * H; s += 5) if (fb[s] >= 0 && !(ff[fb[s]] & EMIT)) { hist[Math.min(63, lb[s] * 48 | 0)]++; hn++; }
+    let p95 = 63;
+    for (let i = 63, acc = 0; i >= 0; i--) if ((acc += hist[i]) > hn * 0.05) { p95 = (i + 1) / 48; break; }
+    const ex = Math.min(2.5, EXPOSE / Math.max(1e-3, p95)) * dim;
     for (let r = 0; r < rows; r++) {
       if ((r & 63) === 63) yield;
       for (let c = 0; c < cols; c++) {
-        let cnt = 0, sum = 0, z = Infinity, fi = -1, g = 0, gcc = 0;
+        let cnt = 0, sum = 0, z = Infinity, fi = -1, g = 0, gcc = 0, bc = 0, bd = 0, be = 0;
         for (let v = 0; v < SY; v++) for (let u = 0; u < SX; u++) {
           const s = (r * SY + v) * W + c * SX + u;
           if (gb[s] > g) { g = gb[s]; gcc = gc[s]; }
           if (fb[s] < 0) continue;
-          cnt++; sum += lb[s]; if (zb[s] < z) { z = zb[s]; fi = fb[s]; }
+          cnt++; sum += ff[fb[s]] & EMIT ? 1 : lb[s] * ex; if (zb[s] < z) { z = zb[s]; fi = fb[s]; }
+        }
+        for (let b = 0; b < 8; b++) {
+          const s = (r * SY + ((b >> 1) * SY >> 2)) * W + c * SX + ((b & 1) * SX >> 1);
+          if (fb[s] < 0) continue;
+          bc |= 1 << b;
+          if (ff[fb[s]] & EMIT) { be |= 1 << b; continue; }
+          const ls = Math.pow(Math.min(1, lb[s] * ex), GAMMA);
+          if ((light ? 0.12 + 0.88 * (1 - ls) : ls) > DITHER[b] * DOTS) bd |= 1 << b;
         }
         const q = r * cols + c;
-        cov[q] = cnt / NS; lum[q] = cnt ? sum / cnt : 0; fc[q] = fi; glow[q] = g; gcol[q] = gcc;
+        eb[q] = be;
+        cov[q] = cnt / NS; lum[q] = cnt ? sum / cnt : 0; fc[q] = fi; glow[q] = g; gcol[q] = gcc; cb[q] = bc; db[q] = bd;
       }
     }
     yield; buf.stage = 'glyph0';
@@ -558,20 +701,19 @@
     if (!buf.img || buf.img.width < IW || buf.img.height < IH) buf.img = new ImageData(Math.ceil(IW * 1.4), Math.ceil(IH * 1.4));   // headroom: an approaching ship grows every redraw
     const img = buf.img, D = img.data, SW = img.width;
     D.fill(0, 0, IH * SW * 4);
-    const strength = light ? INK : INTENSITY, cmin = Math.min(1, 2 / NS) - 1e-6;
+    const strength = light ? INK : INTENSITY, cmin = 1 / NS - 1e-6;
     const on = q => cov[q] >= cmin;
     const g = (arr, c, r) => { c = Math.max(0, Math.min(cols - 1, c)); r = Math.max(0, Math.min(rows - 1, r)); return arr[r * cols + c]; };
     const sobel = (arr, c, r) => [
       g(arr, c + 1, r - 1) + 2 * g(arr, c + 1, r) + g(arr, c + 1, r + 1) - g(arr, c - 1, r - 1) - 2 * g(arr, c - 1, r) - g(arr, c - 1, r + 1),
       g(arr, c - 1, r + 1) + 2 * g(arr, c, r + 1) + g(arr, c + 1, r + 1) - g(arr, c - 1, r - 1) - 2 * g(arr, c, r - 1) - g(arr, c + 1, r - 1)];
-    const ff = m.ff;
     for (let r = 0; r < rows; r++) {
       if ((r & 3) === 3) { yield; buf.stage = 'glyph'; }
       const Y0 = Math.floor(r * chF), CH = Math.floor((r + 1) * chF) - Y0;
       for (let c = 0; c < cols; c++) {
         const q = r * cols + c, hull = on(q), gl = glow[q];
         if (!hull && gl < 0.12) continue;
-        let chr, ink, col, a, opaque = hull;
+        let chr, ink, col, a, mk, opaque = hull;
         if (gl > 0.3 || (!hull && gl >= 0.12)) {
           // exhaust: the brightest, most saturated thing on the ship, flickering
           const v = Math.min(1, gl * (0.85 + 0.3 * hash(c, r, flick * 1e3 | 0)));
@@ -580,13 +722,26 @@
         } else {
           const fi = fc[q], em = fi >= 0 && (ff[fi] & EMIT);
           let v = em ? 1 : Math.pow(Math.min(1, lum[q]), GAMMA);
-          // edge chars only on the outer silhouette and on sharp creases with a clear change in light
+          // light theme: ink on paper, darker surface = denser char; glowing parts stay full ink
+          ink = light && !em ? 0.12 + 0.88 * (1 - v) : v;
+          col = pal[fi >= 0 ? m.fc[fi] : 0];
+          // the outline and the faint surfaces: braille dots, one per sample (the outline sharp, the
+          // shade dithered), the outline's cells see-through round their dots
+          if (em) {   // windows and lights: their own samples as bright dots
+            mk = dotm[eb[q]];
+            a = Math.min(1, strength * 1.8);
+          } else if (cov[q] < 1 || ink < DOTS) {
+            mk = dotm[ink >= DOTS ? cb[q] : db[q]];
+            a = (0.45 + 0.55 * Math.max(ink, DOTS)) * strength;
+            opaque = cov[q] >= 1;
+          }
+          // edge chars only on sharp creases with a clear change in light
           let edge = false;
-          if (!em) for (let d = 0; d < 4 && !edge; d++) {
+          if (!em && !mk) for (let d = 0; d < 4 && !edge; d++) {
             const cc = c + (d === 0 ? 1 : d === 1 ? -1 : 0), rr = r + (d === 2 ? 1 : d === 3 ? -1 : 0);
-            if (cc < 0 || rr < 0 || cc >= cols || rr >= rows) { edge = true; break; }
+            if (cc < 0 || rr < 0 || cc >= cols || rr >= rows) continue;
             const q2 = rr * cols + cc;
-            if (!on(q2)) { edge = cov[q] < 1; continue; }
+            if (!on(q2)) continue;
             const f1 = fc[q], f2 = fc[q2];
             if (f1 === f2 || f1 < 0 || f2 < 0 || (ff[f1] | ff[f2]) & (EMIT | SMOOTH)) continue;
             edge = fn[f1 * 3] * fn[f2 * 3] + fn[f1 * 3 + 1] * fn[f2 * 3 + 1] + fn[f1 * 3 + 2] * fn[f2 * 3 + 2] < CREASE && Math.abs(lum[q] - lum[q2]) > 0.25;
@@ -597,14 +752,14 @@
             chr = EDGES[Math.round(((Math.atan2(gy / chF, gx / cwF) * 4 / Math.PI) % 4 + 4) % 4) % 4];
             v = Math.max(v, 0.4);
           }
-          // light theme: ink on paper, darker surface = denser char; glowing parts stay full ink
-          ink = light && !em ? 0.12 + 0.88 * (1 - v) : v;
-          if (!chr) chr = RAMP[Math.min(RAMP.length - 1, Math.floor((0.06 + 0.94 * ink) * RAMP.length))];
-          a = (0.2 + 0.8 * Math.ceil(ink * LEVELS) / LEVELS) * (em ? Math.min(1, strength * 1.8) : strength);
-          col = pal[fi >= 0 ? m.fc[fi] : 0];
+          if (edge) ink = light ? Math.min(ink, 0.6) : v;
+          if (!mk) {
+            if (!chr) chr = RAMP[Math.min(RAMP.length - 1, Math.floor((0.06 + 0.94 * ink) * RAMP.length))];
+            a = (0.2 + 0.8 * Math.ceil(ink * LEVELS) / LEVELS) * (em ? Math.min(1, strength * 1.8) : strength);
+          }
         }
         const X0 = Math.floor(c * cwF), CW = Math.floor((c + 1) * cwF) - X0;
-        const mk = masks[chr];
+        if (!mk) mk = masks[chr];
         for (let y = 0; y < CH; y++) {
           let o = ((Y0 + y) * SW + X0) * 4;
           const mi = y * MW;
@@ -647,27 +802,7 @@
     VW = innerWidth; VH = innerHeight; F = FOCAL * VH;
     cv.width = Math.round(VW * dpr); cv.height = Math.round(VH * dpr);
   }
-  const toWorld = (u, v, z) => [(u - 0.5) * VW * z / F, (v - 0.5) * VH * z / F, z];
-  const proj = p => [VW / 2 + F * p[0] / p[2], VH / 2 + F * p[1] / p[2]];
-
-  // ---------- debug overlay (?shipdebug=1): corridor outline and trails ----------
-  const DEBUG = new URLSearchParams(location.search).has('shipdebug');
-  const oldTrails = [];
-  let dcv = null;
-  function debug() {
-    if (!dcv) { dcv = document.createElement('canvas'); dcv.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:10001;pointer-events:none'; document.body.appendChild(dcv); }
-    if (dcv.width !== cv.width) { dcv.width = cv.width; dcv.height = cv.height; }
-    const d = dcv.getContext('2d');
-    d.setTransform(dpr, 0, 0, dpr, 0, 0); d.clearRect(0, 0, VW, VH);
-    const L = LANES.near, line = (pts, col, w, dash = []) => { d.strokeStyle = col; d.lineWidth = w; d.setLineDash(dash); d.beginPath(); pts.forEach((p, i) => i ? d.lineTo(...proj(p)) : d.moveTo(...proj(p))); d.stroke(); };
-    const along = (a, b) => Array.from({ length: 41 }, (_, i) => corridor(L, -0.05 + i * 0.0275, a, b));
-    for (const [a, b] of [[-1, -1], [-1, 1], [1, -1], [1, 1]]) line(along(a, b), 'rgba(120,200,255,.5)', 1);
-    line(along(0, 0), 'rgba(120,200,255,.35)', 1, [4, 6]);
-    for (const s of [0, 0.25, 0.5, 0.75, 1]) line([[-1, -1], [1, -1], [1, 1], [-1, 1], [-1, -1]].map(([a, b]) => corridor(L, s, a, b)), 'rgba(120,200,255,.3)', 1);
-    const hue = i => `hsl(${(i * 67) % 360} 90% 60%)`;
-    oldTrails.slice(-40).forEach((tr, i) => tr.length > 1 && line(tr, hue(i + 7).replace('60%)', '60% / .55)'), 1.2));
-    ships.forEach((sh, i) => { if (sh.trail.length > 1) line(sh.trail.slice(-200), hue(i), 2); const [x, y] = proj(sh.p); d.fillStyle = hue(i); d.fillRect(x - 3, y - 3, 6, 6); });
-  }
+  const toWorld = (u, v, z) => [(u - 0.5) * VW * z / F, (v - HORIZON) * VH * z / F, z];
 
   // ---------- lab ----------
   function runLab() {
@@ -693,299 +828,209 @@
   let seed = 7;
   const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
   const rr = (a, b) => a + (b - a) * rnd();
-  const ships = [], kinds = [];
-  let nextArrival = FIRST_SPAWN;
+  const ships = [];
+  let group = null, turn = 0, nextAt = FIRST_SPAWN;
   let simT = 0, last = 0, raf = 0, timer = 0, ready = false;
-  const cost = [], slow = [], overlap = [], slowStep = [];
+  const cost = [];
   // one set of raster buffers for all ships (only one job is ever half done): they grow once to
   // the biggest sprite instead of every approaching ship reallocating megabytes (the GC spikes)
   const SCRATCH = {};
-  let FIX = true;   // carriageways, screen avoidance, depth order (off only for the before/after test)
 
-  // ---------- the highway ----------
-  // corridor point at progress s (0 = near end, 1 = far end) for lane L, a/b = sideways/height
-  // in [-1, 1]. Its centre runs along the screen diagonal with depth growing geometrically, so
-  // the tube widens with distance and looks the same width on screen
-  const sOf = (L, z) => Math.log(z / L.z[0]) / Math.log(L.z[1] / L.z[0]);
-  function centre(L, s) {
-    const C = CORRIDOR, w = 2 * Math.PI * simT / C.period, k = Math.sin(Math.PI * Math.min(1, Math.max(0, s)));
-    const u = C.from[0] + (C.to[0] - C.from[0]) * s + C.bend * Math.sin(w) * k;
-    const v = C.from[1] + (C.to[1] - C.from[1]) * s + C.bend * 0.7 * Math.cos(w * 0.77) * k;
-    return toWorld(u, v, L.z[0] * Math.pow(L.z[1] / L.z[0], s));
-  }
-  // a: across the road on screen (a > 0 is the down-right side, where away traffic drives), set in
-  // screen px and turned into world units at that depth; b: height, in world (up on screen)
-  function corridor(L, s, a, b) {
-    const c = centre(L, s), p0 = centre(L, s - 0.01), p1 = centre(L, s + 0.01), T = norm(sub(p1, p0));
-    const q0 = proj(p0), q1 = proj(p1), tl = Math.hypot(q1[0] - q0[0], q1[1] - q0[1]) || 1, n = [-(q1[1] - q0[1]) / tl, (q1[0] - q0[0]) / tl, 0];
-    const side = norm(cross(T, [0, 1, 0]));
-    let up = cross(side, T); if (up[1] > 0) up = up.map(v => -v);   // b > 0 is up on screen
-    return add(add(c, n, a * CORRIDOR.w * VW * c[2] / F), up, b * CORRIDOR.h * VH * c[2] / F);
-  }
-
-  // away traffic keeps to one half of the corridor, oncoming traffic to the other, like a road
-  const pickLane = sh => [sh.dir * rr(0.15, 0.85), [-0.5, 0, 0.5][Math.floor(rnd() * 3)] + rr(-0.15, 0.15)];
-  function spawn(kind, lane, away, o = {}) {
-    const L = LANES[lane], m = mesh(kind), P = PERSONA[lane], dir = away ? 1 : -1;
-    const sh = { kind, L, P, lane, k: L.lw * (SIZE[kind] || 1) / m.len, depth: lane === 'far' ? 0 : lane === 'mid' ? 1 : 2, dir, away,
-      cruise: rr(...P.cruise), vary: rr(...P.vary), vw: rr(0.4, 1.2), turn: rr(...P.turn), weave: rr(...P.weave), wf: rr(...P.wfreq),
-      bank: rr(...P.bank), climb: rnd() < P.climb, hop: P.hop, ph: rnd() * 6.28, ph2: rnd() * 6.28,
-      roll: 0, rollBase: rr(-0.15, 0.15), barrel: lane === 'near' && rnd() < BARREL ? rr(1.5, 6) : -1,
-      t: 0, hopAt: 0, dodge: null, trail: [], lead: o.lead || null, free: 0,
-      spr: null, job: null, buf: SCRATCH, cvs: [document.createElement('canvas'), document.createElement('canvas')], at: null, rect: null };
-    [sh.la, sh.lb] = pickLane(sh);
-    sh.hopAt = rr(...P.hop);
-    sh.ta = sh.la; sh.tb = sh.lb;
-    const s0 = o.s0 ?? (away ? -0.03 : 1.03);
-    sh.p = corridor(L, s0, sh.ta, sh.tb);
-    sh.speed = L.speed * sh.cruise * Math.pow(sh.p[2] / L.z[0], DEPTH_SPEED);
-    sh.v = norm(sub(corridor(L, s0 + dir * 0.02, sh.ta, sh.tb), sh.p)).map(q => q * sh.speed);
-    sh.s = s0;
-    // the edge where the pass meets the camera: away ships come in from below the bottom edge,
-    // oncoming ships peel off through the left edge; both sides lie on their own carriageway
-    sh.ze = Math.min(L.z[1] * 0.5, F * L.lw / EDGE_PX[sh.lane]);
-    if (!away) sh.edge = [-0.45 * EDGE_PX[sh.lane] - VW * 0.3, rr(0.3, 0.62) * VH];
-    if (o.lead) {
-      // wingman: a slot beside and behind the leader, in units of the bigger of the two ships
-      Object.assign(sh, { offA: rr(0.8, 1.4) * (rnd() < 0.5 ? -1 : 1), offB: rr(-0.6, 0.6), lagK: dir > 0 ? rr(-1.2, 0.3) : rr(0.8, 2),   // away: beside or ahead (behind is at the camera)
-        la: o.lead.la, lb: o.lead.lb, ta: o.lead.ta, tb: o.lead.tb });
-      if (!(away && o.s0 === undefined)) { sh.p = slot(sh, o.lead); sh.v = o.lead.v.slice(); sh.speed = o.lead.speed; sh.s = sOf(L, sh.p[2]); }
+  // the biggest empty part of the viewport (css px): the page's content (leaf elements, and anything
+  // with a background or a border) marked on a grid, then the largest free rectangle, its width
+  // counted up to 2.5 heights (a sliver is no room for a ship) and cut to that
+  function freeBox() {
+    const G = 16, nx = Math.ceil(VW / G), ny = Math.ceil(VH / G), occ = new Uint8Array(nx * ny);
+    for (const el of document.body.getElementsByTagName('*')) {
+      if (el === cv || el.id === 'space') continue;
+      const r = el.getBoundingClientRect();
+      if (r.width < 1 || r.height < 1 || r.bottom <= 0 || r.top >= VH || r.right <= 0 || r.left >= VW || r.width * r.height > VW * VH * 0.5) continue;
+      if (el.checkVisibility && !el.checkVisibility({ visibilityProperty: true })) continue;
+      const leaf = !el.firstElementChild || /^(IMG|VIDEO|CANVAS|INPUT|BUTTON|TEXTAREA|svg)$/.test(el.tagName) || [...el.childNodes].some(n => n.nodeType === 3 && n.textContent.trim());
+      if (!leaf) { const cs = getComputedStyle(el); if (cs.backgroundColor === 'rgba(0, 0, 0, 0)' && cs.backgroundImage === 'none' && cs.borderTopWidth === '0px') continue; }
+      for (let y = Math.max(0, Math.floor(r.top / G)); y < Math.min(ny, Math.ceil(r.bottom / G)); y++)
+        occ.fill(1, y * nx + Math.max(0, Math.floor(r.left / G)), y * nx + Math.min(nx, Math.ceil(r.right / G)));
     }
-    if (away && o.s0 === undefined) {
-      let below = 0.45 * EDGE_PX[sh.lane] + 30;
-      if (o.lead) {
-        // a wingman comes in on a line of its own beside its leader's, a little later and deeper
-        sh.ta = Math.max(0.1, Math.min(0.95, o.lead.ta + rr(0.3, 0.45) * (o.lead.ta > 0.5 ? -1 : 1)));
-        below += rr(40, 160); sh.ze = Math.max(sh.ze, o.lead.ze * rr(1, 1.2));
-      } else {
-        // of a few lines across the carriageway, the one furthest from the ships already low on screen
-        const low = ships.filter(q => q.p && q.dir > 0 && q.s < 0.35).map(q => q.ta);
-        sh.la = sh.ta = [0, 1, 2, 3].map(() => rr(0.15, 0.85)).sort((x, y) => Math.min(...low.map(a => Math.abs(a - y)), 9) - Math.min(...low.map(a => Math.abs(a - x)), 9))[0];
-      }
-      enter(sh, below);
-    }
-    kinds.push(kind);
-    ships.push(sh);
-    pose(sh, 0);
-    return sh;
-  }
-  // an away ship comes in from below the bottom edge already flying up the road: placed on the
-  // extension of its own line of the carriageway, at the depth where it shows at its edge size,
-  // heading along the road's tangent there (on screen: straight along its line)
-  function enter(sh, below) {
-    const L = sh.L, y = s => scr(corridor(L, s, sh.ta, sh.tb))[1];
-    let s = -0.2;
-    for (let i = 0; i < 3; i++) { const y0 = y(s); s += (VH + below - y0) / ((y(s - 0.01) - y0) / -0.01); }
-    const c = corridor(L, s, sh.ta, sh.tb), T = norm(sub(corridor(L, s + 0.01, sh.ta, sh.tb), corridor(L, s - 0.01, sh.ta, sh.tb)));
-    sh.p = c.map(q => q * sh.ze / c[2]);
-    sh.speed = L.speed * sh.cruise * Math.pow(sh.ze / L.z[0], DEPTH_SPEED);
-    sh.v = T.map(q => q * sh.speed);
-    sh.s = sOf(L, sh.ze);
-  }
-  function slot(sh, ld) {
-    const lf = norm(ld.v), side = norm(cross(lf, [0, 1, 0])), up = cross(side, lf), span = (ld.L.lw * 0.6 + sh.L.lw) * 1.4, t = sh.t;
-    return add(add(add(ld.p, side, (sh.offA + 0.25 * Math.sin(0.4 * t + sh.ph)) * span), up, (sh.offB + 0.2 * Math.sin(0.3 * t + sh.ph2)) * span), lf, -sh.lagK * span);
-  }
-  const LANE_OF = { xwing: 'near', tie: 'near', ywing: 'near', falcon: 'mid', destroyer: 'far' };
-  // one ship at a time from a weighted mix, never three of a kind in a row
-  function pickKind() {
-    const tot = Object.values(MIX).reduce((a, b) => a + b, 0);
-    for (let i = 0; i < 50; i++) {
-      let r = rnd() * tot, k;
-      for (k in MIX) if ((r -= MIX[k]) <= 0) break;
-      if (k === 'destroyer' && (isSmall() || ships.some(sh => sh.kind === 'destroyer'))) continue;
-      if (kinds.length > 1 && kinds[kinds.length - 1] === k && kinds[kinds.length - 2] === k) continue;
-      return k;
-    }
-    return 'xwing';
-  }
-  function arrive() {
-    const kind = pickKind(), away = !kinds.length || rnd() < 0.62, cap = isSmall() ? 4 : MAX_ALIVE;
-    const lead = spawn(kind, LANE_OF[kind], away);
-    if (isSmall() || simT < FILL || ships.length > cap - 2 || rnd() > GROUP) return;
-    // company: two TIEs after the Falcon, an X-wing on a TIE (or a TIE pair), a Rebel wingman
-    const pick = kind === 'falcon' ? ['tie', 'tie'] : kind === 'tie' ? [rnd() < 0.5 ? 'xwing' : 'tie'] : kind === 'destroyer' ? [] : [rnd() < 0.5 ? 'xwing' : 'ywing'];
-    for (const k of pick) spawn(k, 'near', away, { lead });
-  }
-  // a steady flow: arrivals every few seconds while fewer than TARGET ships are in view
-  function spawner() {
-    if (simT < nextArrival) return;
-    const target = isSmall() ? 3 : TARGET, cap = isSmall() ? 4 : MAX_ALIVE, seen = ships.filter(sh => sh.fog > 0.05).length;
-    if (ships.length >= cap || seen >= target) { nextArrival = simT + 0.5; return; }
-    arrive();
-    nextArrival = simT + rr(...ARRIVAL) * (simT < FILL ? 0.45 : seen < target * 0.6 ? 0.5 : 1);
-  }
-  // steering: each ship seeks a point ahead inside the corridor, turning and accelerating
-  // within its own limits; the path comes out of that, not from a curve
-  function steer(sh, dt) {
-    const L = sh.L, t = (sh.t += dt);
-    sh.s = sOf(L, sh.p[2]);
-    // authority: an away ship just in from below first climbs calmly along its line, then the
-    // lane hops, weave, avoidance, carriageway clamp and station keeping blend in over SETTLE s
-    const r = sh.dir < 0 ? 1 : sh.onScreen ? Math.min(1, (t - sh.inAt) / SETTLE) : 0;
-    // where it wants to be across the corridor: its lane, a lane change now and then, a weave
-    if (t > sh.hopAt && r >= 1) { [sh.la, sh.lb] = pickLane(sh); sh.hopAt = t + rr(...sh.hop); }
-    let a = sh.la + r * sh.weave * Math.sin(sh.wf * t + sh.ph), b = sh.lb + r * sh.weave * 0.6 * Math.sin(sh.wf * 0.63 * t + sh.ph2), s = sh.s;
-    const ld = sh.lead && ships.includes(sh.lead) ? sh.lead : null, wing = ld && t > sh.free;
-    if (wing && rnd() < dt / 12) sh.free = t + rr(2, 4);   // a wingman breaks off for a while
-    if (sh.dodge && t < sh.dodge.until) { a = sh.dodge.a ?? a; b = sh.dodge.b ?? b; }
-    sh.ta += (a - sh.ta) * Math.min(1, dt * 0.8); sh.tb += (b - sh.tb) * Math.min(1, dt * 0.8);
-    // oncoming traffic aims no further than the near end, then fades out (no swerve off the road)
-    const ts = s + sh.dir * LOOK;   // oncoming ships fade out before the near end, past it they are gone
-    // a wingman flies to its slot by the leader (a point ahead of it), not to the corridor
-    const road = corridor(L, ts, sh.ta, sh.tb);
-    let target = wing ? mix(road, add(slot(sh, ld), ld.v, 0.8), r) : road;
-    if (FIX) target = mix(target, carriageway(sh, target, ts), r);
-    // oncoming: over the last stretch, bend towards the exit beyond the left edge (peeling off
-    // past the camera); once at the exit depth, fly out flat at that size
-    const ex = sh.dir < 0 ? Math.min(1, Math.max(0, (0.4 - s) / 0.2)) : 0;
-    if (ex > 0) { const e = [(sh.edge[0] - VW / 2) * sh.ze / F, (sh.edge[1] - VH / 2) * sh.ze / F, sh.ze]; target = add(target.map(q => q * (1 - ex)), e, ex); }
-    const st = wing && slot(sh, ld);
-    let want = norm(sub(target, sh.p));
-    if (FIX && r > 0) want = add(want, avoid(sh), r);
-    const f = norm(sh.v);
-    // keep apart in 3D, and swing out (or over/under) to overtake a slower ship ahead
-    for (const o of ships) {
-      if (o === sh || !o.p) continue;
-      const d = sub(sh.p, o.p), dist = Math.hypot(...d), r = SEPARATION * (L.lw + o.L.lw) / 2;
-      if (dist < r && dist > 1e-3) want = add(want, d, 2 * (1 - dist / r) / dist);
-      const ahead = -dot(d, f), lat = Math.hypot(...add(d, f, ahead));
-      if (o.dir === sh.dir && ahead > 0 && ahead < 5 * L.lw && lat < 1.5 * L.lw && sh.speed > o.speed * 1.02 && r >= 1 && (!sh.dodge || t > sh.dodge.until)) {
-        const away = sh.climb ? { b: o.tb > 0 ? -0.9 : 0.9 } : { a: Math.max(-0.95, Math.min(0.95, o.ta > 0 ? o.ta - 0.8 : o.ta + 0.8)) };
-        sh.dodge = { ...away, until: t + rr(2.5, 4.5) };
+    const h = new Uint16Array(nx);
+    let best = null, bs = 0;
+    for (let y = 0; y < ny; y++) {
+      for (let x = 0; x < nx; x++) h[x] = occ[y * nx + x] ? 0 : h[x] + 1;
+      for (let x = 0; x < nx; x++) {   // the widest rectangle as tall as column x, ending on this row
+        if (!h[x]) continue;
+        let l = x, r = x;
+        while (l > 0 && h[l - 1] >= h[x]) l--;
+        while (r < nx - 1 && h[r + 1] >= h[x]) r++;
+        const w = Math.min(r - l + 1, 2.5 * h[x]), sc = w * h[x];
+        if (sc > bs) { bs = sc; best = { x: ((l + r + 1) / 2 - w / 2) * G, y: (y - h[x] + 1) * G, w: w * G, h: h[x] * G }; }
       }
     }
-    want = norm(want);
-    // never turn back: whatever the pushes, keep heading along the ship's own direction of travel
-    // never closer than the edge depth (sprites stay sane): level out early enough for this ship's
-    // turn rate. Pitching up at the full rate from angle th covers speed / turn * (1 - cos th) in depth
-    const fz = Math.min(1, Math.max(0, -sh.v[2] / (sh.speed || 1))), stop = 1.2 * sh.speed / sh.turn * (1 - Math.sqrt(1 - fz * fz)) + 2 * -Math.min(0, sh.v[2]) * dt;
-    const level = sh.p[2] <= sh.ze * (sh.dir < 0 ? 1.05 : 0.9) + stop;
-    if (level) { want[2] = Math.max(0, want[2]); want = norm(want); }
-    else if (sh.dir * want[2] < 0.4) { want[2] = 0.4 * sh.dir; want = norm(want); }
-    // turn towards it no faster than this ship can
-    const ang = Math.acos(Math.max(-1, Math.min(1, dot(f, want)))), k = ang > 1e-4 ? Math.min(1, sh.turn * dt / ang) : 1;
-    const nf = norm(add(f.map(q => q * (1 - k)), want, k));
-    if (level && nf[2] < 0) {
-      // turning towards a sideways pull alone barely lifts the nose: pitch out of the dive at the
-      // full turn rate whatever the other pulls, keeping the sideways heading
-      const th = Math.max(0, Math.min(Math.asin(-nf[2]), Math.asin(Math.min(1, -f[2])) - sh.turn * dt));
-      const h = Math.hypot(nf[0], nf[1]), hx = h > 1e-4 ? nf[0] / h : -1, hy = h > 1e-4 ? nf[1] / h : 0;
-      nf[0] = hx * Math.cos(th); nf[1] = hy * Math.cos(th); nf[2] = -Math.sin(th);
+    return best && best.w >= BOX_MIN * VW ? best : { x: 0.04 * VW, y: 0.5 * VH, w: 0.5 * VW, h: 0.46 * VH };
+  }
+  // a pass: the lead flies two Hermite legs in world space, into the box and away from it, meeting
+  // at the box centre with one heading and one speed. The escort drifts round its slot in the
+  // lead's frame. Every ship heads where it is going and banks into its turns
+  function launch(g) {
+    const b = freeBox(), px = Math.min(g.edge * b.w, g.px), zb = F * g.len / px;
+    const Pb = toWorld((b.x + b.w / 2) / VW, (b.y + b.h * 0.5) / VH, zb);
+    const d = norm([(PATH.vanish[0] - 0.5) * VW / F, (PATH.vanish[1] - HORIZON) * VH / F, 1]);   // the heading whose vanishing point is top right
+    const e = norm(PATH.enter), l1 = zb * PATH.lead, P0 = add(Pb, e, -l1), P3 = add(Pb, d, zb * (PATH.depth - 1) / d[2]);
+    const m = e, l2 = Math.hypot(...sub(P3, Pb));   // across the box, the turn comes after
+    const jit = [rr(-1, 1) * VW, rr(-0.6, 0.6) * VH, 0].map(v => v * g.swing * zb / F);
+    // leg 1 runs s = u + (1 - slow)(u - u^2): speed 2 - slow at the start, slow at the end;
+    // leg 2 starts at that same speed (a, in its own units) and speeds up as u^ease
+    const T1 = g.time * PATH.stay, T2 = g.time - T1, M2 = l2 * 0.5;
+    const a = Math.min(1, PATH.slow * l1 / T1 * T2 / M2);
+    group = { g, t: 0, box: b, T1, T2, a, legs: [[P0, Pb, e.map(v => v * l1), m.map(v => v * l1)], [Pb, add(P3, jit), m.map(v => v * M2), d.map(v => v * l2)]] };
+    const ship = (kind, len, off) => ({ kind, off, k: len / mesh(kind).len, ph: [0, 1, 2].map(() => rnd() * 6.28), w: [0, 1, 2].map(() => rr(0.3, 0.7)),
+      buf: SCRATCH, sm: {}, cvs: [document.createElement('canvas'), document.createElement('canvas')], spr: null, job: null, at: null, rect: null });
+    if (g.jump) { group.tJ = g.jump * g.time; const w = warp(group.tJ); group.fJ = norm(sub(lead(w + 0.1), lead(w))); }
+    ships.push(ship(g.lead, g.len, null), ...g.escort.map(([kind, len, ...off]) => ship(kind, len, off)));
+    if (g.jump) ships.forEach((sh, i) => { sh.jt = group.tJ + (i ? JUMP.after[Math.min(i, JUMP.after.length) - 1] + 0.1 * Math.max(0, i - JUMP.after.length) : 0); });
+    fly(0);
+  }
+  const herm = ([p0, p1, m0, m1], s) => { const s2 = s * s, s3 = s2 * s; return [0, 1, 2].map(i => (2 * s3 - 3 * s2 + 1) * p0[i] + (s3 - 2 * s2 + s) * m0[i] + (-2 * s3 + 3 * s2) * p1[i] + (s3 - s2) * m1[i]); };
+  // the lead at time t (past the end it keeps going: the headings look a little ahead)
+  function lead(t) {
+    const gr = group;
+    if (t < gr.T1) { const u = Math.max(0, t / gr.T1); return herm(gr.legs[0], u + (1 - PATH.slow) * (u - u * u)); }
+    const u = (t - gr.T1) / gr.T2;
+    return herm(gr.legs[1], gr.a * u + (1 - gr.a) * Math.pow(u, PATH.ease));
+  }
+  // path time: with a jump ahead the group brakes, its speed 1 - (1 - idle) u^2 over the brake, then idles
+  function warp(t) {
+    const gr = group;
+    if (!gr.g.jump) return t;
+    const B = JUMP.brake, t0 = gr.tJ - B, u = (t - t0) / B, k = (1 - JUMP.idle) / 3;
+    return u <= 0 ? t : u <= 1 ? t0 + B * (u - k * u * u * u) : t0 + B * (1 - k) + (t - gr.tJ) * JUMP.idle;
+  }
+  // how far a ship has charged for its jump, 0-1
+  const charge = (sh, t) => sh.jt === undefined ? 0 : Math.max(0, Math.min(1, (t - group.tJ + JUMP.brake) / (sh.jt - group.tJ + JUMP.brake)));
+  const boost = sh => 1 + (JUMP.glow - 1) * (sh.ch || 0) ** 2 * (0.65 + 0.35 * Math.sin(group.t * JUMP.pulse * 2 * Math.PI));
+  const prog = t => { const u = (t - group.T1) / group.T2; return u <= 0 ? 0 : Math.min(1, group.a * u + (1 - group.a) * Math.pow(u, PATH.ease)); };
+  // where a ship is at time t
+  function posAt(sh, t) {
+    const g = group.g, tw = warp(t), p = lead(tw);
+    let q = p;
+    if (sh.off) {
+      const R = frameOf(norm(sub(lead(tw + 0.1), p)), 0), d = sh.off.map((o, i) => o + g.sway * (i === 1 ? 0.6 : 1) * Math.sin(sh.w[i] * tw + sh.ph[i]));   // path time: the drift slows with the group
+      q = [0, 1, 2].map(i => p[i] + g.len * (R[i][0] * d[0] + R[i][1] * d[1] + R[i][2] * d[2]));
     }
-    // speed: cruise for this depth, swelling and easing off, a little faster while overtaking
-    const g = Math.pow(Math.max(1, sh.p[2]) / L.z[0], DEPTH_SPEED);
-    let goal = L.speed * g * sh.cruise * (1 + sh.vary * Math.sin(sh.vw * t + sh.ph2)) * (sh.dodge && t < sh.dodge.until ? 1.15 : 1);
-    if (wing) goal += r * (ld.speed * Math.max(0.7, Math.min(1.4, 1 + 0.3 * dot(sub(st, sh.p), norm(ld.v)) / ((ld.L.lw * 0.6 + L.lw) * 1.4))) - goal);   // keep station
-    const acc = sh.P.accel * L.speed * g * dt;
-    sh.speed += Math.max(-acc, Math.min(acc, goal - sh.speed));
-    sh.v = nf.map(q => q * sh.speed);
-    sh.p = add(sh.p, sh.v, dt);
-    if (sh.p[2] < sh.ze / LIMIT) sh.p[2] = sh.ze / LIMIT;   // last resort: slide along at the size cap
-    // bank into the turn: roll from the sideways part of the turn rate, smoothed
-    const S = frameOf(nf, 0).map(r => r[2]), turnRate = dt > 0 ? dot(sub(nf, f), S) / dt : 0;
-    const rt = Math.max(-1.2, Math.min(1.2, BANK * sh.bank * turnRate));
-    sh.roll += (rt - sh.roll) * Math.min(1, dt / ROLL_LAG);
-    if (DEBUG && (!sh.trail.length || t - sh.trail[sh.trail.length - 1][3] > 0.1)) sh.trail.push([...sh.p, t]);
-    pose(sh, dt);
+    return sh.jt !== undefined && t > sh.jt ? add(q, group.fJ, g.len * JUMP.a * (Math.exp(JUMP.rate * (t - sh.jt)) - 1)) : q;
   }
-  // the divided highway: on screen, away traffic keeps to one side of the road's centreline and
-  // oncoming traffic to the other, each at least half its own size plus half the divide away
-  // from it, so two ships on opposite carriageways never cover each other, near or far
-  const scr = p => [VW / 2 + F * p[0] / p[2], VH / 2 + F * p[1] / p[2]];
-  const extent = sh => sh.spr ? [sh.spr.w / dpr, sh.spr.h / dpr] : [sh.px * mesh(sh.kind).len, sh.px * mesh(sh.kind).len * 0.6];
-  function carriageway(sh, target, s) {
-    const L = sh.L, c = scr(centre(L, s)), a = scr(centre(L, s - 0.01)), b = scr(centre(L, s + 0.01));
-    const tl = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1, n = [-(b[1] - a[1]) / tl, (b[0] - a[0]) / tl];   // screen normal, down-right
-    // capped at most of the road's half width: past that, avoid() handles the rest and the road stays one stream
-    const [w, h] = extent(sh), need = DIVIDE / 2 + Math.min(CORRIDOR.w * VW * 0.7, (Math.abs(n[0]) * w + Math.abs(n[1]) * h) / 2);
-    const p = scr(target), d = (p[0] - c[0]) * n[0] + (p[1] - c[1]) * n[1], short = need - sh.dir * d;
-    if (short <= 0) return target;
-    const k = sh.dir * short * target[2] / F;   // screen px to world units at that depth
-    return [target[0] + n[0] * k, target[1] + n[1] * k, target[2]];
-  }
-  // what is left: ships whose sprites are about to cover each other on screen within AVOID s.
-  // The nearer one (or the nimbler, at equal depth) moves aside, up/down or sideways on screen
-  function avoid(sh) {
-    let push = [0, 0, 0];
-    const [w, h] = extent(sh);
-    for (const look of [AVOID * 0.4, AVOID]) {
-    const me = scr(add(sh.p, sh.v, look));
-    for (const o of ships) {
-      if (o === sh || !o.p || o.fog < 0.03 || sh.fog < 0.03) continue;
-      const nearer = sh.p[2] < o.p[2] * 0.97 || (Math.abs(sh.p[2] - o.p[2]) < o.p[2] * 0.03 && sh.turn > o.turn);
-      if (!nearer) continue;
-      const [ow, oh] = extent(o), them = scr(add(o.p, o.v, look));
-      const dx = me[0] - them[0], dy = me[1] - them[1], mx = (w + ow) / 2 + 8 - Math.abs(dx), my = (h + oh) / 2 + 8 - Math.abs(dy);
-      if (mx <= 0 || my <= 0) continue;
-      // the cheaper way out: across the shorter overlap
-      const sx = mx < my ? Math.sign(dx || 1) : 0, sy = mx < my ? 0 : Math.sign(dy || 1), depth = Math.min(1, Math.min(mx, my) / 40);
-      push = add(push, [sx, sy, 0], (look < AVOID ? 2.5 : 1.2) * depth);
+  // moves the group on by dt; true once the pass is over
+  function fly(dt) {
+    const gr = group, g = gr.g, t = (gr.t += dt), q = t / g.time, h = 0.1;
+    const fog = Math.min(1, t / 1.2) * Math.min(1, Math.max(0, (1 - q) / (1 - FADE))), dim = 1 - FAR_DIM * prog(warp(t));
+    for (const sh of ships) {
+      sh.fog = fog; sh.dim = dim; sh.ch = charge(sh, t);
+      if (sh.jt !== undefined && t > sh.jt) { sh.jump = t - sh.jt; sh.C = posAt(sh, t); sh.px = F * sh.k / sh.C[2]; continue; }   // pose frozen, only moving
+      const p = posAt(sh, t), p1 = posAt(sh, t + h), f = norm(sub(p1, p)), f1 = norm(sub(posAt(sh, t + 2 * h), p1));
+      const S = frameOf(f, 0).map(r => r[2]);
+      let roll = Math.max(-1, Math.min(1, BANK * dot(sub(f1, f), S) / h)), fw = f;
+      // charging: nose onto the jump heading, wings level
+      if (sh.ch) { const k = sh.ch * sh.ch * (3 - 2 * sh.ch); fw = norm(mix(f, gr.fJ, k)); roll *= 1 - k; }
+      sh.C = p; sh.f = fw; sh.rl = roll; sh.R = frameOf(fw, roll);
+      sh.px = F * sh.k / p[2];
     }
-    }
-    return push;
-  }
-  function pose(sh, dt) {
-    let roll = sh.rollBase + sh.roll;
-    if (sh.barrel >= 0) { const b = Math.min(1, Math.max(0, (sh.t - sh.barrel) / 2.2)); roll += 2 * Math.PI * b * b * (3 - 2 * b); }
-    const f = norm(sh.v);
-    sh.C = sh.p; sh.R = frameOf(f, roll); sh.f = f; sh.rl = roll;
-    sh.px = F * sh.k / sh.C[2];
-    const L = sh.L;
-    // no fade at the near end: ships there cross the screen edge at full strength. Oncoming ships
-    // appear out of the far end, so they fade in
-    const stream = 1 - FAR_DIM * Math.min(1, Math.max(0, sh.s));
-    sh.fog = Math.max(0, Math.min(1, (L.fog[1] - sh.C[2]) / (L.fog[1] - L.fog[0]))) * L.dim * stream * (sh.dir < 0 ? Math.min(1, sh.t / 0.8) : 1);
-  }
-  // gone: faded out past the far end, or out of the screen once it has been on it: only when the
-  // whole sprite (exhaust included) is past the edge
-  const outside = sh => { const r = sh.rect; return r && (r[0] >= cv.width || r[0] + r[2] <= 0 || r[1] >= cv.height || r[1] + r[3] <= 0); };
-  function gone(sh) {
-    if (!(sh.p[2] > 2)) return true;   // broken state: drop it
-    if (sh.rect && !outside(sh) && !sh.onScreen) { sh.onScreen = true; sh.inAt = sh.t; }
-    if (sh.dir > 0 && sh.s > 1.03) return true;
-    if (!sh.onScreen) return sh.t > 15;   // never made it onto the screen
-    return outside(sh);
+    return q >= 1 || (g.jump && ships.every(sh => sh.jump > JUMP.gone + JUMP.trail));
   }
   function moved(sh) {
     const a = sh.at, d = norm(sh.C), pd = a.d;
     return Math.hypot(sh.f[0] - a.f[0], sh.f[1] - a.f[1], sh.f[2] - a.f[2]) + Math.abs(sh.rl - a.rl) + Math.hypot(d[0] - pd[0], d[1] - pd[1], d[2] - pd[2]);
   }
   // small (far) ships are redrawn on bigger changes: cheap at the back, smooth up front
-  const tol = sh => sh.px * sh.L.lw < 60 ? 3 : sh.px * sh.L.lw < 130 ? 1.8 : 1;
-  const stale = sh => !sh.at || moved(sh) > RERASTER * tol(sh) || Math.abs(sh.px / sh.at.px - 1) > SCALE_STEP * tol(sh);
+  const tol = sh => { const l = sh.px * mesh(sh.kind).len; return l < 60 ? 3 : l < 130 ? 1.8 : 1; };
+  const stale = sh => !sh.jump && (!sh.at || moved(sh) > RERASTER * tol(sh) || Math.abs(sh.px / sh.at.px - 1) > SCALE_STEP * tol(sh) || Math.abs(boost(sh) - sh.at.b) > 0.35);   // jumping: too fast to redraw, the sprite just shrinks
   function job(sh) {
     // two canvases per ship: the new sprite is written into the one not on screen
-    sh.job = render(sh.kind, sh.R, sh.C, sh.k, sh.buf, sh.cvs[sh.spr && sh.spr.cvs === sh.cvs[0] ? 1 : 0], 0.85 + 0.3 * Math.random());
-    sh.at = { f: sh.f, rl: sh.rl, d: norm(sh.C), px: sh.px };
+    sh.job = render(sh.kind, sh.R, sh.C, sh.k, sh.buf, sh.cvs[sh.spr && sh.spr.cvs === sh.cvs[0] ? 1 : 0], (0.85 + 0.3 * Math.random()) * boost(sh), sh.dim, sh.sm);
+    sh.at = { f: sh.f, rl: sh.rl, d: norm(sh.C), px: sh.px, b: boost(sh) };
   }
+  const done = (sh, spr) => { sh.spr = spr; spr.px = sh.at.px; sh.job = null; };
   function paintNow(sh) {
     for (const o of ships) if (o.job) { o.spr = finish(o.job); o.job = null; }   // the half-done job owns the shared buffers
-    job(sh); sh.spr = finish(sh.job); sh.job = null;
+    job(sh); done(sh, finish(sh.job));
+  }
+  // the hyperspace streak, in glyphs on the page's cell grid: JUMP.lines lines across the ship
+  // (spread over its on-screen size, so they close in as it shrinks), each from a point of its own
+  // along the last JUMP.trail s to the ship; near the head the stroke that runs along the line
+  // (one of | / - \), then : and . fading to the tail
+  let atlas = null;
+  function glyphAtlas() {
+    if (atlas) return atlas;
+    const chars = EDGES + ':.', col = pal[COLS.indexOf('glowBlue')], c = document.createElement('canvas');
+    c.width = MW * chars.length; c.height = MH;
+    const x = c.getContext('2d'), img = x.createImageData(c.width, MH);
+    [...chars].forEach((ch, i) => { const m = masks[ch]; for (let y = 0; y < MH; y++) for (let k = 0; k < MW; k++) { const o = (y * c.width + i * MW + k) * 4; img.data[o] = col[0]; img.data[o + 1] = col[1]; img.data[o + 2] = col[2]; img.data[o + 3] = m[y * MW + k]; } });
+    x.putImageData(img, 0, 0);
+    return (atlas = c);
+  }
+  function streak(sh) {
+    const t = group.t, t0 = Math.max(sh.jt, t - JUMP.trail), fade = Math.min(1, Math.max(0, 1 - (sh.jump - JUMP.gone) / JUMP.trail));
+    if (t - t0 < 0.01 || fade <= 0) return;
+    const A = glyphAtlas(), N = 16, pts = [], size = [], len = mesh(sh.kind).len;
+    for (let i = 0; i <= N; i++) {
+      const C = posAt(sh, t0 + (t - t0) * i / N);
+      pts.push([(VW / 2 + F * C[0] / C[2]) * dpr, (VH * HORIZON + F * C[1] / C[2]) * dpr]); size.push(F * sh.k * len / C[2] * dpr * 0.3);
+    }
+    const dx = pts[N][0] - pts[0][0], dy = pts[N][1] - pts[0][1], dl = Math.hypot(dx, dy) || 1, nx = -dy / dl, ny = dx / dl;
+    const ei = Math.round(((Math.atan2(dx, -dy) * 4 / Math.PI) % 4 + 4) % 4) % 4;
+    let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+    for (let l = 0; l < JUMP.lines; l++) {
+      const o = 2 * l / (JUMP.lines - 1) - 1, h = hash(l, sh.ph[0] * 1e3 | 0, 7), i0 = Math.floor(h * 0.45 * N);
+      let last = -1;
+      for (let i = i0; i < N; i++) {
+        const ax = pts[i][0] + nx * size[i] * o, ay = pts[i][1] + ny * size[i] * o, bx = pts[i + 1][0] + nx * size[i + 1] * o, by = pts[i + 1][1] + ny * size[i + 1] * o;
+        const n = Math.max(1, Math.ceil(Math.max(Math.abs(bx - ax) / cwF, Math.abs(by - ay) / chF)));
+        for (let k = 0; k < n; k++) {
+          const c = Math.floor((ax + (bx - ax) * k / n) / cwF), r = Math.floor((ay + (by - ay) * k / n) / chF), key = r * 1e5 + c;
+          if (key === last) continue;
+          last = key;
+          const v = Math.pow((i + k / n - i0) / (N - i0), 1.6) * fade * (0.6 + 0.4 * h);
+          if (v < 0.04) continue;
+          const X = Math.floor(c * cwF), Y = Math.floor(r * chF);
+          ctx.globalAlpha = Math.min(1, v * 1.3) * sh.fog;
+          ctx.drawImage(A, (v > 0.45 ? ei : v > 0.2 ? 4 : 5) * MW, 0, MW, MH, X, Y, MW, MH);
+          if (X < x0) x0 = X; if (Y < y0) y0 = Y; if (X > x1) x1 = X; if (Y > y1) y1 = Y;
+        }
+      }
+    }
+    if (x1 < x0) return;
+    const r = sh.rect, R = [x0 - 1, y0 - 1, x1 + MW + 1, y1 + MH + 1];
+    sh.rect = r ? [Math.min(r[0], R[0]), Math.min(r[1], R[1]), Math.max(r[0] + r[2], R[2]) - Math.min(r[0], R[0]), Math.max(r[1] + r[3], R[3]) - Math.min(r[1], R[1])] : [R[0], R[1], R[2] - R[0], R[3] - R[1]];
   }
   function draw(all) {
     if (all) ctx.clearRect(0, 0, cv.width, cv.height);
     else for (const sh of ships) if (sh.rect) ctx.clearRect(...sh.rect);
-    // far to near by where each ship is now: the nearer hull covers the farther one
-    const order = FIX ? ships.slice().sort((a, b) => b.p[2] - a.p[2]) : ships;
-    for (const sh of order) {
+    // far to near: the nearer hull covers the farther one
+    for (const sh of ships.slice().sort((a, b) => b.C[2] - a.C[2])) {
       sh.rect = null;
       if (!sh.spr || sh.fog <= 0.01) continue;
-      // anchored on the ship's current projected position, at whole device pixels
-      const x = Math.round((VW / 2 + F * sh.C[0] / sh.C[2]) * dpr - sh.spr.ax), y = Math.round((VH / 2 + F * sh.C[1] / sh.C[2]) * dpr - sh.spr.ay);
-      ctx.globalAlpha = sh.fog;
-      ctx.drawImage(sh.spr.cvs, 0, 0, sh.spr.w, sh.spr.h, x, y, sh.spr.w, sh.spr.h);
-      sh.rect = [x - 1, y - 1, sh.spr.w + 2, sh.spr.h + 2];
+      // anchored on a projected position C, scaled from the size it was drawn at to the one at C
+      // (no size jumps between re-rasters); the cleared rect grows over every copy
+      const put = (C, alpha, ox = 0, oy = 0) => {
+        const k = F * sh.k / C[2] / sh.spr.px, w = sh.spr.w * k, h = sh.spr.h * k;
+        if (w < 0.5) return;
+        const x = Math.round((VW / 2 + F * C[0] / C[2]) * dpr - sh.spr.ax * k) + ox, y = Math.round((VH * HORIZON + F * C[1] / C[2]) * dpr - sh.spr.ay * k) + oy;
+        ctx.globalAlpha = alpha;
+        ctx.drawImage(sh.spr.cvs, 0, 0, sh.spr.w, sh.spr.h, x, y, w, h);
+        const r = sh.rect, x1 = x + Math.ceil(w) + 1, y1 = y + Math.ceil(h) + 1;
+        sh.rect = r ? [Math.min(r[0], x - 1), Math.min(r[1], y - 1), Math.max(r[0] + r[2], x1) - Math.min(r[0], x - 1), Math.max(r[1] + r[3], y1) - Math.min(r[1], y - 1)] : [x - 1, y - 1, x1 - x + 1, y1 - y + 1];
+      };
+      if (!sh.jump) {
+        if (!sh.ch) { put(sh.C, sh.fog); continue; }
+        // charging: trembling (the engines' pulse is in the sprite)
+        const j = JUMP.shake * sh.ch * sh.ch * dpr;
+        put(sh.C, sh.fog, Math.round((Math.random() * 2 - 1) * j), Math.round((Math.random() * 2 - 1) * j));
+        continue;
+      }
+      // lightspeed: the glyph streak, the ship at its head
+      ctx.globalCompositeOperation = 'lighter';
+      streak(sh);
+      ctx.globalCompositeOperation = 'source-over';
+      if (sh.jump < JUMP.gone) put(sh.C, sh.fog);
     }
     ctx.globalAlpha = 1;
-    // test metric: did two visible sprites cover more than 10% of the smaller one this frame
-    const vis = order.filter(sh => sh.rect && sh.fog > 0.05 && !outside(sh));
-    let hit = 0;
-    for (let i = 0; i < vis.length && !hit; i++) for (let j = i + 1; j < vis.length; j++) {
-      const a = vis[i].rect, b = vis[j].rect, ox = Math.min(a[0] + a[2], b[0] + b[2]) - Math.max(a[0], b[0]), oy = Math.min(a[1] + a[3], b[1] + b[3]) - Math.max(a[1], b[1]);
-      if (ox > 0 && oy > 0 && ox * oy > 0.1 * Math.min(a[2] * a[3], b[2] * b[3])) { hit = 1; break; }
-    }
-    overlap.push(hit); if (overlap.length > 600) overlap.shift();
   }
 
   function frame(now) {
@@ -994,12 +1039,10 @@
     const t0 = performance.now();
     const dt = last ? Math.max(0, Math.min(DT_MAX, (now - last) / 1000)) : 0;
     last = now; simT += dt;
-    spawner();
-    for (const sh of ships) steer(sh, dt);
-    const t1 = performance.now();
-    for (let i = ships.length - 1; i >= 0; i--) {
-      const sh = ships[i];
-      if (gone(sh)) { if (sh.rect) ctx.clearRect(...sh.rect); if (DEBUG) oldTrails.push(sh.trail.slice(-200)); ships.splice(i, 1); }
+    if (!group && turn < GROUPS.length && simT >= nextAt) launch(GROUPS[turn++]);   // each group once, then an empty sky
+    else if (group && fly(dt)) {
+      for (const sh of ships) if (sh.rect) ctx.clearRect(...sh.rect);
+      ships.length = 0; group = null; nextAt = simT + rr(...GAP);
     }
     // re-raster: unfinished jobs first, then the ships that changed most, until the budget is spent
     const live = ships.filter(sh => sh.job || stale(sh));
@@ -1009,22 +1052,17 @@
       if (performance.now() - t0 > BUDGET) break;
       if (!sh.job) job(sh);
       let r;
-      for (;;) { const q = performance.now(); r = sh.job.next(); const d = performance.now() - q; if (d > 8) slowStep.push([Math.round(d), SCRATCH.stage, sh.kind, sh.spr && sh.spr.w + 'x' + sh.spr.h]); if (r.done || performance.now() - t0 > BUDGET) break; }
-      if (r.done) { sh.spr = r.value; sh.job = null; }
+      do r = sh.job.next(); while (!r.done && performance.now() - t0 <= BUDGET);
+      if (r.done) done(sh, r.value);
     }
-    const t2 = performance.now();
     draw(false);
-    const t3 = performance.now();
-    if (DEBUG) debug();
-    const ms = performance.now() - t0;
-    cost.push(ms); if (cost.length > 600) cost.shift();
-    if (ms > 8) slow.push([Math.round(ms), 'steer ' + Math.round(t1 - t0) + ' raster ' + Math.round(t2 - t1) + ' draw ' + Math.round(t3 - t2), ships.map(sh => sh.kind + ' z' + sh.p[2].toFixed(1) + ' px' + Math.round(sh.px * mesh(sh.kind).len) + (sh.job ? ' job' : '') + (sh.spr ? ' ' + sh.spr.w + 'x' + sh.spr.h : ''))]);
-    if (ships.length) raf = requestAnimationFrame(frame); else sleep();
+    cost.push(performance.now() - t0); if (cost.length > 600) cost.shift();
+    if (ships.length) raf = requestAnimationFrame(frame); else if (turn < GROUPS.length) sleep();
   }
-  // nothing in the sky: no rAF, just a timer until the next spawn
+  // nothing in the sky: no rAF, just a timer until the next group
   function sleep() {
     clearTimeout(timer);
-    const at = nextArrival;
+    const at = nextAt;
     timer = setTimeout(() => { simT = Math.max(simT, at); last = 0; kick(); }, Math.max(0, at - simT) * 1000);
   }
   const running = () => ready && !document.hidden;
@@ -1050,22 +1088,12 @@
     let rt;
     addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { buildMasks(isSmall() ? 1.3 : 1); size(); repaint(); }, 150); });
     window.ships = {
-      stats: () => { const s = [...cost].sort((a, b) => a - b); return { over8: s.filter(v => v > 8).length, overlapFrames: overlap.reduce((a, b) => a + b, 0), frames: s.length, avg: s.reduce((a, b) => a + b, 0) / (s.length || 1), p95: s[Math.floor(s.length * 0.95)] || 0, max: s[s.length - 1] || 0, alive: ships.length }; },
-      spawn: (kind, lane, away = true, s0) => { spawn(kind, lane, away, { s0 }); kick(); return ships.length; },
-      kinds: () => kinds.join(' '),
-      seen: () => ships.filter(sh => sh.fog > 0.05).length,
-      list: () => ships.map(sh => ({ kind: sh.kind, dir: sh.dir, rect: sh.rect && sh.rect.map(Math.round), out: !!(sh.rect && outside(sh)), s: +sh.s.toFixed(3), speed: +sh.speed.toFixed(1), roll: +sh.rl.toFixed(2), pitch: +(-Math.asin(sh.f[1])).toFixed(2), sx: sh.C && Math.round(VW / 2 + F * sh.C[0] / sh.C[2]), sy: sh.C && Math.round(VH / 2 + F * sh.C[1] / sh.C[2]), z: sh.C && +sh.C[2].toFixed(1), px: sh.px && Math.round(sh.px * mesh(sh.kind).len), fog: sh.fog && +sh.fog.toFixed(2), spr: sh.spr && [sh.spr.w, sh.spr.h] })),
-      clear: () => { ships.length = 0; oldTrails.length = 0; ctx.clearRect(0, 0, cv.width, cv.height); },
-      reset: () => { cost.length = 0; slow.length = 0; overlap.length = 0; },
-      fix: on => { FIX = on; },
-      slow: () => slow.slice(-10),
-      slowSteps: () => slowStep.slice(-12),
-      // test hook: run n seconds of 60 fps frames synchronously (a throttled tab would barely advance)
+      stats: () => { const s = [...cost].sort((a, b) => a - b); return { over8: s.filter(v => v > 8).length, frames: s.length, avg: s.reduce((a, b) => a + b, 0) / (s.length || 1), p95: s[Math.floor(s.length * 0.95)] || 0, max: s[s.length - 1] || 0, alive: ships.length }; },
+      box: () => group && group.box,
+      list: () => ships.map(sh => ({ kind: sh.kind, sx: Math.round(VW / 2 + F * sh.C[0] / sh.C[2]), sy: Math.round(VH * HORIZON + F * sh.C[1] / sh.C[2]), z: +sh.C[2].toFixed(1), px: Math.round(sh.px * mesh(sh.kind).len), fog: +sh.fog.toFixed(2), spr: sh.spr && [sh.spr.w, sh.spr.h] })),
+      // test hooks: start group i now; run n seconds of 60 fps frames synchronously (a throttled tab would barely advance)
+      launch: i => { ctx.clearRect(0, 0, cv.width, cv.height); ships.length = 0; launch(GROUPS[i]); turn = i + 1; kick(); },
       step: sec => { let t = last || performance.now(); for (let i = 0; i < sec * 60; i++) { cancelAnimationFrame(raf); raf = 0; frame(t += 1000 / 60); } return ships.length; },
-      cell: () => ({ cwF, chF, dpr }),
-      raw: () => ships,                      // test hook: the live ship objects
-      seed: n => { seed = n; },
-      restart: () => { ships.length = 0; kinds.length = 0; oldTrails.length = 0; simT = 0; nextArrival = FIRST_SPAWN; ctx.clearRect(0, 0, cv.width, cv.height); },   // test hook: the empty road of a page load
     };
   }
   (document.fonts ? document.fonts.load("600 12px 'JetBrains Mono'").then(() => document.fonts.ready) : Promise.resolve()).then(start, start);
