@@ -180,13 +180,31 @@
 .cube-timer.is-done { color: var(--fg); }
 @media (min-width: 901px) and (max-width: 1279px) {
   #sb-cube-canvas, .cube-ph { width: 160px; height: 160px; }
-  .sidebar-cube-stack { gap: 16px; }
 }
+/* button and timer are one block: label on top, timer under it, both centred.
+   The whole block is clickable: the button's ::before covers it. On desktop it sits next to
+   the cube with a fixed width (a new label never moves the cube) */
+.sidebar-cube-controls { gap: 2px; }
+#sb-cube-btn { width: auto; min-height: 0; }
+#sb-cube-btn::before { content: ''; position: absolute; inset: 0; border-radius: inherit; }
+.cube-timer { position: static; margin: 0; }
+@media (min-width: 901px) {
+  .sidebar-cube-stack { gap: 4px; }
+  /* one fixed column as wide as the longest label ("shuffle the cube", 16 letters), right
+     after the cube: every label and the timer are centred on the same line, so a new label
+     never moves anything, and the longest one starts where the cube's air ends */
+  .sidebar-cube-controls { display: grid; grid-template-columns: calc(16ch + 16 * 1.5px); justify-items: center; width: auto; font: 500 11px 'JetBrains Mono', monospace; }
+}
+/* letter-spacing leaves a space after the last letter: the same space before the first one
+   puts label and timer on the same centre line */
+#sb-cube-btn { padding-left: 1.5px; }
+.cube-timer { padding-left: 1px; }
 @media (max-width: 900px) {
   .sidebar-cube-stack { flex-direction: column; gap: 6px; }
   #sb-cube-canvas, .cube-ph { width: 96px; height: 96px; }
-  #sb-cube-btn { width: 116px; min-height: 28px; padding: 0; font-size: 9px; letter-spacing: 1px; white-space: nowrap; }
-  .cube-timer { font-size: 9px; margin-top: 4px; }
+  #sb-cube-btn { position: static; width: auto; min-height: 0; padding: 0; font-size: 9px; letter-spacing: 1px; white-space: nowrap; }
+  #sb-cube-btn::after { content: none; }
+  .cube-timer { font-size: 9px; }
 }
 
 /* ===== INTRO: il cubo grande al centro (js/boot.js) =====
@@ -217,6 +235,7 @@ html.compose .container :is(.site-domain, .profile-pic-container, .profile-id, .
    contenitore e' gia' usata per metterlo al centro */
 .sidebar-cube.cube-enter #sb-cube-canvas, .sidebar-cube.cube-enter .cube-ph { animation: cube-enter 1.1s cubic-bezier(.2, .8, .2, 1) both; }   /* batte .is-live (cube-in) */
 @keyframes cube-enter { from { opacity: 0; scale: .55; } }
+.sidebar-cube.entered #sb-cube-canvas { animation: none; }   /* finita l'entrata, niente cube-in di nuovo */
 /* i controlli del cubo compaiono quando il cubo e' atterrato */
 html.intro .sidebar-cube-controls, html.landing .sidebar-cube-controls { opacity: 0; }   /* gia' a 0 nell'intro: prima lampeggiava all'uscita */
 .sidebar-cube-controls { transition: opacity .3s; }

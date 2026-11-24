@@ -386,8 +386,13 @@ function initEightBall() {
   // ============================
   // LOOP
   // ============================
+  // fuori schermo non disegna: era un render WebGL (luci, trasparenze) a ogni frame anche quando non si vede
+  let onScreen = true;
+  if ('IntersectionObserver' in window) new IntersectionObserver(es => { onScreen = es[es.length - 1].isIntersecting; }).observe(canvas);
+
   (function render(now) {
     requestAnimationFrame(render);
+    if (!onScreen) return;
     now = now || performance.now();
     const still = reduceMotion.matches;
 

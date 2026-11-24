@@ -33,7 +33,13 @@
   setTimeout(() => window.cubeLoad && window.cubeLoad(), 0);
   setTimeout(() => { b1.textContent = '> BOOTING SYSTEM...'; b1.classList.add('visible'); }, 25);
   setTimeout(() => { b2.textContent = '> LOADING PROFILE...'; b2.classList.add('visible'); }, 450);
-  setTimeout(() => { overlay.remove(); bootSeq.remove(); startIntro(); }, 700);
+  // il cubo entra quando three.js e' pronto (shader gia' compilati): prima entrava il
+  // segnaposto e a meta' entrata arrivava il cubo vero, che ripartiva da capo. Al massimo 2.5s
+  const live = () => document.querySelector('.sidebar-cube.is-live');
+  (function wait(t0) {
+    if (performance.now() - t0 >= 700 && (live() || performance.now() - t0 > 2500)) { overlay.remove(); bootSeq.remove(); startIntro(); }
+    else setTimeout(wait, 50, t0);
+  })(performance.now());
 
   // i blocchi che compongono la pagina: sono box veri sia su desktop sia su mobile,
   // dove sidebar, main e i wrapper diventano display:contents
@@ -79,7 +85,8 @@
     // il cubo entra: dissolvenza da piccolo (css .cube-enter) e mezzo giro in 3D se e' gia' pronto
     cube.classList.add('cube-enter');
     if (window.rubikSpin) window.rubikSpin(1100, -Math.PI);
-    setTimeout(() => cube.classList.remove('cube-enter'), 1200);
+    // entered spegne anche cube-in: togliendo solo cube-enter, il canvas ripartiva con cube-in (lampo a 1.2s)
+    setTimeout(() => cube.classList.replace('cube-enter', 'entered'), 1200);
     // il cubo si fa notare: ogni 2.6s gira una faccia e la rimette a posto
     const tease = setInterval(() => window.rubikTease && window.rubikTease(), 2600);
     setTimeout(() => window.rubikTease && window.rubikTease(), 900);
@@ -119,7 +126,7 @@
       reveal('[data-boot]');
       setTimeout(() => {
         cube.classList.remove('flying'); root.classList.remove('landing'); ui.remove();
-        window.cubeRes = 960; if (window.rubikRes) window.rubikRes(960);   // piccolo: risoluzione normale
+        window.cubeRes = 512; if (window.rubikRes) window.rubikRes(512);   // piccolo: risoluzione normale
       }, 950);
     }
 

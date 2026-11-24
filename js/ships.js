@@ -18,7 +18,7 @@
   const CELL_W = 2.5, CELL_H = CELL_W * 1.75;   // css px per cell, as the avatar
   const RERASTER = 0.02;          // change of heading/roll/view (rad) before a sprite is redrawn
   const SCALE_STEP = 0.025;       // ... or of on-screen size
-  const BUDGET = 2.5;             // ms of rasterizing per frame (moving, drawing and the last step of a job come on top)
+  const BUDGET = 4;               // ms of rasterizing per frame (moving, drawing and the last step of a job come on top)
   const CELL_CAP = [30000, 80000]; // above these cell counts: 2x2, then 1x1 samples per cell (else 2x4, a braille cell)
   const FOCAL = 1.15;             // focal length in viewport heights
   const DT_MAX = 0.05;
@@ -944,11 +944,11 @@
   function job(sh) {
     // two canvases per ship: the new sprite is written into the one not on screen
     sh.job = render(sh.kind, sh.R, sh.C, sh.k, sh.buf, sh.cvs[sh.spr && sh.spr.cvs === sh.cvs[0] ? 1 : 0], (0.85 + 0.3 * Math.random()) * boost(sh), sh.dim, sh.sm);
-    sh.at = { f: sh.f, rl: sh.rl, d: norm(sh.C), px: sh.px, b: boost(sh) };
+    sh.at = { f: sh.f, rl: sh.rl, d: norm(sh.C), px: sh.px, b: boost(sh), R: sh.R, C: sh.C };
   }
-  const done = (sh, spr) => { sh.spr = spr; spr.px = sh.at.px; sh.job = null; };
+  const done = (sh, spr) => { sh.spr = spr; spr.px = sh.at.px; spr.R = sh.at.R; spr.C = sh.at.C; sh.job = null; };
   function paintNow(sh) {
-    for (const o of ships) if (o.job) { o.spr = finish(o.job); o.job = null; }   // the half-done job owns the shared buffers
+    for (const o of ships) if (o.job) done(o, finish(o.job));   // the half-done job owns the shared buffers
     job(sh); done(sh, finish(sh.job));
   }
   // the hyperspace streak, in glyphs on the page's cell grid: JUMP.lines lines across the ship
@@ -999,6 +999,37 @@
     const r = sh.rect, R = [x0 - 1, y0 - 1, x1 + MW + 1, y1 + MH + 1];
     sh.rect = r ? [Math.min(r[0], R[0]), Math.min(r[1], R[1]), Math.max(r[0] + r[2], R[2]) - Math.min(r[0], R[0]), Math.max(r[1] + r[3], R[3]) - Math.min(r[1], R[1])] : [R[0], R[1], R[2] - R[0], R[3] - R[1]];
   }
+  // sprite px -> device px now: [a, b, c, d, e, f] as for setTransform. Least squares over ~48
+  // of the hull's vertices, projected with the sprite's pose (sprite px: relative to where its C
+  // lands, plus the anchor) and with the pose now
+  const NOBEND = /nobend/.test(location.search);   // test: the old way, only slid and scaled
+  function bend(sh, C) {
+    const sp = sh.spr, R0 = sp.R, C0 = sp.C, R1 = sh.R, k = sh.k, Fd = F * dpr, m = mesh(sh.kind);
+    const P = m.p, nv = m.n * 3, step = Math.max(1, Math.floor(nv / 48)), pts = [];
+    for (let i = step >> 1; i < nv; i += step) pts.push([P[i * 3], P[i * 3 + 1], P[i * 3 + 2]]);
+    const proj = (R, Cw, p) => {
+      const X = Cw[0] + k * (R[0][0] * p[0] + R[0][1] * p[1] + R[0][2] * p[2]);
+      const Y = Cw[1] + k * (R[1][0] * p[0] + R[1][1] * p[1] + R[1][2] * p[2]);
+      const Z = Math.max(0.5, Cw[2] + k * (R[2][0] * p[0] + R[2][1] * p[1] + R[2][2] * p[2]));
+      return [Fd * X / Z, Fd * Y / Z];
+    };
+    const ax = Fd * C0[0] / C0[2] - sp.ax, ay = Fd * C0[1] / C0[2] - sp.ay;   // sprite origin in the old projection
+    const cx = VW / 2 * dpr, cy = VH * HORIZON * dpr;
+    // normal equations for x' = a u + c v + e and y' = b u + d v + f
+    let suu = 0, suv = 0, svv = 0, su = 0, sv = 0, n = 0, sxu = 0, sxv = 0, sx = 0, syu = 0, syv = 0, sy = 0;
+    for (const p of pts) {
+      const o = proj(R0, C0, p), q = proj(R1, C, p), u = o[0] - ax, v = o[1] - ay, X = q[0] + cx, Y = q[1] + cy;
+      suu += u * u; suv += u * v; svv += v * v; su += u; sv += v; n++;
+      sxu += X * u; sxv += X * v; sx += X; syu += Y * u; syv += Y * v; sy += Y;
+    }
+    const det = suu * (svv * n - sv * sv) - suv * (suv * n - sv * su) + su * (suv * sv - svv * su);
+    const solve = (bu, bv, b1) => [
+      (bu * (svv * n - sv * sv) - suv * (bv * n - sv * b1) + su * (bv * sv - svv * b1)) / det,
+      (suu * (bv * n - sv * b1) - bu * (suv * n - sv * su) + su * (suv * b1 - bv * su)) / det,
+      (suu * (svv * b1 - bv * sv) - suv * (suv * b1 - bv * su) + bu * (suv * sv - svv * su)) / det];
+    const [a, c, e] = solve(sxu, sxv, sx), [b, d, f] = solve(syu, syv, sy);
+    return [a, b, c, d, e, f];
+  }
   function draw(all) {
     if (all) ctx.clearRect(0, 0, cv.width, cv.height);
     else for (const sh of ships) if (sh.rect) ctx.clearRect(...sh.rect);
@@ -1006,16 +1037,26 @@
     for (const sh of ships.slice().sort((a, b) => b.C[2] - a.C[2])) {
       sh.rect = null;
       if (!sh.spr || sh.fog <= 0.01) continue;
-      // anchored on a projected position C, scaled from the size it was drawn at to the one at C
-      // (no size jumps between re-rasters); the cleared rect grows over every copy
+      // the sprite was drawn for one pose (spr.R, spr.C); until the next one is ready (a big ship
+      // takes several frames) it is bent onto the pose at C: the affine map that best carries
+      // four points of the hull from where they were to where they are now. Turning, the hull
+      // turns smoothly instead of in steps; moving, it slides and scales. The cleared rect grows over every copy
       const put = (C, alpha, ox = 0, oy = 0) => {
-        const k = F * sh.k / C[2] / sh.spr.px, w = sh.spr.w * k, h = sh.spr.h * k;
-        if (w < 0.5) return;
-        const x = Math.round((VW / 2 + F * C[0] / C[2]) * dpr - sh.spr.ax * k) + ox, y = Math.round((VH * HORIZON + F * C[1] / C[2]) * dpr - sh.spr.ay * k) + oy;
+        const M = NOBEND ? (() => { const k = F * sh.k / C[2] / sh.spr.px; return [k, 0, 0, k, (VW / 2 + F * C[0] / C[2]) * dpr - sh.spr.ax * k, (VH * HORIZON + F * C[1] / C[2]) * dpr - sh.spr.ay * k]; })() : bend(sh, C), w = sh.spr.w, h = sh.spr.h;
+        if (Math.abs(M[0] * M[3] - M[1] * M[2]) * w * h < 0.25) return;
+        const e = Math.round(M[4]) + ox, f = Math.round(M[5]) + oy;
         ctx.globalAlpha = alpha;
-        ctx.drawImage(sh.spr.cvs, 0, 0, sh.spr.w, sh.spr.h, x, y, w, h);
-        const r = sh.rect, x1 = x + Math.ceil(w) + 1, y1 = y + Math.ceil(h) + 1;
-        sh.rect = r ? [Math.min(r[0], x - 1), Math.min(r[1], y - 1), Math.max(r[0] + r[2], x1) - Math.min(r[0], x - 1), Math.max(r[1] + r[3], y1) - Math.min(r[1], y - 1)] : [x - 1, y - 1, x1 - x + 1, y1 - y + 1];
+        ctx.setTransform(M[0], M[1], M[2], M[3], e, f);
+        ctx.drawImage(sh.spr.cvs, 0, 0, w, h, 0, 0, w, h);
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        let x = 1e9, y = 1e9, x1 = -1e9, y1 = -1e9;
+        for (const [u, v] of [[0, 0], [w, 0], [0, h], [w, h]]) {
+          const X = M[0] * u + M[2] * v + e, Y = M[1] * u + M[3] * v + f;
+          x = Math.min(x, X); y = Math.min(y, Y); x1 = Math.max(x1, X); y1 = Math.max(y1, Y);
+        }
+        x = Math.floor(x) - 1; y = Math.floor(y) - 1; x1 = Math.ceil(x1) + 1; y1 = Math.ceil(y1) + 1;
+        const r = sh.rect;
+        sh.rect = r ? [Math.min(r[0], x), Math.min(r[1], y), Math.max(r[0] + r[2], x1) - Math.min(r[0], x), Math.max(r[1] + r[3], y1) - Math.min(r[1], y)] : [x, y, x1 - x, y1 - y];
       };
       if (!sh.jump) {
         if (!sh.ch) { put(sh.C, sh.fog); continue; }
@@ -1090,9 +1131,23 @@
     window.ships = {
       stats: () => { const s = [...cost].sort((a, b) => a - b); return { over8: s.filter(v => v > 8).length, frames: s.length, avg: s.reduce((a, b) => a + b, 0) / (s.length || 1), p95: s[Math.floor(s.length * 0.95)] || 0, max: s[s.length - 1] || 0, alive: ships.length }; },
       box: () => group && group.box,
-      list: () => ships.map(sh => ({ kind: sh.kind, sx: Math.round(VW / 2 + F * sh.C[0] / sh.C[2]), sy: Math.round(VH * HORIZON + F * sh.C[1] / sh.C[2]), z: +sh.C[2].toFixed(1), px: Math.round(sh.px * mesh(sh.kind).len), fog: +sh.fog.toFixed(2), spr: sh.spr && [sh.spr.w, sh.spr.h] })),
+      list: () => ships.map(sh => ({ kind: sh.kind, sx: Math.round(VW / 2 + F * sh.C[0] / sh.C[2]), sy: Math.round(VH * HORIZON + F * sh.C[1] / sh.C[2]), z: +sh.C[2].toFixed(1), px: Math.round(sh.px * mesh(sh.kind).len), fog: +sh.fog.toFixed(2), spr: sh.spr && [sh.spr.w, sh.spr.h], job: !!sh.job, lag: sh.at ? +moved(sh).toFixed(3) : 0, rect: sh.rect })),
       // test hooks: start group i now; run n seconds of 60 fps frames synchronously (a throttled tab would barely advance)
       launch: i => { ctx.clearRect(0, 0, cv.width, cv.height); ships.length = 0; launch(GROUPS[i]); turn = i + 1; kick(); },
+      // test: how far (device px) the hull on screen is from where it really is, over 60 vertices (worst, mean)
+      err: kind => {
+        const sh = ships.find(o => o.kind === kind); if (!sh || !sh.spr || !sh.spr.R) return null;
+        const m = mesh(sh.kind), sp = sh.spr, Fd = F * dpr, C = sh.C, k = sh.k;
+        const M = NOBEND ? (() => { const q = F * sh.k / C[2] / sp.px; return [q, 0, 0, q, (VW / 2 + F * C[0] / C[2]) * dpr - sp.ax * q, (VH * HORIZON + F * C[1] / C[2]) * dpr - sp.ay * q]; })() : bend(sh, C);
+        const pr = (R, Cw, i) => { const P = m.p, p = [P[i * 3], P[i * 3 + 1], P[i * 3 + 2]], X = Cw[0] + k * (R[0][0] * p[0] + R[0][1] * p[1] + R[0][2] * p[2]), Y = Cw[1] + k * (R[1][0] * p[0] + R[1][1] * p[1] + R[1][2] * p[2]), Z = Math.max(0.5, Cw[2] + k * (R[2][0] * p[0] + R[2][1] * p[1] + R[2][2] * p[2])); return [Fd * X / Z, Fd * Y / Z]; };
+        let mx = 0, sum = 0; const n = m.n * 3, step = Math.max(1, Math.floor(n / 60));
+        for (let i = 0, c = 0; i < n; i += step, c++) {
+          const o = pr(sp.R, sp.C, i), u = o[0] - (Fd * sp.C[0] / sp.C[2] - sp.ax), v = o[1] - (Fd * sp.C[1] / sp.C[2] - sp.ay);
+          const t = pr(sh.R, C, i), e = Math.hypot(M[0] * u + M[2] * v + M[4] - t[0] - VW / 2 * dpr, M[1] * u + M[3] * v + M[5] - t[1] - VH * HORIZON * dpr);
+          mx = Math.max(mx, e); sum += e;
+        }
+        return [mx, sum / Math.ceil(n / step)];
+      },
       step: sec => { let t = last || performance.now(); for (let i = 0; i < sec * 60; i++) { cancelAnimationFrame(raf); raf = 0; frame(t += 1000 / 60); } return ships.length; },
     };
   }

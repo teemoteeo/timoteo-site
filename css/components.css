@@ -321,44 +321,47 @@ html.brk-all { overflow: hidden; }
 .display-content a.email-link { overflow-wrap: anywhere; }
 
 /* ===== LIQUID GLASS =====
-   vetro sobrio: velo chiaro quasi piatto, filo di luce uniforme
-   (piu' chiaro solo sul bordo alto, mai sugli angoli), ombra corta.
-   Il raggio sta in --r: le immagini dentro usano --r meno il padding,
-   cosi' gli angoli restano concentrici. In hover si schiarisce solo il bordo:
-   riflesso sul puntatore e translate sopra il backdrop-filter lasciavano
-   una banda chiara a bordi netti mentre il video girava. */
+   vetro alla Apple: velo quasi trasparente (dietro si vedono stelle e navi),
+   filo di luce speculare sugli angoli in alto a sinistra e in basso a destra,
+   bagliore interno corto. Angoli squircle (curvatura continua, non un arco di
+   cerchio) dove il browser ha corner-shape; altrove restano tondi.
+   Il raggio sta in --r (per --k): le immagini dentro usano --r meno il padding,
+   cosi' gli angoli restano concentrici. In hover si schiarisce solo il bordo. */
 .glass {
   --r: 14px;
   position: relative;
   isolation: isolate;
-  border-radius: var(--r);
+  border-radius: calc(var(--r) * var(--k, 1));
   /* niente backdrop-filter: calcolato a tile sopra le stelle (canvas fisso) e la
      griglia in mix-blend-mode lasciava rettangoli piu' chiari a bordi netti, che
      cambiavano a ogni ridisegno del video (il flicker). Lo sfondo dietro e' quasi
-     nero uniforme: un velo semi-opaco da' lo stesso vetro, stelle appena visibili. */
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.025)),
-    rgba(14,13,16,.8);
+     nero uniforme: il blur non si vedrebbe, la trasparenza si'. */
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.015) 60%, rgba(255,255,255,.03));
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.07),
-    0 1px 2px rgba(0,0,0,.35),
-    0 12px 28px -20px rgba(0,0,0,.7);
+    inset 0 1px 0 rgba(255,255,255,.05),
+    inset 0 0 18px rgba(255,255,255,.035),
+    0 10px 30px -18px rgba(0,0,0,.8);
 }
 .glass::after {
   content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px;
-  background: linear-gradient(180deg, rgba(255,255,255,.17), rgba(255,255,255,.07) 35%, rgba(255,255,255,.05));
+  background: linear-gradient(135deg, rgba(255,255,255,.16), rgba(255,255,255,.05) 28%, rgba(255,255,255,.025) 55%, rgba(255,255,255,.05) 78%, rgba(255,255,255,.11));
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor; mask-composite: exclude;
   pointer-events: none;
 }
-.glass:hover::after { background: linear-gradient(180deg, rgba(255,255,255,.28), rgba(255,255,255,.11) 35%, rgba(255,255,255,.08)); }
-/* vetro sul tema chiaro: velo bianco, filo scuro */
+.glass:hover::after { background: linear-gradient(135deg, rgba(255,255,255,.26), rgba(255,255,255,.08) 28%, rgba(255,255,255,.04) 55%, rgba(255,255,255,.08) 78%, rgba(255,255,255,.18)); }
+/* vetro sul tema chiaro: velo bianco leggero, filo bianco speculare + ombra */
 html[data-theme="light"] .glass {
-  background: linear-gradient(180deg, rgba(255,255,255,.8), rgba(255,255,255,.55));
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 1px 2px rgba(0,0,0,.06), 0 12px 28px -20px rgba(0,0,0,.3);
+  background: linear-gradient(180deg, rgba(255,255,255,.45), rgba(255,255,255,.18) 60%, rgba(255,255,255,.28));
+  box-shadow: inset 0 1px 1px rgba(255,255,255,.9), inset 0 0 18px rgba(255,255,255,.35), 0 1px 2px rgba(0,0,0,.06), 0 12px 28px -18px rgba(0,0,0,.3);
 }
-html[data-theme="light"] .glass::after { background: linear-gradient(180deg, rgba(0,0,0,.07), rgba(0,0,0,.1)); }
-html[data-theme="light"] .glass:hover::after { background: linear-gradient(180deg, rgba(0,0,0,.16), rgba(0,0,0,.2)); }
+html[data-theme="light"] .glass::after { background: linear-gradient(135deg, rgba(255,255,255,.95), rgba(0,0,0,.06) 30%, rgba(0,0,0,.08) 70%, rgba(255,255,255,.8)); }
+html[data-theme="light"] .glass:hover::after { background: linear-gradient(135deg, #fff, rgba(0,0,0,.14) 30%, rgba(0,0,0,.16) 70%, #fff); }
+/* squircle: a parita' di raggio la curva e' piu' stretta, --k la riallarga */
+@supports (corner-shape: squircle) {
+  .glass { --k: 1.7; }
+  .glass, .glass::after, .feat-img, .pr-media, .feat-link::after { corner-shape: squircle; }
+}
 html[data-theme="light"] .ct .ic path[fill="#f0f0f0"] { fill: var(--fg); }
 .tech-grid-item img.inv { filter: invert(1); }
 html[data-theme="light"] .tech-grid-item img.inv { filter: none; }
@@ -376,7 +379,7 @@ html[data-theme="light"] .tech-grid-item img.inv-light { filter: invert(1); }
   align-items: center; column-gap: 20px;
   padding: 6px;
 }
-.feat-img { height: var(--mh); border-radius: calc(var(--r) - 6px); overflow: hidden; background: #000; }
+.feat-img { height: var(--mh); border-radius: calc((var(--r) - 6px) * var(--k, 1)); overflow: hidden; background: #000; }
 .feat-body { min-width: 0; display: flex; flex-direction: column; }
 .feat-eyebrow {
   font-family: 'Doto', 'JetBrains Mono', monospace; font-weight: 800;
@@ -387,7 +390,7 @@ html[data-theme="light"] .tech-grid-item img.inv-light { filter: invert(1); }
 .feat--hero .feat-title { font-size: 17px; font-weight: 400; letter-spacing: -.3px; }
 .feat-link { color: inherit; text-decoration: none; }
 /* tutta la card e' cliccabile; i link nella descrizione restano sopra */
-.feat-link::after { content: ''; position: absolute; inset: 0; border-radius: var(--r); z-index: 1; }
+.feat-link::after { content: ''; position: absolute; inset: 0; border-radius: calc(var(--r) * var(--k, 1)); z-index: 1; }
 .feat-link:focus-visible { outline: none; }
 .feat:has(.feat-link:focus-visible) { outline: 1px solid var(--teal); outline-offset: 3px; }
 /* max-height oltre al clamp: i link in posizione relativa uscivano dal clamp */
@@ -455,7 +458,7 @@ html[data-theme="light"] .tech-grid-item img.inv-light { filter: invert(1); }
   padding: 5px; color: inherit; text-decoration: none;
 }
 .pr:focus-visible { outline: 1px solid var(--teal); outline-offset: 3px; }
-.pr-media { display: block; height: 56px; border-radius: calc(var(--r) - 5px); overflow: hidden; background: #000; }
+.pr-media { display: block; height: 56px; border-radius: calc((var(--r) - 5px) * var(--k, 1)); overflow: hidden; background: #000; }
 .pr-text { min-width: 0; display: flex; flex-direction: column; gap: 3px; padding-right: 8px; }
 .pr-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
 .pr-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; font-weight: 500; color: var(--fg); transition: color .2s; }

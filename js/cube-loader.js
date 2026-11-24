@@ -10,20 +10,26 @@
   const btn   = document.getElementById('sb-cube-btn');
   if (!stack || !shell) return;
 
-  const V = '?v=20261120d';
+  const V = '?v=20261124a';
   let started = false;
 
   function load() {
     if (started) return;
     started = true;
+    function engine() {
+      const s = document.createElement('script');
+      s.src = 'js/rubik3d.js' + V;
+      s.onload = function () { shell.classList.add('is-live'); };
+      document.head.appendChild(s);
+    }
+    // three.js lo carica anche la palla 8 (js/eightball.js): se c'e' gia', o sta arrivando, mi aggancio
+    // a quello (prima a volte si scaricava e si eseguiva due volte, ~600KB di parse in piu')
+    if (window.THREE) return engine();
+    const pending = document.querySelector('script[src*="three.min.js"]');
+    if (pending) return pending.addEventListener('load', engine);
     const three = document.createElement('script');
     three.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
-    three.onload = function () {
-      const engine = document.createElement('script');
-      engine.src = 'js/rubik3d.js' + V;
-      engine.onload = function () { shell.classList.add('is-live'); };
-      document.head.appendChild(engine);
-    };
+    three.onload = engine;
     // se il CDN non risponde resta il placeholder: il cubo non e' contenuto critico
     document.head.appendChild(three);
   }

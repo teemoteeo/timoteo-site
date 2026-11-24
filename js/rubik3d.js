@@ -6,8 +6,8 @@ function initRubikCube() {
   if (!canvas || !window.THREE) return;
 
   const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
-  // 960 di base; l'intro (js/boot.js) la alza finche' il cubo e' grande al centro
-  renderer.setSize(window.cubeRes || 960, window.cubeRes || 960, false);
+  // 512 di base (il cubo e' ~170px css, 340 su retina); l'intro (js/boot.js) la alza finche' e' grande al centro
+  renderer.setSize(window.cubeRes || 512, window.cubeRes || 512, false);
   window.rubikRes = px => renderer.setSize(px, px, false);
   renderer.setClearColor(0x000000, 0); // trasparente: sotto c'e' lo spazio
 
@@ -314,8 +314,13 @@ function initRubikCube() {
   window.rubikSpin = function (dur, angle) { spin = { t0: performance.now(), dur, angle, done: 0 }; };
   const easeInOut = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
+  // fuori schermo non disegna: era un render WebGL a ogni frame anche a pagina scrollata
+  let onScreen = true;
+  if ('IntersectionObserver' in window) new IntersectionObserver(es => { onScreen = es[es.length - 1].isIntersecting; }).observe(canvas);
+
   (function render() {
     requestAnimationFrame(render);
+    if (!onScreen) return;
     if (autoRotate && !isMoving) cubeGroup.rotation.y += 0.004;
     if (spin) {
       const k = Math.min(1, (performance.now() - spin.t0) / spin.dur), a = spin.angle * easeInOut(k);
