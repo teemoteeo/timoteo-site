@@ -131,7 +131,10 @@
     if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); ask(); }   // Enter still asks, no new lines
   });
   input.addEventListener('input', grow);
-  grow(); window.addEventListener('resize', grow);   // the placeholder can wrap too
+  // measured when the box appears or changes width (the placeholder can wrap too): measured while
+  // still hidden, scrollHeight is 0 and iOS Safari kept a one-line box with the placeholder cut
+  let fieldW = -1;
+  new ResizeObserver(([e]) => { const w = e.contentRect.width; if (w !== fieldW) { fieldW = w; if (w) grow(); } }).observe(input.parentNode);
   if (document.fonts) document.fonts.ready.then(grow);
   input.addEventListener('input', function () {
     if (input.value.trim() && status.classList.contains('is-nagging')) setStatus('');
@@ -151,7 +154,7 @@
   // ---- LAZY LOAD three.js (stessa strategia del cubo) ----
   // three.js e' ~150KB gzip ed e' gia' una dipendenza del cubo: se lo script
   // e' gia' in pagina mi aggancio a quello invece di scaricarlo due volte.
-  const V = '?v=20261125a';
+  const V = '?v=20261125b';
   const THREE_SRC = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
   let started = false;
 
