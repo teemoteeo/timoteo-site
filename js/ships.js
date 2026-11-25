@@ -889,10 +889,10 @@
     fly(0);
   }
   const herm = ([p0, p1, m0, m1], s) => { const s2 = s * s, s3 = s2 * s; return [0, 1, 2].map(i => (2 * s3 - 3 * s2 + 1) * p0[i] + (s3 - 2 * s2 + s) * m0[i] + (-2 * s3 + 3 * s2) * p1[i] + (s3 - s2) * m1[i]); };
-  // the lead at time t (past the end it keeps going: the headings look a little ahead)
+  // the lead at time t (past either end it keeps going: the headings look a little ahead, the escort trails back)
   function lead(t) {
     const gr = group;
-    if (t < gr.T1) { const u = Math.max(0, t / gr.T1); return herm(gr.legs[0], u + (1 - PATH.slow) * (u - u * u)); }
+    if (t < gr.T1) { const u = t / gr.T1; return herm(gr.legs[0], u + (1 - PATH.slow) * (u - u * u)); }
     const u = (t - gr.T1) / gr.T2;
     return herm(gr.legs[1], gr.a * u + (1 - gr.a) * Math.pow(u, PATH.ease));
   }
@@ -907,15 +907,26 @@
   const charge = (sh, t) => sh.jt === undefined ? 0 : Math.max(0, Math.min(1, (t - group.tJ + JUMP.brake) / (sh.jt - group.tJ + JUMP.brake)));
   const boost = sh => 1 + (JUMP.glow - 1) * (sh.ch || 0) ** 2 * (0.65 + 0.35 * Math.sin(group.t * JUMP.pulse * 2 * Math.PI));
   const prog = t => { const u = (t - group.T1) / group.T2; return u <= 0 ? 0 : Math.min(1, group.a * u + (1 - group.a) * Math.pow(u, PATH.ease)); };
-  // where a ship is at time t
-  function posAt(sh, t) {
+  // where a ship is at time t. The escort flies the lead's own track, `ahead` lead lengths along it
+  // (a path time found by bisection on the chord), offset up/right in the lead's frame there: in a
+  // turn it turns where the lead did. A rigid formation swung the ships behind out like a whip,
+  // against the turn, nearly stopping them and flipping their heading and bank. calm: without the drift
+  function posAt(sh, t, calm) {
     const g = group.g, tw = warp(t), p = lead(tw);
     let q = p;
     if (sh.off) {
-      const R = frameOf(norm(sub(lead(tw + 0.1), p)), 0), d = sh.off.map((o, i) => o + g.sway * (i === 1 ? 0.6 : 1) * Math.sin(sh.w[i] * tw + sh.ph[i]));   // path time: the drift slows with the group
-      q = [0, 1, 2].map(i => p[i] + g.len * (R[i][0] * d[0] + R[i][1] * d[1] + R[i][2] * d[2]));
+      const d = sh.off.map((o, i) => o + (calm ? 0 : g.sway) * (i === 1 ? 0.6 : 1) * Math.sin(sh.w[i] * tw + sh.ph[i]));   // path time: the drift slows with the group
+      const D = Math.abs(d[0]) * g.len, s = Math.sign(d[0]), far = dt => Math.hypot(...sub(lead(tw + s * dt), p)) < D;
+      let lo = 0, hi = 0.5;
+      while (far(hi) && hi < 64) { lo = hi; hi *= 2; }
+      for (let i = 0; i < 16; i++) { const m = (lo + hi) / 2; if (far(m)) lo = m; else hi = m; }
+      const ts = tw + s * (lo + hi) / 2, b = lead(ts), R = frameOf(norm(sub(lead(ts + 0.1), b)), 0);
+      q = [0, 1, 2].map(i => b[i] + g.len * (R[i][1] * d[1] + R[i][2] * d[2]));
     }
-    return sh.jt !== undefined && t > sh.jt ? add(q, group.fJ, g.len * JUMP.a * (Math.exp(JUMP.rate * (t - sh.jt)) - 1)) : q;
+    // the jump: e^x - 1 - x leaves at the speed it had, then runs away exponentially
+    if (sh.jt === undefined || t <= sh.jt) return q;
+    const x = JUMP.rate * (t - sh.jt);
+    return add(q, group.fJ, g.len * JUMP.a * (Math.exp(x) - 1 - x));
   }
   // moves the group on by dt; true once the pass is over
   function fly(dt) {
@@ -924,7 +935,9 @@
     for (const sh of ships) {
       sh.fog = fog; sh.dim = dim; sh.ch = charge(sh, t);
       if (sh.jt !== undefined && t > sh.jt) { sh.jump = t - sh.jt; sh.C = posAt(sh, t); sh.px = F * sh.k / sh.C[2]; continue; }   // pose frozen, only moving
-      const p = posAt(sh, t), p1 = posAt(sh, t + h), f = norm(sub(p1, p)), f1 = norm(sub(posAt(sh, t + 2 * h), p1));
+      // heading and bank from the track without the drift: near the slow middle of the pass the drift
+      // outruns the group, and a nose following it would swing round
+      const p = posAt(sh, t), p0 = posAt(sh, t, 1), p1 = posAt(sh, t + h, 1), f = norm(sub(p1, p0)), f1 = norm(sub(posAt(sh, t + 2 * h, 1), p1));
       const S = frameOf(f, 0).map(r => r[2]);
       let roll = Math.max(-1, Math.min(1, BANK * dot(sub(f1, f), S) / h)), fw = f;
       // charging: nose onto the jump heading, wings level
@@ -1062,7 +1075,7 @@
         if (!sh.ch) { put(sh.C, sh.fog); continue; }
         // charging: trembling (the engines' pulse is in the sprite)
         const j = JUMP.shake * sh.ch * sh.ch * dpr;
-        put(sh.C, sh.fog, Math.round((Math.random() * 2 - 1) * j), Math.round((Math.random() * 2 - 1) * j));
+        put(sh.C, sh.fog, Math.round(j * Math.sin(group.t * 2 * Math.PI * 9 + sh.ph[0])), Math.round(j * Math.sin(group.t * 2 * Math.PI * 13 + sh.ph[1])));   // two sines: a hum, not per-frame noise
         continue;
       }
       // lightspeed: the glyph streak, the ship at its head
