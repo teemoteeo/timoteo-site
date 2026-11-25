@@ -31,6 +31,7 @@
   object-position: center 30%;
   display: block;
   position: absolute; top: 0; left: 0;
+  opacity: 0;   /* never shown: the two ASCII avatars cover it (js/ascii-pic.js); kept for its alt and object-position */
 }
 .profile-ascii {
   position: absolute; inset: 0;
