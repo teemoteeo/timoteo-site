@@ -151,7 +151,7 @@
   // ---- LAZY LOAD three.js (stessa strategia del cubo) ----
   // three.js e' ~150KB gzip ed e' gia' una dipendenza del cubo: se lo script
   // e' gia' in pagina mi aggancio a quello invece di scaricarlo due volte.
-  const V = '?v=20261124a';
+  const V = '?v=20261125a';
   const THREE_SRC = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
   let started = false;
 

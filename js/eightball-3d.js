@@ -11,7 +11,7 @@ function initEightBall() {
 
   let renderer;
   try {
-    renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+    renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true, preserveDrawingBuffer: true });   // preserve: js/break.js copies the ball when the site breaks
   } catch (e) {
     return; // niente WebGL: resta la palla di riserva, che risponde in testo
   }
