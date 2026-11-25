@@ -264,8 +264,8 @@
 /* rebuild: la voce del bottone del cubo (#sb-cube-btn, .ci-shuffle in css/cube.css) */
 .brk-rebuild {
   position: fixed; left: 50%; top: 50%; translate: -50% -50%; z-index: 901;
-  padding: 12px 0 12px 4px; background: none; border: 0; cursor: pointer; animation: brk-in .6s ease-out both;
-  font: 500 20px/1.7 'JetBrains Mono', monospace; letter-spacing: 4px; text-transform: uppercase; color: var(--fg);
+  padding: 10px 0 10px 3.2px; background: none; border: 0; cursor: pointer; animation: brk-in .6s ease-out both;
+  font: 500 16px/1.7 'JetBrains Mono', monospace; letter-spacing: 3.2px; text-transform: uppercase; color: var(--fg);
   transition: scale .35s cubic-bezier(.2,.8,.2,1), color .2s;
 }
 .brk-rebuild:hover { color: var(--teal); scale: 1.04; }

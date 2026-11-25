@@ -1,6 +1,8 @@
 // ============================
-// PROFILE PIC → COLORED ASCII ON HOVER
-// same idea as the GitHub profile card: each char takes its pixel's color
+// PROFILE PIC: COLORED ASCII AVATAR, THE PHOTO ON HOVER
+// same idea as the GitHub profile card: each char takes its pixel's color. The ASCII avatar shows
+// from the start; on hover the rain bursts out of the cursor and, passing, uncovers the photo;
+// leaving, the rain runs backwards and collapses into the point it burst out of
 // ============================
 (function() {
   const box = document.querySelector('.profile-pic-container');
@@ -30,7 +32,7 @@
   const ctx = cv.getContext('2d');
 
   let cells = [], cols = 0, rows = 0, w = 0, h = 0, maxDelay = 1;
-  let p = 0, target = 0, last = 0, raf = 0;
+  let p = 0, target = 0, last = 0, raf = 0;   // how far the rain has uncovered the photo: 0 the ASCII avatar, 1 the photo
 
   function sample() {
     w = box.clientWidth; h = box.clientHeight;
@@ -118,33 +120,37 @@
 
   function draw(t) {
     ctx.clearRect(0, 0, w, h);
-    if (p <= 0) return;
+    if (p >= 1) return;   // resting on the photo
     const css = getComputedStyle(document.documentElement), light = document.documentElement.dataset.theme === 'light';
     const BG = css.getPropertyValue('--bg').trim(), HEAD_RGB = rgbOf(css.getPropertyValue('--fg'));
     ctx.font = `600 ${CELL_H * 0.95}px 'JetBrains Mono', 'Hiragino Sans', monospace`;
 
     const T = p * (maxDelay + TRAIL);
-    // hard cut: once the rain reaches a cell, the photo under it is gone.
-    // All backgrounds first, then all glyphs: drawn per cell, the next cell's rect clipped the previous
-    // glyph by a sub-pixel amount that drifts along the row, so half the portrait looked different
+    // a cell stays covered until the trail has passed it (fading with it), then the photo shows. All backgrounds first,
+    // then all glyphs: drawn per cell, the next cell's rect clipped the previous glyph by a sub-pixel
+    // amount that drifts along the row, so half the portrait looked different
+    // in the trail the background fades with the glyph: held opaque, it left a wake of dark squares
     ctx.fillStyle = BG;
-    cells.forEach(c => { if (T >= c.delay) ctx.fillRect(c.rx, c.ry, c.rw + 1, c.rh + 1); });   // +1: antialiased edges let the photo show through as a grid
+    cells.forEach(c => {
+      const lt = T - c.delay;
+      if (lt >= TRAIL) return;
+      ctx.globalAlpha = lt < HEAD ? 1 : Math.pow(1 - (lt - HEAD) / (TRAIL - HEAD), 3);   // gone faster than the glyph
+      ctx.fillRect(c.rx, c.ry, c.rw + 1, c.rh + 1);   // +1: antialiased edges let the photo show through as a grid
+    });
     cells.forEach((c, i) => {
       const lt = T - c.delay, rgb = light ? c.raw : c.rgb, ch = light ? c.inkCh : c.ch;
-      if (lt < 0) return;
-      if (lt < HEAD) {
+      if (lt < 0) {   // not reached yet: the ASCII avatar
+        if (ch === ' ') return;
+        ctx.globalAlpha = 1; ctx.fillStyle = `rgb(${rgb})`; ctx.fillText(ch, c.x, c.y);
+      } else if (lt < HEAD) {
         ctx.globalAlpha = 1;
         ctx.fillStyle = `rgb(${HEAD_RGB})`;
         ctx.fillText(glyph(i, t), c.x, c.y);
-      } else if (lt < TRAIL) {
+      } else if (lt < TRAIL) {   // the trail, fading into the photo
         const k = (lt - HEAD) / (TRAIL - HEAD);
-        ctx.globalAlpha = ch === ' ' ? 1 - k : 1;
+        ctx.globalAlpha = 1 - k;
         ctx.fillStyle = mix(HEAD_RGB, rgb, k);
-        ctx.fillText(k < 0.6 ? glyph(i, t) : ch, c.x, c.y);
-      } else if (ch !== ' ') {
-        ctx.globalAlpha = 1;
-        ctx.fillStyle = `rgb(${rgb})`;
-        ctx.fillText(ch, c.x, c.y);
+        ctx.fillText(glyph(i, t), c.x, c.y);
       }
     });
 
@@ -183,7 +189,7 @@
   box.addEventListener('pointerleave', e => {
     if (e.pointerType !== 'mouse') return;
     clearTimeout(wait);
-    go(0);
+    go(0);   // backwards, into the point the rain burst out of
   });
   box.addEventListener('click', e => {
     if (!e.pointerType || e.pointerType === 'mouse') return;
