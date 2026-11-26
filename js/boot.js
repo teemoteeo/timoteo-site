@@ -28,77 +28,92 @@
   setTimeout(() => { window.cubeLoad && window.cubeLoad(); startIntro(); }, 0);
 
   // ---------- il cubo ASCII ----------
-  // Rasterizzatore minimo: per ogni cella di testo sul canvas, la faccia visibile che la copre (cubo
-  // convesso: al massimo una), le coordinate (u, v) sulla faccia -> il tassello 3x3 (bordi vuoti) e la
-  // luce -> un carattere della rampa. Le facce senza colore sono grigie; COLOR_AT dice quando ognuna
-  // prende il suo colore (sempre la piu' rivolta verso chi guarda tra quelle ancora grigie), e la
-  // rotazione accelera con loro. Colori di js/rubik3d.js.
-  const FACES = [   // normale, asse u, asse v, colore (scuro, chiaro: il bianco sul fondo chiaro sparisce)
-    [[0, 1, 0], [1, 0, 0], [0, 0, 1], '#ffffff', '#9d998f'],
-    [[0, 0, 1], [1, 0, 0], [0, 1, 0], '#e53935', '#e53935'],
-    [[1, 0, 0], [0, 0, -1], [0, 1, 0], '#ef6c00', '#ef6c00'],
-    [[0, 0, -1], [-1, 0, 0], [0, 1, 0], '#1565c0', '#1565c0'],
-    [[-1, 0, 0], [0, 0, 1], [0, 1, 0], '#43a047', '#43a047'],
-    [[0, -1, 0], [1, 0, 0], [0, 0, -1], '#ffd600', '#c9a400'],
-  ];
-  const COLOR_AT = [.45, .83, 1.13, 1.36, 1.53, 1.655];   // secondi: intervalli 380, 300, 230, 170, 125 ms
+  // Il cubo vero fatto di caratteri, nello stesso punto e nella stessa posa: i pixel vengono da
+  // icons/cube-ph.png (il segnaposto, che e' il cubo WebGL a riposo), una cella di testo per blocco di
+  // pixel, e ogni carattere prende il colore del suo pixel. Prima compare la sagoma (corpo nero e
+  // tasselli ancora grigi), poi i tasselli si colorano uno alla volta, faccia per faccia, ogni volta
+  // prima (STEP0 * RATIO^k). Completo: done() e' vero e l'intro lo sostituisce col cubo vero.
   const RAMP = '.:-=+*#%@';
-  function asciiCube(geom) {
+  const PAL = [[245, 245, 245], [229, 57, 53], [239, 108, 0], [21, 101, 192], [67, 160, 71], [255, 214, 0]];   // js/rubik3d.js
+  const STEP0 = .15, RATIO = .86, BODY_IN = .3;
+  function asciiCube(target, img) {
     const cv = document.createElement('canvas'), x = cv.getContext('2d');
     cv.className = 'ci-ascii';
-    const LD = [-.35, .55, .75], ll = Math.hypot(...LD); LD.forEach((c, i) => LD[i] = c / ll);
     const light = root.dataset.theme === 'light';
     const grey = getComputedStyle(root).getPropertyValue('--fg-muted').trim() || '#888';
-    const colored = new Array(6).fill(-1);   // secondo in cui la faccia ha preso colore
-    let t = 0, spin = 0, last = performance.now(), raf = 0, W = 0, H = 0, dpr = 1;
+    let W = 0, H = 0, dpr = 1, grid = null, t0 = 0, raf = 0, end = Infinity;
     function fit() {
       dpr = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight;
       cv.width = W * dpr; cv.height = H * dpr; cv.style.width = W + 'px'; cv.style.height = H + 'px';
     }
     fit(); addEventListener('resize', fit);
-    function rot(v, ax, ay) {   // prima attorno a y, poi a x
-      const x1 = v[0] * Math.cos(ay) + v[2] * Math.sin(ay), z1 = -v[0] * Math.sin(ay) + v[2] * Math.cos(ay);
-      return [x1, v[1] * Math.cos(ax) - z1 * Math.sin(ax), v[1] * Math.sin(ax) + z1 * Math.cos(ax)];
+    // la griglia: colore medio di ogni cella, classe (vuota, corpo nero, colore della palette), tasselli
+    // come componenti connesse della stessa classe, e quando compare ciascuno
+    function build(rw) {
+      const fs = Math.max(7, Math.round(rw / 60)), cols = Math.round(rw / (fs * .62)), rows = Math.round(rw / (fs * 1.05));
+      const c = document.createElement('canvas'); c.width = cols; c.height = rows;
+      const g = c.getContext('2d'); g.imageSmoothingQuality = 'high'; g.drawImage(img, 0, 0, cols, rows);
+      const px = g.getImageData(0, 0, cols, rows).data, n = cols * rows;
+      const cls = new Int8Array(n), rgb = [], comp = new Int32Array(n).fill(-1), comps = [];
+      for (let k = 0; k < n; k++) {
+        const r = px[k * 4], gg = px[k * 4 + 1], b = px[k * 4 + 2], a = px[k * 4 + 3];
+        rgb[k] = [r, gg, b];
+        if (a < 120) cls[k] = -1;
+        else if (Math.max(r, gg, b) < 80) cls[k] = 0;
+        else { let best = 1, bd = 1e9; PAL.forEach((q, i) => { const d = (q[0] - r) ** 2 + (q[1] - gg) ** 2 + (q[2] - b) ** 2; if (d < bd) { bd = d; best = i + 1; } }); cls[k] = best; }
+      }
+      for (let k = 0; k < n; k++) {   // flood fill dei tasselli
+        if (cls[k] < 1 || comp[k] >= 0) continue;
+        const id = comps.length, st = [k], cells = []; comp[k] = id;
+        while (st.length) {
+          const q = st.pop(), cx = q % cols, cy = (q / cols) | 0; cells.push(q);
+          for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+            const nx = cx + dx, ny = cy + dy, m = ny * cols + nx;
+            if (nx >= 0 && ny >= 0 && nx < cols && ny < rows && comp[m] < 0 && cls[m] === cls[k]) { comp[m] = id; st.push(m); }
+          }
+        }
+        const mx = cells.reduce((s, q) => s + q % cols, 0) / cells.length, my = cells.reduce((s, q) => s + ((q / cols) | 0), 0) / cells.length;
+        comps.push({ cls: cls[k], cells, mx, my, at: 0 });
+      }
+      // ordine: faccia per faccia (la classe piu' in alto, poi da sinistra), dentro la faccia in ordine di lettura;
+      // i pezzetti (logo, bordi sfumati) escono insieme al tassello grande piu' vicino
+      const big = comps.filter(o => o.cells.length >= 6), small = comps.filter(o => o.cells.length < 6);
+      const face = {}; big.forEach(o => { (face[o.cls] = face[o.cls] || []).push(o); });
+      const faces = Object.values(face).map(a => ({ a, y: a.reduce((s, o) => s + o.my, 0) / a.length, x: a.reduce((s, o) => s + o.mx, 0) / a.length }))
+        .sort((p, q) => Math.abs(p.y - q.y) > rows * .12 ? p.y - q.y : p.x - q.x);
+      let tt = BODY_IN, d = STEP0;
+      faces.forEach(f => f.a.sort((p, q) => Math.abs(p.my - q.my) > 2 ? p.my - q.my : p.mx - q.mx).forEach(o => { o.at = tt; tt += d; d *= RATIO; }));
+      small.forEach(o => { let b = big[0], bd = 1e9; big.forEach(q => { const dd = (q.mx - o.mx) ** 2 + (q.my - o.my) ** 2; if (dd < bd) { bd = dd; b = q; } }); o.at = b ? b.at : BODY_IN; });
+      end = tt - d / RATIO + .25;
+      return { fs, cols, rows, cls, rgb, comp, comps, rw };
     }
     function frame(now) {
-      const dt = Math.min(.05, (now - last) / 1000); last = now; t += dt;
-      const n = colored.filter(c => c >= 0).length;
-      spin += dt * (.9 + 6 * (n / 6) ** 2);   // sempre piu' veloce
-      const ay = spin, ax = -.42 + .35 * spin;   // gira su y e piu' piano su x: prima o poi si vedono tutte e sei
-      const F = FACES.map(f => ({ n: rot(f[0], ax, ay), a: rot(f[1], ax, ay), b: rot(f[2], ax, ay), col: f[light ? 4 : 3] }));
-      if (n < 6 && t >= COLOR_AT[n]) {   // la prossima: la piu' rivolta verso chi guarda tra le grigie
-        let k = -1; F.forEach((f, i) => { if (colored[i] < 0 && (k < 0 || f.n[2] > F[k].n[2])) k = i; });
-        colored[k] = t;
-      }
-      const { cx, cy, size } = geom(), S = size * .35 / 1.6;   // il cubo vero occupa ~70% del suo canvas
-      const fs = Math.max(7, Math.round(size / 78)), cw = fs * .62, ch = fs * 1.05;
-      x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, W, H);
-      x.font = `600 ${fs}px 'JetBrains Mono', monospace`; x.textBaseline = 'middle'; x.textAlign = 'center';
-      x.globalAlpha = 1;
-      const vis = F.map((f, i) => [f, i]).filter(([f]) => f.n[2] > .02);
-      const R = S * 1.75;
-      for (const [f, i] of vis) {
-        const det = f.a[0] * f.b[1] - f.b[0] * f.a[1]; if (Math.abs(det) < 1e-4) continue;
-        const shade = .3 + .7 * Math.max(0, f.n[0] * LD[0] + f.n[1] * LD[1] + f.n[2] * LD[2]);
-        const on = colored[i] >= 0, flash = on ? Math.max(0, 1 - (t - colored[i]) / .3) : 0;
-        x.fillStyle = on ? f.col : grey;
-        x.globalAlpha = Math.min(1, t / .25) * (on ? .55 + .45 * shade + .3 * flash : .35 + .5 * shade);
-        const lv = Math.min(RAMP.length - 1, Math.floor((shade + flash * .5) * RAMP.length));
-        for (let py = cy - R + ch / 2; py < cy + R; py += ch) for (let px = cx - R + cw / 2; px < cx + R; px += cw) {
-          const dx = (px - cx) / S - f.n[0], dy = (cy - py) / S - f.n[1];
-          const u = (dx * f.b[1] - dy * f.b[0]) / det, v = (f.a[0] * dy - f.a[1] * dx) / det;
-          if (u < -1 || u > 1 || v < -1 || v > 1) continue;
-          const su = (u + 1) * 1.5 % 1, sv = (v + 1) * 1.5 % 1;
-          if (Math.min(su, 1 - su, sv, 1 - sv) < .1) continue;   // il nero tra i tasselli
-          x.fillText(RAMP[lv], px, py);
-        }
-      }
       raf = requestAnimationFrame(frame);
+      const r = target().getBoundingClientRect(); if (!r.width) return;
+      if (!grid || Math.abs(grid.rw - r.width) > 1) grid = build(r.width);
+      const t = (now - t0) / 1000, { fs, cols, rows, cls, rgb, comp, comps } = grid, cw = r.width / cols, ch = r.height / rows;
+      x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, W, H);
+      x.font = `700 ${fs}px 'JetBrains Mono', monospace`; x.textBaseline = 'middle'; x.textAlign = 'center';
+      const fade = Math.min(1, t / BODY_IN);
+      for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
+        const k = j * cols + i, c = cls[k]; if (c < 0) continue;
+        const o = c > 0 ? comps[comp[k]] : null, on = o && t >= o.at;
+        let ch2, col, a;
+        if (!on) { ch2 = c === 0 ? '.' : ':'; col = grey; a = fade * (c === 0 ? .25 : .6); }   // corpo appena accennato, tasselli grigi
+        else {
+          const [R, G, B] = rgb[k], lum = (.299 * R + .587 * G + .114 * B) / 255, fl = Math.max(0, 1 - (t - o.at) / .18);
+          ch2 = fl > .5 ? '@' : RAMP[Math.min(RAMP.length - 1, 3 + Math.floor(lum * (RAMP.length - 3)))];
+          col = light && lum > .85 ? '#a29e95' : `rgb(${R},${G},${B})`; a = 1;
+        }
+        x.globalAlpha = a; x.fillStyle = col;
+        x.fillText(ch2, r.left + (i + .5) * cw, r.top + (j + .5) * ch);
+      }
     }
-    raf = requestAnimationFrame(frame);
+    const ready = img.complete && img.naturalWidth ? Promise.resolve() : (img.decode ? img.decode() : new Promise(ok => img.onload = ok));
+    ready.then(() => { t0 = performance.now(); raf = requestAnimationFrame(frame); }, () => { end = 0; });
     return {
       el: cv,
-      done: () => colored.every(c => c >= 0),
+      done: () => grid && (performance.now() - t0) / 1000 >= end || end === 0,
       stop() { cancelAnimationFrame(raf); removeEventListener('resize', fit); cv.remove(); },
     };
   }
@@ -128,7 +143,6 @@
     // cubo grande al centro; la scritta a meta' tra il cubo e il bordo destro (sui telefoni
     // tra il cubo e il fondo). Il cubo disegnato occupa ~70% del canvas: il suo bordo e'
     // a size * .35 dal centro, non al bordo del canvas.
-    let geo = null;   // centro e misura del cubo grande: li usa anche il cubo ASCII
     function place() {
       cube.style.transform = '';
       const r = cube.getBoundingClientRect(), wide = innerWidth >= 700;
@@ -138,7 +152,6 @@
       const lx = wide ? (cx + size * 0.35 + innerWidth) / 2 : cx, ly = wide ? cy : (cy + size * 0.35 + innerHeight) / 2;
       ui.style.setProperty('--ci-x', lx + 'px');
       ui.style.setProperty('--ci-y', ly + 'px');
-      geo = { cx, cy, size };
       // canvas a piena risoluzione finche' il cubo e' grande (rubik3d la legge all'avvio)
       window.cubeRes = Math.min(2048, Math.round(size * (devicePixelRatio || 1)));
       if (window.rubikRes) window.rubikRes(window.cubeRes);
@@ -150,19 +163,19 @@
     // ha colorato tutte le facce e three.js e' pronto (al massimo 4s, poi entra il segnaposto)
     let entered = false, revealed = false, tease = 0;
     cube.classList.add('ascii-wait'); ui.classList.add('ci-wait');
-    const ascii = asciiCube(() => geo); ui.prepend(ascii.el);
+    const ph = cube.querySelector('.cube-ph'), cubeCanvas = document.getElementById('sb-cube-canvas');
+    const ascii = asciiCube(() => cube.classList.contains('is-live') ? cubeCanvas : ph, ph); ui.prepend(ascii.el);
     const t0 = performance.now();
     (function wait() {
       if (entered) return;
       if (ascii.done() && (cube.classList.contains('is-live') || performance.now() - t0 > 4000)) showCube();
       else setTimeout(wait, 50);
     })();
-    // l'ASCII sfuma e il cubo vero compare sul posto con mezzo giro in 3D
+    // l'ASCII sfuma e il cubo vero compare sul posto, fermo: stessa posa del segnaposto, combaciano
     function showCube() {
       revealed = true;
       ascii.el.classList.add('out'); setTimeout(ascii.stop, 500);
       cube.classList.replace('ascii-wait', 'cube-reveal'); ui.classList.remove('ci-wait');
-      if (window.rubikSpin) window.rubikSpin(1100, -Math.PI);
       // entered spegne anche cube-in: togliendo solo cube-reveal, il canvas ripartiva con cube-in (lampo)
       setTimeout(() => cube.classList.replace('cube-reveal', 'entered'), 700);
       // il cubo si fa notare: ogni 2.6s gira una faccia e la rimette a posto
