@@ -2,12 +2,17 @@
 
 /* project pages render immediately: no boot gate */
 body { min-height: 100vh; }
+html { scrollbar-gutter: stable; }   /* come la home (css/cube.css): stessi bordi anche con la scrollbar */
+/* same horizontal space as the home (css/layout.css): left-aligned, headings on the sidebar's left edge
+   (32px; 24px under 1280), content --hang further in, right edge where the home's main column ends
+   (sidebar 300 + main max 1180, minus its 60px padding; 260 / 32px under 1280; 20px under 900) */
 .pj {
-  max-width: 1300px;
-  margin: 0 auto;
-  /* side margin = the hang + 28px: headings 28px from the edge, content 20px further in */
-  padding: 40px calc(var(--hang, 20px) + 28px) 72px;
+  max-width: 1480px;
+  margin: 0;
+  padding: 40px 60px 72px calc(32px + var(--hang, 20px));
 }
+@media (max-width: 1279px) { .pj { max-width: 1440px; padding: 40px 32px 72px calc(24px + var(--hang, 20px)); } }
+@media (max-width: 900px) { .pj { padding: 32px 20px 64px calc(20px + var(--hang, 20px)); } }
 /* spatial hierarchy: navigation, eyebrow, title and section headings sit on the outer edge,
    everything they introduce (lead, tags, demo, text) is indented by --hang. A fixed step, not
    the old window-dependent one that at some widths was a few px and looked like a mistake. */

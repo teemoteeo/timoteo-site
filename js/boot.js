@@ -32,16 +32,19 @@
   // icons/cube-ph.png (il segnaposto, che e' il cubo WebGL a riposo), una cella di testo per blocco di
   // pixel, e ogni carattere prende il colore del suo pixel. Prima compare la sagoma (corpo nero e
   // tasselli ancora grigi), poi i tasselli si colorano uno alla volta, faccia per faccia, ogni volta
-  // prima (STEP0 * RATIO^k). Completo: done() e' vero e l'intro lo sostituisce col cubo vero.
+  // prima (STEP0 * RATIO^k). Poi il cubo si materializza: una scansione dall'alto (con un po' di
+  // disordine) trasforma ogni carattere, con un lampo, nei pixel veri dell'immagine in quel punto. Alla fine
+  // sul canvas c'e' il cubo intero, identico al cubo WebGL fermo: done() e' vero e l'intro ci mette sotto
+  // il cubo vero, poi toglie il canvas. Nessun cubo nuovo che compare: e' lo stesso che prende corpo.
   const RAMP = '.:-=+*#%@';
   const PAL = [[245, 245, 245], [229, 57, 53], [239, 108, 0], [21, 101, 192], [67, 160, 71], [255, 214, 0]];   // js/rubik3d.js
-  const STEP0 = .15, RATIO = .86, BODY_IN = .3;
+  const STEP0 = .15, RATIO = .86, BODY_IN = .3, MAT = 1.1;   // MAT: durata della materializzazione
   function asciiCube(target, img) {
     const cv = document.createElement('canvas'), x = cv.getContext('2d');
     cv.className = 'ci-ascii';
     const light = root.dataset.theme === 'light';
     const grey = getComputedStyle(root).getPropertyValue('--fg-muted').trim() || '#888';
-    let W = 0, H = 0, dpr = 1, grid = null, t0 = 0, raf = 0, end = Infinity;
+    let W = 0, H = 0, dpr = 1, grid = null, t0 = 0, raf = 0, end = Infinity, matAt = Infinity;
     function fit() {
       dpr = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight;
       cv.width = W * dpr; cv.height = H * dpr; cv.style.width = W + 'px'; cv.style.height = H + 'px';
@@ -84,20 +87,30 @@
       let tt = BODY_IN, d = STEP0;
       faces.forEach(f => f.a.sort((p, q) => Math.abs(p.my - q.my) > 2 ? p.my - q.my : p.mx - q.mx).forEach(o => { o.at = tt; tt += d; d *= RATIO; }));
       small.forEach(o => { let b = big[0], bd = 1e9; big.forEach(q => { const dd = (q.mx - o.mx) ** 2 + (q.my - o.my) ** 2; if (dd < bd) { bd = dd; b = q; } }); o.at = b ? b.at : BODY_IN; });
-      end = tt - d / RATIO + .25;
-      return { fs, cols, rows, cls, rgb, comp, comps, rw };
+      matAt = tt - d / RATIO + .2;
+      // quando ogni cella diventa pixel: riga (dall'alto) + un po' di caso, smussato
+      const mat = new Float32Array(n);
+      for (let k = 0; k < n; k++) { const key = ((k / cols | 0) / rows) * .75 + Math.random() * .25; mat[k] = MAT * key * key * (3 - 2 * key); }
+      end = matAt + MAT + .05;
+      return { fs, cols, rows, cls, rgb, comp, comps, rw, mat };
     }
     function frame(now) {
       raf = requestAnimationFrame(frame);
       const r = target().getBoundingClientRect(); if (!r.width) return;
       if (!grid || Math.abs(grid.rw - r.width) > 1) grid = build(r.width);
-      const t = (now - t0) / 1000, { fs, cols, rows, cls, rgb, comp, comps } = grid, cw = r.width / cols, ch = r.height / rows;
+      const t = (now - t0) / 1000, { fs, cols, rows, cls, rgb, comp, comps, mat } = grid, cw = r.width / cols, ch = r.height / rows;
       x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, W, H);
+      const mt = t - matAt;   // > 0: materializzazione in corso
+      if (mt > 0) {   // le celle gia' materializzate: i pixel dell'immagine, ritagliati (rettangoli un filo piu' grandi: niente righe tra le celle)
+        x.save(); x.beginPath();
+        for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) if (mt >= mat[j * cols + i]) x.rect(r.left + i * cw - .3, r.top + j * ch - .3, cw + .6, ch + .6);
+        x.clip(); x.globalAlpha = 1; x.drawImage(img, r.left, r.top, r.width, r.height); x.restore();
+      }
       x.font = `700 ${fs}px 'JetBrains Mono', monospace`; x.textBaseline = 'middle'; x.textAlign = 'center';
       const fade = Math.min(1, t / BODY_IN);
       for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
-        const k = j * cols + i, c = cls[k]; if (c < 0) continue;
-        const o = c > 0 ? comps[comp[k]] : null, on = o && t >= o.at;
+        const k = j * cols + i, c = cls[k]; if (c < 0 || (mt > 0 && mt >= mat[k])) continue;
+        const o = c > 0 ? comps[comp[k]] : null, on = o && t >= o.at, pre = mt > mat[k] - .12;   // pre: sta per materializzarsi
         let ch2, col, a;
         if (!on) { ch2 = c === 0 ? '.' : ':'; col = grey; a = fade * (c === 0 ? .25 : .6); }   // corpo appena accennato, tasselli grigi
         else {
@@ -105,6 +118,7 @@
           ch2 = fl > .5 ? '@' : RAMP[Math.min(RAMP.length - 1, 3 + Math.floor(lum * (RAMP.length - 3)))];
           col = light && lum > .85 ? '#a29e95' : `rgb(${R},${G},${B})`; a = 1;
         }
+        if (pre) { ch2 = '@'; col = light ? '#222' : '#fff'; a = 1; }   // il lampo prima del pixel
         x.globalAlpha = a; x.fillStyle = col;
         x.fillText(ch2, r.left + (i + .5) * cw, r.top + (j + .5) * ch);
       }
@@ -168,14 +182,16 @@
     const t0 = performance.now();
     (function wait() {
       if (entered) return;
+      if (window.rubikHold) window.rubikHold(true);   // fermo nella posa dell'ASCII finche' non lo sostituisce
       if (ascii.done() && (cube.classList.contains('is-live') || performance.now() - t0 > 4000)) showCube();
       else setTimeout(wait, 50);
     })();
     // l'ASCII sfuma e il cubo vero compare sul posto, fermo: stessa posa del segnaposto, combaciano
     function showCube() {
       revealed = true;
-      ascii.el.classList.add('out'); setTimeout(ascii.stop, 500);
+      ascii.el.classList.add('out'); setTimeout(ascii.stop, 800);   // .ci-ascii.out: aspetta che il cubo sotto sia pieno
       cube.classList.replace('ascii-wait', 'cube-reveal'); ui.classList.remove('ci-wait');
+      if (window.rubikHold) { window.rubikHold(true); setTimeout(() => window.rubikHold(false), 900); }   // riprende a girare a scambio finito
       // entered spegne anche cube-in: togliendo solo cube-reveal, il canvas ripartiva con cube-in (lampo)
       setTimeout(() => cube.classList.replace('cube-reveal', 'entered'), 700);
       // il cubo si fa notare: ogni 2.6s gira una faccia e la rimette a posto

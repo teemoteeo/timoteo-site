@@ -312,6 +312,9 @@ function initRubikCube() {
   // stessa curva ease-in-out del volo, cosi' rimpicciolimento e rotazione vanno insieme
   let spin = null;
   window.rubikSpin = function (dur, angle) { spin = { t0: performance.now(), dur, angle, done: 0 }; };
+  // l'intro (js/boot.js) tiene il cubo fermo nella posa di riposo mentre il cubo ASCII lo costruisce:
+  // quella posa e' icons/cube-ph.png, da cui e' fatto l'ASCII. false: riprende a girare piano
+  window.rubikHold = function (hold) { autoRotate = !hold; if (hold) cubeGroup.rotation.set(0, 0, 0); };
   const easeInOut = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
   // fuori schermo non disegna: era un render WebGL a ogni frame anche a pagina scrollata

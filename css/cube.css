@@ -234,10 +234,10 @@ html.compose .container :is(.site-domain, .profile-pic-container, .profile-id, .
 /* prima il cubo ASCII (js/boot.js asciiCube), sopra al posto del cubo vero: il cubo vero resta nascosto
    e poi compare sul posto mentre l'ASCII sfuma */
 .sidebar-cube.ascii-wait #sb-cube-canvas, .sidebar-cube.ascii-wait .cube-ph { opacity: 0; animation: none; }
-.sidebar-cube.cube-reveal #sb-cube-canvas, .sidebar-cube.cube-reveal .cube-ph { animation: cube-reveal .4s ease-out both; }   /* batte .is-live (cube-in) */
+.sidebar-cube.cube-reveal #sb-cube-canvas, .sidebar-cube.cube-reveal .cube-ph { animation: cube-reveal .25s linear both; }   /* batte .is-live (cube-in) */
 @keyframes cube-reveal { from { opacity: 0; } }
-.ci-ascii { position: absolute; inset: 0; transition: opacity .4s ease-in; }
-.ci-ascii.out { opacity: 0; }
+.ci-ascii { position: absolute; inset: 0; transition: opacity .4s ease; }
+.ci-ascii.out { opacity: 0; transition-delay: .25s; }   /* il cubo vero e' gia' pieno sotto: cambia solo la nitidezza */
 #cube-intro.ci-wait .ci-shuffle { opacity: 0; pointer-events: none; }
 .sidebar-cube.entered #sb-cube-canvas { animation: none; }   /* finita l'entrata, niente cube-in di nuovo */
 /* i controlli del cubo compaiono quando il cubo e' atterrato */
