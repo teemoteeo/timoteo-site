@@ -259,14 +259,6 @@
 .hero .ticker-wrapper { margin-bottom: 0; }
 .hero .hero-cube-shell { margin-bottom: 0; }
 .hero .hero-cube { margin-bottom: 0; }
-/* cubo e bottone un po' piu' in basso e a sinistra, nel vuoto accanto al ticker. Offset relativo: la riga
-   resta alta uguale e l'intro (FLIP, js/boot.js) misura gia' la posizione spostata */
-@media (min-width: 901px) {
-  .hero .hero-cube { position: relative; top: 36px; left: -56px; }
-}
-@media (min-width: 901px) and (max-width: 1279px) {
-  .hero .hero-cube { top: 28px; left: -32px; }
-}
 
 /* SECTIONS */
 .section { margin-bottom: 48px; }
