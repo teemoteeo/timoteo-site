@@ -1,17 +1,17 @@
 // ============================
 // INTRO + BOOT + CUBO
 // ============================
-// Prima visita della sessione: due righe di boot, poi la pagina e' vuota (resta lo
-// spazio) e c'e' solo il cubo, grande al centro, con CLICK THE CUBE sotto. Click o tap
-// sul cubo (o sulla scritta): il cubo mescola ancora grande, poi vola al suo posto
-// nell'hero girando e la pagina si monta a cascata. Esc, Invio, scroll o "skip"
-// entrano subito, senza shuffle.
+// Prima visita della sessione: la pagina e' vuota (resta lo spazio) e al centro, grande, compare
+// subito un cubo di Rubik fatto di caratteri (asciiCube): gira e le facce prendono il colore una
+// alla volta, sempre piu' veloce, mentre three.js si scarica. Pronto il cubo vero, l'ASCII sfuma e
+// resta il cubo WebGL con CLICK THE CUBE accanto. Click o tap sul cubo (o sulla scritta): il cubo
+// mescola ancora grande, poi vola al suo posto nell'hero girando e la pagina si monta a cascata.
+// Esc, Invio, scroll o "skip" entrano subito, senza shuffle. (Prima c'erano due righe di boot
+// che aspettavano three.js: laggava.)
 // Il cubo e' lo stesso elemento della pagina, spostato con transform (FLIP): nessun
 // secondo canvas WebGL. Con prefers-reduced-motion, o gia' visto nella sessione: pagina subito.
 (function() {
-  const overlay = document.getElementById('intro-overlay');
   const container = document.querySelector('.container');
-  const bootSeq = document.getElementById('boot-sequence');
   const root = document.documentElement;
 
   const reveal = sel => document.querySelectorAll(sel).forEach(el => el.classList.add('revealed'));
@@ -19,27 +19,89 @@
     || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   if (skip) {
-    overlay.remove(); bootSeq.remove();
     container.classList.add('visible');
     reveal('[data-boot]');
     return;
   }
   sessionStorage.setItem('introSeen', 'true');
+  // dopo gli altri script (cube-loader definisce cubeLoad): three.js si scarica mentre gira l'ASCII
+  setTimeout(() => { window.cubeLoad && window.cubeLoad(); startIntro(); }, 0);
 
-  const b1 = document.getElementById('boot-line-1');
-  const b2 = document.getElementById('boot-line-2');
-  overlay.classList.add('gone'); bootSeq.classList.add('active');
-  // three.js si scarica durante le righe di boot: il cubo vero e' pronto quando entra
-  setTimeout(() => window.cubeLoad && window.cubeLoad(), 0);
-  setTimeout(() => { b1.textContent = '> BOOTING SYSTEM...'; b1.classList.add('visible'); }, 25);
-  setTimeout(() => { b2.textContent = '> LOADING PROFILE...'; b2.classList.add('visible'); }, 450);
-  // il cubo entra quando three.js e' pronto (shader gia' compilati): prima entrava il
-  // segnaposto e a meta' entrata arrivava il cubo vero, che ripartiva da capo. Al massimo 2.5s
-  const live = () => document.querySelector('.sidebar-cube.is-live');
-  (function wait(t0) {
-    if (performance.now() - t0 >= 700 && (live() || performance.now() - t0 > 2500)) { overlay.remove(); bootSeq.remove(); startIntro(); }
-    else setTimeout(wait, 50, t0);
-  })(performance.now());
+  // ---------- il cubo ASCII ----------
+  // Rasterizzatore minimo: per ogni cella di testo sul canvas, la faccia visibile che la copre (cubo
+  // convesso: al massimo una), le coordinate (u, v) sulla faccia -> il tassello 3x3 (bordi vuoti) e la
+  // luce -> un carattere della rampa. Le facce senza colore sono grigie; COLOR_AT dice quando ognuna
+  // prende il suo colore (sempre la piu' rivolta verso chi guarda tra quelle ancora grigie), e la
+  // rotazione accelera con loro. Colori di js/rubik3d.js.
+  const FACES = [   // normale, asse u, asse v, colore (scuro, chiaro: il bianco sul fondo chiaro sparisce)
+    [[0, 1, 0], [1, 0, 0], [0, 0, 1], '#ffffff', '#9d998f'],
+    [[0, 0, 1], [1, 0, 0], [0, 1, 0], '#e53935', '#e53935'],
+    [[1, 0, 0], [0, 0, -1], [0, 1, 0], '#ef6c00', '#ef6c00'],
+    [[0, 0, -1], [-1, 0, 0], [0, 1, 0], '#1565c0', '#1565c0'],
+    [[-1, 0, 0], [0, 0, 1], [0, 1, 0], '#43a047', '#43a047'],
+    [[0, -1, 0], [1, 0, 0], [0, 0, -1], '#ffd600', '#c9a400'],
+  ];
+  const COLOR_AT = [.45, .83, 1.13, 1.36, 1.53, 1.655];   // secondi: intervalli 380, 300, 230, 170, 125 ms
+  const RAMP = '.:-=+*#%@';
+  function asciiCube(geom) {
+    const cv = document.createElement('canvas'), x = cv.getContext('2d');
+    cv.className = 'ci-ascii';
+    const LD = [-.35, .55, .75], ll = Math.hypot(...LD); LD.forEach((c, i) => LD[i] = c / ll);
+    const light = root.dataset.theme === 'light';
+    const grey = getComputedStyle(root).getPropertyValue('--fg-muted').trim() || '#888';
+    const colored = new Array(6).fill(-1);   // secondo in cui la faccia ha preso colore
+    let t = 0, spin = 0, last = performance.now(), raf = 0, W = 0, H = 0, dpr = 1;
+    function fit() {
+      dpr = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight;
+      cv.width = W * dpr; cv.height = H * dpr; cv.style.width = W + 'px'; cv.style.height = H + 'px';
+    }
+    fit(); addEventListener('resize', fit);
+    function rot(v, ax, ay) {   // prima attorno a y, poi a x
+      const x1 = v[0] * Math.cos(ay) + v[2] * Math.sin(ay), z1 = -v[0] * Math.sin(ay) + v[2] * Math.cos(ay);
+      return [x1, v[1] * Math.cos(ax) - z1 * Math.sin(ax), v[1] * Math.sin(ax) + z1 * Math.cos(ax)];
+    }
+    function frame(now) {
+      const dt = Math.min(.05, (now - last) / 1000); last = now; t += dt;
+      const n = colored.filter(c => c >= 0).length;
+      spin += dt * (.9 + 6 * (n / 6) ** 2);   // sempre piu' veloce
+      const ay = spin, ax = -.42 + .35 * spin;   // gira su y e piu' piano su x: prima o poi si vedono tutte e sei
+      const F = FACES.map(f => ({ n: rot(f[0], ax, ay), a: rot(f[1], ax, ay), b: rot(f[2], ax, ay), col: f[light ? 4 : 3] }));
+      if (n < 6 && t >= COLOR_AT[n]) {   // la prossima: la piu' rivolta verso chi guarda tra le grigie
+        let k = -1; F.forEach((f, i) => { if (colored[i] < 0 && (k < 0 || f.n[2] > F[k].n[2])) k = i; });
+        colored[k] = t;
+      }
+      const { cx, cy, size } = geom(), S = size * .35 / 1.6;   // il cubo vero occupa ~70% del suo canvas
+      const fs = Math.max(7, Math.round(size / 78)), cw = fs * .62, ch = fs * 1.05;
+      x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, W, H);
+      x.font = `600 ${fs}px 'JetBrains Mono', monospace`; x.textBaseline = 'middle'; x.textAlign = 'center';
+      x.globalAlpha = 1;
+      const vis = F.map((f, i) => [f, i]).filter(([f]) => f.n[2] > .02);
+      const R = S * 1.75;
+      for (const [f, i] of vis) {
+        const det = f.a[0] * f.b[1] - f.b[0] * f.a[1]; if (Math.abs(det) < 1e-4) continue;
+        const shade = .3 + .7 * Math.max(0, f.n[0] * LD[0] + f.n[1] * LD[1] + f.n[2] * LD[2]);
+        const on = colored[i] >= 0, flash = on ? Math.max(0, 1 - (t - colored[i]) / .3) : 0;
+        x.fillStyle = on ? f.col : grey;
+        x.globalAlpha = Math.min(1, t / .25) * (on ? .55 + .45 * shade + .3 * flash : .35 + .5 * shade);
+        const lv = Math.min(RAMP.length - 1, Math.floor((shade + flash * .5) * RAMP.length));
+        for (let py = cy - R + ch / 2; py < cy + R; py += ch) for (let px = cx - R + cw / 2; px < cx + R; px += cw) {
+          const dx = (px - cx) / S - f.n[0], dy = (cy - py) / S - f.n[1];
+          const u = (dx * f.b[1] - dy * f.b[0]) / det, v = (f.a[0] * dy - f.a[1] * dx) / det;
+          if (u < -1 || u > 1 || v < -1 || v > 1) continue;
+          const su = (u + 1) * 1.5 % 1, sv = (v + 1) * 1.5 % 1;
+          if (Math.min(su, 1 - su, sv, 1 - sv) < .1) continue;   // il nero tra i tasselli
+          x.fillText(RAMP[lv], px, py);
+        }
+      }
+      raf = requestAnimationFrame(frame);
+    }
+    raf = requestAnimationFrame(frame);
+    return {
+      el: cv,
+      done: () => colored.every(c => c >= 0),
+      stop() { cancelAnimationFrame(raf); removeEventListener('resize', fit); cv.remove(); },
+    };
+  }
 
   // i blocchi che compongono la pagina: sono box veri sia su desktop sia su mobile,
   // dove sidebar, main e i wrapper diventano display:contents
@@ -66,6 +128,7 @@
     // cubo grande al centro; la scritta a meta' tra il cubo e il bordo destro (sui telefoni
     // tra il cubo e il fondo). Il cubo disegnato occupa ~70% del canvas: il suo bordo e'
     // a size * .35 dal centro, non al bordo del canvas.
+    let geo = null;   // centro e misura del cubo grande: li usa anche il cubo ASCII
     function place() {
       cube.style.transform = '';
       const r = cube.getBoundingClientRect(), wide = innerWidth >= 700;
@@ -75,6 +138,7 @@
       const lx = wide ? (cx + size * 0.35 + innerWidth) / 2 : cx, ly = wide ? cy : (cy + size * 0.35 + innerHeight) / 2;
       ui.style.setProperty('--ci-x', lx + 'px');
       ui.style.setProperty('--ci-y', ly + 'px');
+      geo = { cx, cy, size };
       // canvas a piena risoluzione finche' il cubo e' grande (rubik3d la legge all'avvio)
       window.cubeRes = Math.min(2048, Math.round(size * (devicePixelRatio || 1)));
       if (window.rubikRes) window.rubikRes(window.cubeRes);
@@ -82,19 +146,34 @@
     }
     place();
     addEventListener('resize', place);
-    // il cubo entra: dissolvenza da piccolo (css .cube-enter) e mezzo giro in 3D se e' gia' pronto
-    cube.classList.add('cube-enter');
-    if (window.rubikSpin) window.rubikSpin(1100, -Math.PI);
-    // entered spegne anche cube-in: togliendo solo cube-enter, il canvas ripartiva con cube-in (lampo a 1.2s)
-    setTimeout(() => cube.classList.replace('cube-enter', 'entered'), 1200);
-    // il cubo si fa notare: ogni 2.6s gira una faccia e la rimette a posto
-    const tease = setInterval(() => window.rubikTease && window.rubikTease(), 2600);
-    setTimeout(() => window.rubikTease && window.rubikTease(), 900);
+    // prima il cubo ASCII; il cubo vero resta nascosto (anche se three.js arriva prima) finche' l'ASCII
+    // ha colorato tutte le facce e three.js e' pronto (al massimo 4s, poi entra il segnaposto)
+    let entered = false, revealed = false, tease = 0;
+    cube.classList.add('ascii-wait'); ui.classList.add('ci-wait');
+    const ascii = asciiCube(() => geo); ui.prepend(ascii.el);
+    const t0 = performance.now();
+    (function wait() {
+      if (entered) return;
+      if (ascii.done() && (cube.classList.contains('is-live') || performance.now() - t0 > 4000)) showCube();
+      else setTimeout(wait, 50);
+    })();
+    // l'ASCII sfuma e il cubo vero compare sul posto con mezzo giro in 3D
+    function showCube() {
+      revealed = true;
+      ascii.el.classList.add('out'); setTimeout(ascii.stop, 500);
+      cube.classList.replace('ascii-wait', 'cube-reveal'); ui.classList.remove('ci-wait');
+      if (window.rubikSpin) window.rubikSpin(1100, -Math.PI);
+      // entered spegne anche cube-in: togliendo solo cube-reveal, il canvas ripartiva con cube-in (lampo)
+      setTimeout(() => cube.classList.replace('cube-reveal', 'entered'), 700);
+      // il cubo si fa notare: ogni 2.6s gira una faccia e la rimette a posto
+      tease = setInterval(() => window.rubikTease && window.rubikTease(), 2600);
+      setTimeout(() => !entered && window.rubikTease && window.rubikTease(), 900);
+    }
 
-    let entered = false;
     function enter(shuffle) {
       if (entered) return;
       entered = true;
+      if (!revealed) { ascii.stop(); cube.classList.remove('ascii-wait'); ui.classList.remove('ci-wait'); }
       ['keydown', 'wheel', 'touchmove'].forEach(t => removeEventListener(t, onSkip));
       clearInterval(tease);
       ui.classList.add('out');
@@ -134,7 +213,7 @@
     let down = null;
     cube.addEventListener('pointerdown', e => { down = [e.clientX, e.clientY]; });
     cube.addEventListener('pointerup', e => {
-      if (down && Math.hypot(e.clientX - down[0], e.clientY - down[1]) < 6) enter(true);
+      if (revealed && down && Math.hypot(e.clientX - down[0], e.clientY - down[1]) < 6) enter(true);
       down = null;
     });
     ui.querySelector('.ci-shuffle').addEventListener('click', () => enter(true));

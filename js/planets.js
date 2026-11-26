@@ -89,12 +89,13 @@
     const at = (i, L) => {
       const w = dots[i][3];
       if (dots[i][4]) return L ? [.85, .5, 0, 1] : [1, .83, .5, 1];
-      return L ? [.5 - .32 * w, .5 - .32 * w, .54 - .32 * w, .5 + .4 * w] : [.75 * w + .1, .76 * w + .1, .8 * w + .1, .55 + .4 * w];
+      // tema chiaro: come lo scuro, sfera grigia con i pannelli chiari (puntini scuri su sfera chiara sembrava rumore)
+      return L ? [.5 * w + .32, .51 * w + .32, .55 * w + .33, .6 + .4 * w] : [.75 * w + .1, .76 * w + .1, .8 * w + .1, .55 + .4 * w];
     };
     const th = Math.acos(cut) + .02;
-    const shell = fill('#141418', '#dedcd6', 0, new T.SphereGeometry(.985, 64, 48, 0, Math.PI * 2, th, Math.PI - th));
+    const shell = fill('#141418', '#55575e', 0, new T.SphereGeometry(.985, 64, 48, 0, Math.PI * 2, th, Math.PI - th));
     shell.quaternion.setFromUnitVectors(new T.Vector3(0, 1, 0), new T.Vector3(...axis));
-    const g = new T.Group().add(shell, fill('#0c0c0f', '#d2d0c9', .87), layer(xyz, dots.length, at, 1.5));
+    const g = new T.Group().add(shell, fill('#0c0c0f', '#3c3e44', .87), layer(xyz, dots.length, at, 1.5));
     g.userData.tick = dt => { g.rotation.y += dt / 9; };
     g.userData.hit = [[g, 1]];
     return g;

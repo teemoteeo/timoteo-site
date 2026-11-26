@@ -225,16 +225,20 @@ html.intro .sidebar-cube, .sidebar-cube.flying { will-change: transform; }
    (js/boot.js). Prima i blocchi scorrevano dal basso mentre il cubo era ancora in volo. */
 html.compose [data-boot] { animation: none; }
 html.compose .container :is(.site-domain, .profile-pic-container, .profile-id, .sidebar-contacts, nav[data-boot], .oracle,
-  .hero-copy-shell, .ticker-wrapper, .featured, [data-boot="projects"], .bio-block,
+  .hero-copy-shell, .ticker-wrapper, .featured, .system, [data-boot="projects"], .bio-block,
   .display-header, .display-section, .tech-grid-section, .other-section) {
   animation: compose-in .3s cubic-bezier(.2, .8, .2, 1) var(--d, 0ms) both;
 }
 /* rapido e sul posto: un filo di scala che si assesta, niente scorrimento dal basso */
 @keyframes compose-in { from { opacity: 0; transform: scale(.985); } }
-/* il cubo appare dopo le righe di boot (js/boot.js): scale sul canvas, la transform del
-   contenitore e' gia' usata per metterlo al centro */
-.sidebar-cube.cube-enter #sb-cube-canvas, .sidebar-cube.cube-enter .cube-ph { animation: cube-enter 1.1s cubic-bezier(.2, .8, .2, 1) both; }   /* batte .is-live (cube-in) */
-@keyframes cube-enter { from { opacity: 0; scale: .55; } }
+/* prima il cubo ASCII (js/boot.js asciiCube), sopra al posto del cubo vero: il cubo vero resta nascosto
+   e poi compare sul posto mentre l'ASCII sfuma */
+.sidebar-cube.ascii-wait #sb-cube-canvas, .sidebar-cube.ascii-wait .cube-ph { opacity: 0; animation: none; }
+.sidebar-cube.cube-reveal #sb-cube-canvas, .sidebar-cube.cube-reveal .cube-ph { animation: cube-reveal .6s ease-out both; }   /* batte .is-live (cube-in) */
+@keyframes cube-reveal { from { opacity: 0; } }
+.ci-ascii { position: absolute; inset: 0; transition: opacity .45s; }
+.ci-ascii.out { opacity: 0; }
+#cube-intro.ci-wait .ci-shuffle { opacity: 0; pointer-events: none; }
 .sidebar-cube.entered #sb-cube-canvas { animation: none; }   /* finita l'entrata, niente cube-in di nuovo */
 /* i controlli del cubo compaiono quando il cubo e' atterrato */
 html.intro .sidebar-cube-controls, html.landing .sidebar-cube-controls { opacity: 0; }   /* gia' a 0 nell'intro: prima lampeggiava all'uscita */
@@ -255,7 +259,7 @@ html.intro .sidebar-cube-controls, html.landing .sidebar-cube-controls { opacity
   transition: color .2s;
 }
 /* scritta e skip reagiscono come il cubo: manina e +4% con la stessa curva; la scritta diventa anche verde */
-.ci-shuffle, .ci-skip { cursor: pointer; transition: scale .35s cubic-bezier(.2,.8,.2,1), color .2s !important; }
+.ci-shuffle, .ci-skip { cursor: pointer; transition: scale .35s cubic-bezier(.2,.8,.2,1), color .2s, opacity .4s !important; }
 .ci-shuffle:hover, .ci-skip:hover { scale: 1.04; }
 .ci-shuffle:hover { color: var(--teal) !important; }
 .ci-shuffle:focus-visible, .ci-skip:focus-visible { outline: 1px solid var(--teal); outline-offset: 4px; }

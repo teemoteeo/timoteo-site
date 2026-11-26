@@ -28,34 +28,7 @@ body {
   line-height: 1.6;
 }
 
-/* ===== INTRO ===== */
-#intro-overlay {
-  position: fixed; inset: 0;
-  background: var(--bg);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 9999; cursor: pointer;
-}
-#intro-overlay.gone { display: none; }
-#intro-text, #intro-cursor {
-  font-size: clamp(20px, 4vw, 38px);
-  color: var(--fg);
-  letter-spacing: 3px;
-  font-weight: 300;
-}
-#intro-cursor { animation: blink 1s step-end infinite; }
-@keyframes blink { 50% { opacity: 0; } }
-
-/* ===== BOOT ===== */
-#boot-sequence {
-  position: fixed; inset: 0;
-  background: var(--bg);
-  display: none; flex-direction: column;
-  align-items: center; justify-content: center;
-  z-index: 9998; gap: 6px;
-}
-#boot-sequence.active { display: flex; }
-.boot-line { font-size: 12px; color: var(--fg-dim); display: none; }
-.boot-line.visible { display: block; animation: glitch-in .12s steps(2); }
+@keyframes blink { 50% { opacity: 0; } }   /* il cursore del titolo nelle pagine progetto (css/project.css) */
 
 /* ===== LAYOUT ===== */
 .container { display: none; min-height: 100vh; min-height: 100dvh; }
