@@ -218,7 +218,8 @@
       });
       if (!obj.parent) outer.add(obj);
       const l = document.createElement('div'); l.className = 'sys-label'; l.textContent = l.dataset.n = name; stage.appendChild(l);
-      bodies[ORDER.indexOf(id)] = { id, obj: outer, spins, big, l };
+      const mats = []; obj.traverse(o => { if (o.isPoints) mats.push(o.material); });   // i puntini: la loro opacita' e' la luce
+      bodies[ORDER.indexOf(id)] = { id, obj: outer, spins, big, l, mats, lit: 0 };
     }
     ORDER.forEach(id => {   // link per la tastiera: a fuoco attivano il pianeta
       const a = document.createElement('a'); a.href = P[id].url; a.textContent = P[id].name;
@@ -272,8 +273,8 @@
     // rifa' a ogni frame sull'ultima posizione del mouse (la ruota si muove anche col mouse fermo). Dopo una
     // rotazione sotto il mouse fermo arriva un altro pianeta: non conta finche' il mouse non e' uscito dai
     // pianeti a ruota ferma (armed). I pianeti non aprono niente: il progetto si apre solo dalla card.
-    const DWELL = .25;
-    let ptr = null, armed = true, dwell = 0, hot = -1;   // hot: il pianeta in attesa, cresce un po' (loop)
+    const DWELL = .25, DIM = .35;   // DIM: luce dei puntini a pianeta spento (0-1)
+    let ptr = null, armed = true, dwell = 0, hot = -1, hov = -1;   // hot: il pianeta in attesa, cresce un po' (loop); hov: sotto il mouse
     // drag: il pianeta preso gira su se stesso come un mappamondo (premultiply: assi dello schermo, la ruota non
     // ruota), 1 raggio trascinato = 1 radiante; lasciato, continua per inerzia. Prenderne uno sopra o sotto lo
     // seleziona: la ruota lo porta davanti mentre lo stai girando
@@ -313,6 +314,7 @@
     stage.addEventListener('pointerleave', () => { ptr = null; });
     function hover(dt) {
       const i = ptr ? hitAt(...ptr) : -1, settled = tw >= 1;
+      hov = drag ? bodies.indexOf(drag.b) : i;
       stage.classList.toggle('is-hit', i >= 0);
       hot = -1;
       if (!settled || drag) { dwell = 0; return; }
@@ -335,6 +337,12 @@
         if (!b) return;
         // th: 0 davanti (destra della ruota), +120 sopra, -120 sotto; front: 1 davanti, 0 sopra/sotto
         b.h = (b.h || 0) + ((i === hot) - (b.h || 0)) * Math.min(1, dt * 10 || 1);
+        // luce: spenti (DIM) di base, accesi se selezionati o sotto il mouse. Scuro: il colore dei puntini
+        // moltiplicato (scurisce davvero: l'opacita' si sommava tra puntini sovrapposti). Chiaro: l'opacita',
+        // cosi' i puntini sbiadiscono nella sfera chiara di sotto
+        b.lit += (+(i === sel || i === hov) - b.lit) * Math.min(1, dt * 6 || 1);
+        const k = DIM + (1 - DIM) * b.lit, L = isLight();
+        b.mats.forEach(m => { m.color.setScalar(L ? 1 : k); m.opacity = L ? k * k : 1; });   // k^2: i puntini sovrapposti sommano
         b.spins.forEach(sp => {   // inerzia del drag, poi torna piano dritto (Footprint deve guardare l'Europa)
           if (drag && drag.sp === sp) return;
           if (Math.hypot(sp.vx, sp.vy) > .05) { turn(sp, sp.vx * dt, sp.vy * dt); const k = Math.exp(-dt * 2.5); sp.vx *= k; sp.vy *= k; }
