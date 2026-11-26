@@ -171,7 +171,7 @@
     // Quello attivo sta davanti, a destra del cerchio a meta' altezza, grande; gli altri due sopra e sotto,
     // piccoli. La card sta a destra dell'attivo. HH e' meta' altezza della scena; la card prende
     // --card-l (px) da qui.
-    const HH = 1.4, BIG = .72, SMALL = .34, R = .95;
+    const HH = 1.25, BIG = .68, SMALL = .3, R = .82;
     // il canvas sborda dallo stage di PAD (unita' di scena) per lato: mentre la ruota gira i pianeti escono
     // sopra, sotto e a sinistra, e dentro lo stage venivano tagliati come in una scatola
     const PAD = .6;

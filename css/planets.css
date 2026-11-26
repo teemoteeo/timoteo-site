@@ -5,11 +5,11 @@
 .system { display: none; }
 
 @media (min-width: 901px) and (hover: hover) {
-  .system { display: block; margin: 4px 0 24px; }
-  .system .sections-header-col { margin-bottom: 14px; }   /* come in .featured */
+  .system { display: block; margin: -18px 0 12px; }
+  .system .sections-header-col { margin-bottom: 8px; }
   .system ~ .featured { display: none; }   /* le card ora stanno nello stage */
 
-  .sys-stage { position: relative; height: clamp(280px, 34vh, 310px); }
+  .sys-stage { position: relative; height: clamp(230px, 28vh, 260px); }
   .sys-stage canvas { position: absolute; display: block; pointer-events: none; }   /* sborda dallo stage: misure e inset da js/planets.js size() */
   .sys-stage.is-hit { cursor: pointer; }
   .sys-label {
