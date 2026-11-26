@@ -96,6 +96,9 @@
     const shell = fill('#141418', '#55575e', 0, new T.SphereGeometry(.985, 64, 48, 0, Math.PI * 2, th, Math.PI - th));
     shell.quaternion.setFromUnitVectors(new T.Vector3(0, 1, 0), new T.Vector3(...axis));
     const g = new T.Group().add(shell, fill('#0c0c0f', '#3c3e44', .87), layer(xyz, dots.length, at, 1.5));
+    // il cratere parte dietro, a -120 gradi dal centro: girando (rotation.y cresce, i punti vanno da sinistra
+    // verso il centro) spunta dal bordo sinistro dopo ~5s e arriva al centro in ~19s, mentre lo guardi
+    g.rotation.y = -120 * D - Math.atan2(axis[0], axis[2]);
     g.userData.tick = dt => { g.rotation.y += dt / 9; };
     g.userData.hit = [[g, 1]];
     return g;
