@@ -44,7 +44,7 @@
   // i blocchi che compongono la pagina: sono box veri sia su desktop sia su mobile,
   // dove sidebar, main e i wrapper diventano display:contents
   const COMPOSE = '.site-domain, .profile-pic-container, .profile-id, .sidebar-contacts, nav[data-boot], .oracle, '
-    + '.hero-copy-shell, .ticker-wrapper, .featured, [data-boot="projects"], .bio-block, '
+    + '.hero-copy-shell, .ticker-wrapper, .featured, .system, [data-boot="projects"], .bio-block, '
     + '.display-header, .display-section, .tech-grid-section, .other-section';
 
   function startIntro() {

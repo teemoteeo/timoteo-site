@@ -1,0 +1,40 @@
+/* ===== SELECTED WORK: PIANETI (desktop con hover) =====
+   [ruota con i tre pianeti, l'attivo davanti] [card .feat del pianeta attivo].
+   Le card sono quelle di selected work, spostate da js/planets.js dentro .sys-card. Si parte da Footprint.
+   Sotto 901px o sui touch resta la lista .featured intera, come prima. */
+.system { display: none; }
+
+@media (min-width: 901px) and (hover: hover) {
+  .system { display: block; margin: -6px 0 24px; }
+  .system ~ .featured { display: none; }   /* le card ora stanno nello stage */
+
+  .sys-stage { position: relative; height: clamp(280px, 34vh, 310px); }
+  .sys-stage canvas { position: absolute; display: block; pointer-events: none; }   /* sborda dallo stage: misure e inset da js/planets.js size() */
+  .sys-stage.is-hit { cursor: pointer; }
+  .sys-label {
+    position: absolute; left: 0; top: 0; pointer-events: none; white-space: nowrap;
+    font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--fg-muted);
+    transition: color .15s;
+  }
+  .sys-label.is-on { color: var(--fg); }
+
+  /* --card-l: il bordo destro del pianeta attivo, in px (js/planets.js size()) */
+  .sys-card { position: absolute; left: var(--card-l, 40%); right: 0; top: 50%; transform: translateY(-50%); z-index: 1; }
+  .sys-card .feat:not(.is-active) { display: none; }
+  .sys-card { container-type: inline-size; }
+  .sys-card .feat { --mh: 92px; grid-template-columns: 200px minmax(0, 1fr) auto; column-gap: 18px; }   /* la striscia di sempre, anteprima piu' stretta */
+  /* card stretta (schermi sotto ~1300px): anteprima | testo, i numeri sotto il testo */
+  @container (max-width: 640px) {
+    .sys-card .feat { --mh: 84px; grid-template-columns: 150px minmax(0, 1fr); column-gap: 14px; row-gap: 6px; }
+    .sys-card .feat-img { grid-row: 1 / 3; height: auto; min-height: var(--mh); align-self: stretch; }
+    .sys-card .feat-foot { grid-column: 2; flex-direction: row; justify-content: space-between; align-items: baseline; padding-right: 8px; }
+  }
+  @container (max-width: 460px) {
+    .sys-card .feat { grid-template-columns: 112px minmax(0, 1fr); }
+  }
+  .sys-card .feat.is-active { animation: sys-in .25s ease-out; }
+  @keyframes sys-in { from { opacity: 0; transform: translateX(-6px); } }
+
+  /* link reali per la tastiera: fuori vista, a fuoco attivano il pianeta */
+  .sys-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+}

@@ -1,0 +1,314 @@
+// ============================
+// SELECTED WORK: RUOTA DI PIANETI + LA CARD DEL PIANETA ATTIVO
+// ============================
+// Layout: a sinistra una ruota con i tre pianeti (l'attivo davanti e grande, gli altri sopra e sotto),
+// a destra dell'attivo la sua card. Hover su un pianeta sopra o sotto: la ruota gira e lo porta davanti.
+// Tre progetti come pianeti a puntini, nello stile di DotPlanet.jsx di POLENTA (Points a
+// pixel fissi + una sfera piena appena dentro che nasconde i puntini dietro):
+//   POLENTA   Marte + Luna, sempre insieme (i puntini sono quelli di POLENTA)
+//   Footprint la Terra da foto satellitare (NASA Blue Marble) con la heatmap 2020-2026 animata in rosso
+//   RAG       la Morte Nera di js/ships-sw.js (tools/deathstar-dots.js)
+// Le card .feat di selected work (index.html, data-planet) vengono spostate nello stage: si vede solo quella
+// del pianeta attivo, con la clip che gira. Click sul pianeta attivo o sulla card: apre il progetto.
+// Si parte da Footprint. Ogni corpo ha due palette (tema scuro / chiaro), cambiate su 'themechange'.
+// three.js r128 e' quello del cubo e della palla 8: lo riuso se c'e'. Si carica solo vicino alla sezione.
+// Solo desktop con hover: sotto 901px / touch resta la lista .featured intera (css/planets.css).
+(function () {
+  const stage = document.querySelector('.sys-stage');
+  if (!stage || !matchMedia('(min-width: 901px) and (hover: hover)').matches) return;
+  const sr = stage.querySelector('.sys-sr');
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isLight = () => document.documentElement.dataset.theme === 'light';
+  const ORDER = ['pol', 'fp', 'rag'];
+  const feats = {}; document.querySelectorAll('.featured .feat[data-planet]').forEach(f => { feats[f.dataset.planet] = f; });
+  const P = {}; ORDER.forEach(id => { const a = feats[id].querySelector('.feat-link'); P[id] = { name: a.textContent, url: a.getAttribute('href'), ext: a.target === '_blank' }; });
+  // le card entrano nello stage, tra il pianeta attivo e la mezzaluna (la sezione .featured resta vuota, css la nasconde)
+  const card = document.createElement('div'); card.className = 'sys-card';
+  card.append(document.querySelector('.featured .feat-grid')); stage.append(card);
+
+  // la card del pianeta attivo: le altre nascoste, la sua clip in play (js/preview.js le mette la sorgente)
+  let shown = '';
+  function showCard(id) {
+    if (shown === id) return;
+    shown = id;
+    ORDER.forEach(k => {
+      const f = feats[k], v = f.querySelector('video.pv'), on = k === id;
+      f.classList.toggle('is-active', on);
+      if (v) on ? v.play().catch(() => {}) : v.pause();
+    });
+  }
+  showCard('fp');
+
+  let T, D;
+  const ll = (lon, lat) => { const c = Math.cos(lat * D); return [c * Math.sin(lon * D), Math.sin(lat * D), c * Math.cos(lon * D)]; };
+  const DOT_K = .7;   // puntini piccoli rispetto alla sfera: l'effetto digitale
+  const themed = [];  // funzioni (light) => ridipingi; chiamate al cambio tema
+
+  function points(xyz, col, dot) {
+    const g = new T.BufferGeometry();
+    g.setAttribute('position', new T.BufferAttribute(xyz instanceof Float32Array ? xyz : new Float32Array(xyz), 3));
+    g.setAttribute('color', new T.BufferAttribute(col, 4));
+    return new T.Points(g, new T.PointsMaterial({ size: dot * DOT_K, sizeAttenuation: false, vertexColors: true, transparent: true, depthWrite: false }));
+  }
+  // uno strato di puntini colorato da colorAt(i, light) -> [r, g, b, a] (0-1), ridipinto al cambio tema
+  function layer(xyz, n, colorAt, dot) {
+    const col = new Float32Array(n * 4), pts = points(xyz, col, dot), attr = pts.geometry.attributes.color;
+    const paint = L => { for (let i = 0; i < n; i++) col.set(colorAt(i, L), i * 4); attr.needsUpdate = true; };
+    paint(isLight()); themed.push(paint);
+    return pts;
+  }
+  function fill(dark, light, r = .995, geo) {
+    const m = new T.Mesh(geo || new T.SphereGeometry(r, 64, 32), new T.MeshBasicMaterial({ color: isLight() ? light : dark, side: geo ? T.DoubleSide : T.FrontSide }));
+    themed.push(L => m.material.color.set(L ? light : dark));
+    return m;
+  }
+
+  // POLENTA: [lon, lat, peso] con un colore per tema
+  function dotBody(dots, dark, light, fd, fl, dot) {
+    const xyz = [];
+    dots.forEach(([lon, lat]) => xyz.push(...ll(lon, lat)));
+    const at = (i, L) => { const c = L ? light : dark, w = dots[i][2] ?? 1; return [c[0] / 255, c[1] / 255, c[2] / 255, c[3] * w]; };
+    return new T.Group().add(fill(fd, fl), layer(xyz, dots.length, at, dot));
+  }
+
+  // Marte e Luna sono un corpo solo (Luna 0.51 come in POLENTA, accanto a Marte)
+  function polenta(mars, moon) {
+    const m = dotBody(mars, [255, 165, 120, .88], [170, 72, 34, .9], '#1d1512', '#e9ddd3', 1.8);
+    const l = dotBody(moon, [205, 208, 215, .59], [58, 60, 68, .85], '#17181c', '#e2e0da', 1.4);
+    l.position.set(1.62, .38, -.35); l.scale.setScalar(.51);
+    const g = new T.Group().add(m, l);
+    g.userData.tick = dt => { m.rotation.y += dt / 9; l.rotation.y += dt / 6.4; };
+    g.userData.hit = [[m, 1], [l, 1]];
+    return g;
+  }
+
+  // Morte Nera: sfera con il buco della parabola + sfera interna che chiude la vista attraverso il buco
+  function deathStar({ axis, cut, dots }) {
+    const xyz = new Float32Array(dots.length * 3); dots.forEach(([x, y, z], i) => xyz.set([x, y, z], i * 3));
+    const at = (i, L) => {
+      const w = dots[i][3];
+      if (dots[i][4]) return L ? [.85, .5, 0, 1] : [1, .83, .5, 1];
+      return L ? [.5 - .32 * w, .5 - .32 * w, .54 - .32 * w, .5 + .4 * w] : [.75 * w + .1, .76 * w + .1, .8 * w + .1, .55 + .4 * w];
+    };
+    const th = Math.acos(cut) + .02;
+    const shell = fill('#141418', '#dedcd6', 0, new T.SphereGeometry(.985, 64, 48, 0, Math.PI * 2, th, Math.PI - th));
+    shell.quaternion.setFromUnitVectors(new T.Vector3(0, 1, 0), new T.Vector3(...axis));
+    const g = new T.Group().add(shell, fill('#0c0c0f', '#d2d0c9', .87), layer(xyz, dots.length, at, 1.5));
+    g.userData.tick = dt => { g.rotation.y += dt / 9; };
+    g.userData.hit = [[g, 1]];
+    return g;
+  }
+
+  // Terra: un colore solo, la foto decide il peso: mare quasi spento, terra sulla luminosita' in 4 livelli
+  function earth(img) {
+    const W = img.width, H = img.height, c = document.createElement('canvas'); c.width = W; c.height = H;
+    const x = c.getContext('2d'); x.drawImage(img, 0, 0);
+    const px = x.getImageData(0, 0, W, H).data, n = 60000, g = Math.PI * (3 - Math.sqrt(5)), xyz = [], w = new Float32Array(n);
+    for (let i = 0; i < n; i++) {
+      const lat = Math.asin(1 - 2 * (i + .5) / n) / D, lon = ((i * g / D) % 360 + 540) % 360 - 180;
+      const k = (Math.min(H - 1, (90 - lat) / 180 * H | 0) * W + Math.min(W - 1, (lon + 180) / 360 * W | 0)) * 4;
+      const R = px[k], G = px[k + 1], B = px[k + 2], sea = B > R * 1.4 && B > G * 1.2, l = (.299 * R + .587 * G + .114 * B) / 255;
+      xyz.push(...ll(lon, lat)); w[i] = sea ? -1 : Math.ceil(Math.min(1, .35 + l * 1.1) * 4) / 4;
+    }
+    const at = (i, L) => L ? [30 / 255, 80 / 255, 160 / 255, w[i] < 0 ? .16 : w[i] * .9] : [190 / 255, 215 / 255, 1, w[i] < 0 ? .12 : w[i]];
+    return new T.Group().add(fill('#0b1018', '#e1e5ec'), layer(xyz, n, at, 1.8));
+  }
+
+  // FOOTPRINT: heatmap rossa sopra la Terra, un puntino per cella da 5 km, due strati: memoria (rosso tenue)
+  // e presente (mese corrente con coda di TAU mesi, puntini piu' grossi). Un giro = un ciclo: i mesi dal 2020
+  // partono quando l'Europa entra da sinistra (START) e finiscono con l'Europa al centro (PLAY), poi resta la
+  // heatmap dei 10 anni fino al giro dopo. L'asse e' inclinato verso la camera: a meta' giro l'Europa e' al centro.
+  function footprint(img) {
+    const e = earth(img), F = window.FOOTPRINT, cells = F.grid.cells, NC = cells.length, M = F.grid.months.length;
+    const xyz = []; cells.forEach(([la, lo]) => xyz.push(...ll(lo, la).map(v => v * 1.004)));
+    const memCol = new Float32Array(NC * 4), glowCol = new Float32Array(NC * 4);
+    const mem = points(xyz, memCol, 2), glw = points(xyz, glowCol, 4.2), mA = mem.geometry.attributes.color, gA = glw.geometry.attributes.color;
+    const red = L => { const c = L ? [.82, .1, .08] : [1, .23, .2]; for (let i = 0; i < NC; i++) { memCol.set(c, i * 4); glowCol.set(c, i * 4); } mA.needsUpdate = gA.needsUpdate = true; };
+    red(isLight()); themed.push(red);
+    e.add(mem, glw);
+    const TAU = 5, decay = Math.exp(-1 / TAU), glow = new Float32Array(NC), seen = new Float32Array(NC), total = new Float32Array(NC);
+    F.grid.months.forEach(m => m.forEach(([c, v]) => { total[c] += v; }));
+    const lMax = Math.log10(1 + Math.max(...total));
+    function paint(fin) {
+      for (let c = 0; c < NC; c++) {
+        const m = seen[c] ? .2 + .55 * Math.log10(1 + seen[c]) / lMax : 0, t = .35 + .65 * Math.log10(1 + total[c]) / lMax;
+        memCol[c * 4 + 3] = total[c] ? m + (t - m) * fin : 0;
+        glowCol[c * 4 + 3] = Math.min(1, Math.sqrt(glow[c]) / 3.2) * (1 - fin);
+      }
+      mA.needsUpdate = gA.needsUpdate = true;
+    }
+    const FRONT = -9 * D, FIRST = F.months.findIndex(m => m.m === '2020-01');
+    const START = .25, PLAY = .5, RATE = (M - FIRST) / (PLAY - START);   // mesi per giro (~324)
+    let phase = START, month = FIRST - 1, fin = 0;   // al caricamento si parte subito dal 2020
+    const tilt = new T.Group().add(e); tilt.rotation.x = 41 * D;
+    const reset = () => { month = FIRST - 1; fin = 0; glow.fill(0); seen.fill(0); paint(0); };
+    tilt.userData.tick = (dt, label) => {
+      phase += dt / 9 / (2 * Math.PI);   // stessa velocita' degli altri pianeti
+      if (phase >= 1) { phase -= 1; reset(); }
+      e.rotation.y = FRONT + Math.PI + phase * 2 * Math.PI;
+      const target = Math.min(M - 1, FIRST + Math.floor(Math.max(0, phase - START) * RATE));
+      if (target > month) {
+        while (month < target) { month++; for (let c = 0; c < NC; c++) glow[c] *= decay; for (const [c, v] of F.grid.months[month]) { glow[c] += v; seen[c] += v; } }
+        paint(0);
+      }
+      if (phase > PLAY && fin < 1) { fin = Math.min(1, fin + dt / 1.5); paint(fin); }
+      const m = F.months[Math.max(FIRST, month)].m.split('-');
+      label.textContent = 'footprint · ' + (phase > PLAY ? '2015 – 2026' : new Date(m[0], m[1] - 1).toLocaleString('en', { month: 'short' }) + ' ' + m[0]);
+    };
+    tilt.userData.hit = [[e, 1]];
+    return tilt;
+  }
+
+  // ---------- scena ----------
+  function boot() {
+    T = window.THREE; D = Math.PI / 180;
+    const r = new T.WebGLRenderer({ alpha: true, antialias: true });
+    r.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+    stage.prepend(r.domElement);
+    // camera ortografica: con lo stage cosi' largo la prospettiva stirava in ovali i pianeti ai lati
+    const sc = new T.Scene(), cam = new T.OrthographicCamera(-1, 1, 1, -1, .1, 100);
+    // ruota a sinistra: i tre pianeti sul bordo di un cerchio (centro C, raggio R) a 120 gradi l'uno dall'altro.
+    // Quello attivo sta davanti, a destra del cerchio a meta' altezza, grande; gli altri due sopra e sotto,
+    // piccoli. La card sta a destra dell'attivo. HH e' meta' altezza della scena; la card prende
+    // --card-l (px) da qui.
+    const HH = 1.4, BIG = .72, SMALL = .34, R = .95;
+    // il canvas sborda dallo stage di PAD (unita' di scena) per lato: mentre la ruota gira i pianeti escono
+    // sopra, sotto e a sinistra, e dentro lo stage venivano tagliati come in una scatola
+    const PAD = .6;
+    let W = 1, H = 1, C = 0, PX = 0;
+    function size() {
+      W = stage.clientWidth; H = stage.clientHeight;
+      const X = HH * W / H, u = H / (2 * HH);   // meta' larghezza in unita' di scena; px per unita'
+      PX = PAD * u; r.setSize(W + 2 * PX, H + 2 * PX); r.domElement.style.inset = -PX + 'px';
+      cam.left = -X - PAD; cam.right = X + PAD; cam.top = HH + PAD; cam.bottom = -HH - PAD; cam.updateProjectionMatrix();
+      cam.position.set(0, 0, 20); cam.lookAt(0, 0, 0);
+      C = -X + 1;   // sopra e sotto stanno a C - R/2: la coppia piccola di POLENTA e' larga 1
+      // Marte+Luna davanti: la Luna finisce a C + R + 1.565 * BIG
+      stage.style.setProperty('--card-l', (C + R + 1.565 * BIG + .12 + X) * u + 'px');
+    }
+    new ResizeObserver(size).observe(stage); size();
+
+    const bodies = [];
+    let sel = ORDER.indexOf('fp');
+    function place(id, obj, big, name) {
+      sc.add(obj);
+      const l = document.createElement('div'); l.className = 'sys-label'; l.textContent = l.dataset.n = name; stage.appendChild(l);
+      bodies[ORDER.indexOf(id)] = { id, obj, big, l };
+    }
+    ORDER.forEach(id => {   // link per la tastiera: a fuoco attivano il pianeta
+      const a = document.createElement('a'); a.href = P[id].url; a.textContent = P[id].name;
+      if (P[id].ext) { a.target = '_blank'; a.rel = 'noopener'; }
+      a.addEventListener('focus', () => select(ORDER.indexOf(id)));
+      sr.appendChild(a);
+    });
+    const J = p => fetch('images/dots/' + p + '.json').then(x => x.json());
+    const IMG = src => new Promise((ok, ko) => { const i = new Image(); i.onload = () => ok(i); i.onerror = ko; i.src = src; });
+    const SCRIPT = src => new Promise((ok, ko) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = ko; document.head.appendChild(s); });
+    Promise.all([J('mars-dots'), J('moon-dots'), J('deathstar-dots'), IMG('images/dots/earth.jpg'), window.FOOTPRINT ? 0 : SCRIPT('js/projects/data/footprint.js?v=20261003k')])
+      .then(([mars, moon, dsd, img]) => {
+        const pol = polenta(mars, moon); pol.userData.dx = -.565;   // Marte + Luna: centrata la coppia, non Marte (per unita' di scala)
+        place('pol', pol, 1, 'polenta');
+        place('fp', footprint(img), 1.1, 'footprint');
+        place('rag', deathStar(dsd), 1, 'rag');
+      });
+    document.addEventListener('themechange', () => { const L = isLight(); themed.forEach(f => f(L)); });
+
+    // off va da `from` a `target` lungo la ruota, dalla parte piu' corta, in SPIN secondi (ease in-out); tw 0..1.
+    // La card cambia a meta' giro (loop), quando il pianeta sta arrivando davanti
+    const SPIN = .75;
+    let off = sel, from = sel, target = sel, tw = 1;
+    function select(i) {
+      if (i < 0 || i === sel) return;
+      sel = i;
+      const n = ORDER.length; let t = i; while (t - off > n / 2) t -= n; while (off - t > n / 2) t += n;
+      from = off; target = t; tw = 0;
+    }
+
+    // hit test in schermo: centro e raggio proiettati di ogni sfera (con un po' di margine: facile da prendere)
+    const v = new T.Vector3(), v2 = new T.Vector3(), ws = new T.Vector3();
+    function screenCircle(mesh, rad) {
+      mesh.getWorldPosition(v); mesh.getWorldScale(ws);
+      v2.copy(v); v2.x += rad * ws.x; v.project(cam); v2.project(cam);
+      const cw = W + 2 * PX, ch = H + 2 * PX;   // in px dello stage, non del canvas
+      return [(v.x + 1) / 2 * cw - PX, (1 - v.y) / 2 * ch - PX, Math.abs(v2.x - v.x) / 2 * cw];
+    }
+    function hitAt(x, y) {   // il piu' vicino alla camera tra quelli sotto il puntatore
+      let best = -1, bz = -1e9;
+      for (let i = 0; i < bodies.length; i++) {
+        const b = bodies[i]; if (!b) continue;
+        for (const [mesh, rad] of b.obj.userData.hit) { const [cx, cy, cr] = screenCircle(mesh, rad); if (Math.hypot(x - cx, y - cy) < cr * 1.15 + 6 && b.obj.position.z > bz) { best = i; bz = b.obj.position.z; } }
+      }
+      return best;
+    }
+    const local = e => { const b = stage.getBoundingClientRect(); return [e.clientX - b.left, e.clientY - b.top]; };
+    // hover su un pianeta sopra o sotto per DWELL secondi a ruota ferma: la ruota lo porta davanti. Il test si
+    // rifa' a ogni frame sull'ultima posizione del mouse (la ruota si muove anche col mouse fermo). Dopo una
+    // rotazione sotto il mouse fermo arriva un altro pianeta: non conta finche' il mouse non e' uscito dai
+    // pianeti a ruota ferma (armed). Click sul pianeta attivo: apre
+    const DWELL = .25;
+    let ptr = null, armed = true, dwell = 0, hot = -1;   // hot: il pianeta in attesa, cresce un po' (loop)
+    stage.addEventListener('pointermove', e => { ptr = local(e); });
+    stage.addEventListener('pointerleave', () => { ptr = null; });
+    function hover(dt) {
+      const i = ptr ? hitAt(...ptr) : -1, settled = tw >= 1;
+      stage.classList.toggle('is-hit', i >= 0);
+      hot = -1;
+      if (!settled) { dwell = 0; return; }
+      if (i < 0) { armed = true; dwell = 0; return; }
+      if (i === sel || !armed) { dwell = 0; return; }
+      hot = i;
+      if ((dwell += dt) >= DWELL || still) { armed = false; dwell = 0; select(i); }
+    }
+    stage.addEventListener('click', e => {
+      const i = hitAt(...local(e)); if (i < 0 || i !== sel) return;
+      const p = P[ORDER[i]];
+      if (p.ext) window.open(p.url, '_blank', 'noopener'); else location.href = p.url;
+    });
+
+    // loop: fermo fuori schermo
+    let on = true, last = performance.now();
+    new IntersectionObserver(es => { const was = on; on = es[0].isIntersecting; if (on && !was) { last = performance.now(); requestAnimationFrame(loop); } }).observe(stage);
+    function loop(now) {
+      if (!on) return;
+      const dt = still ? 0 : Math.min(.05, (now - last) / 1000); last = now;
+      tw = still ? 1 : Math.min(1, tw + dt / SPIN);
+      off = from + (target - from) * (tw < .5 ? 4 * tw ** 3 : 1 - (2 - 2 * tw) ** 3 / 2);
+      if (tw >= .45) showCard(ORDER[sel]);
+      bodies.forEach((b, i) => {
+        if (!b) return;
+        // th: 0 davanti (destra della ruota), +120 sopra, -120 sotto; front: 1 davanti, 0 sopra/sotto
+        b.h = (b.h || 0) + ((i === hot) - (b.h || 0)) * Math.min(1, dt * 10 || 1);
+        const th = (off - i) * 120 * D, front = (Math.cos(th) + .5) / 1.5;
+        const s = b.big * (SMALL + (BIG - SMALL) * front) * (1 + .12 * b.h);   // dietro (-1/3) ancora piu' piccolo
+        b.obj.position.set(C + R * Math.cos(th) + (b.obj.userData.dx || 0) * s, R * Math.sin(th), front);   // z: davanti sopra
+        b.obj.scale.setScalar(s);
+        if (b.obj.userData.tick) b.obj.userData.tick(dt, b.l);
+        if (i !== sel && b.l.textContent !== b.l.dataset.n) b.l.textContent = b.l.dataset.n;   // il mese di Footprint solo da attivo
+        const [cx, cy, cr] = screenCircle(...b.obj.userData.hit[0]);
+        const mid = b.id === 'pol' ? cx + cr * .8 : cx;   // etichetta di POLENTA sotto la coppia
+        b.l.style.transform = `translate(${mid - b.l.offsetWidth / 2}px, ${cy + cr + 8}px)`;
+        b.l.classList.toggle('is-on', i === sel);
+        b.l.style.opacity = Math.max(0, Math.min(1, front * 3 + 1));   // chi passa dietro: niente etichetta
+      });
+      hover(dt);
+      r.render(sc, cam);
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+  }
+
+  // un solo three.js per pagina: se cube-loader / eightball lo stanno caricando mi aggancio
+  function start() {
+    if (window.THREE) return boot();
+    const pending = document.querySelector('script[src*="three.min.js"]');
+    if (pending) return pending.addEventListener('load', boot);
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+    s.onload = boot;
+    document.head.appendChild(s);
+  }
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); start(); } }, { rootMargin: '300px' });
+    io.observe(stage);
+  } else start();
+})();
