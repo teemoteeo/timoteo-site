@@ -71,12 +71,12 @@
     return new T.Group().add(fill(fd, fl), layer(xyz, dots.length, at, dot));
   }
 
-  // Marte e Luna sono un corpo solo (Luna 0.51 come in POLENTA). La Luna sta in alto a destra, appena staccata
-  // (distanza 1.51 = 1 + 0.51): la coppia e' larga 2.76 invece di 3.13 e da attiva lascia piu' spazio alla card
+  // Marte e Luna sono un corpo solo (Luna 0.51 come in POLENTA). La Luna sta in alto a destra, staccata di 0.2
+  // (distanza 1.71): la coppia e' larga 2.86 invece di 3.13 e da attiva lascia piu' spazio alla card
   function polenta(mars, moon) {
     const m = dotBody(mars, [255, 165, 120, .88], [170, 72, 34, .9], '#1d1512', '#e9ddd3', 1.8);
     const l = dotBody(moon, [205, 208, 215, .59], [58, 60, 68, .85], '#17181c', '#e2e0da', 1.4);
-    l.position.set(1.25, .85, 0); l.scale.setScalar(.51);
+    l.position.set(1.35, 1.05, 0); l.scale.setScalar(.51);
     const g = new T.Group().add(m, l);
     g.userData.tick = dt => { m.rotation.y += dt / 9; l.rotation.y += dt / 6.4; };
     g.userData.hit = [[m, 1], [l, 1]];
@@ -184,8 +184,8 @@
       W = stage.clientWidth;
       const u = stage.clientHeight / (2 * HH), X = W / 2 / u;   // px per unita'; meta' larghezza in unita'
       C = -X + 1;   // sopra e sotto stanno a C - R/2: la coppia piccola di POLENTA e' larga 1
-      // Marte+Luna davanti (centrati con dx): la Luna finisce a C + R + 1.38 * BIG
-      stage.style.setProperty('--card-l', (C + R + 1.38 * BIG + .12 + X) * u + 'px');
+      // Marte+Luna davanti (centrati con dx): la Luna finisce a C + R + 1.43 * BIG
+      stage.style.setProperty('--card-l', (C + R + 1.43 * BIG + .12 + X) * u + 'px');
       const tall = Math.max(...ORDER.map(k => { const f = feats[k], d = f.style.display; f.style.display = 'grid'; const h = f.offsetHeight; f.style.display = d; return h; }));
       stage.style.minHeight = tall + 24 + 'px';
       H = stage.clientHeight;
@@ -227,7 +227,7 @@
     const SCRIPT = src => new Promise((ok, ko) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = ko; document.head.appendChild(s); });
     Promise.all([J('mars-dots'), J('moon-dots'), J('deathstar-dots'), IMG('images/dots/earth.jpg'), window.FOOTPRINT ? 0 : SCRIPT('js/projects/data/footprint.js?v=20261003k')])
       .then(([mars, moon, dsd, img]) => {
-        const pol = polenta(mars, moon); pol.userData.dx = -.38;   // Marte + Luna: centrata la coppia, non Marte (per unita' di scala)
+        const pol = polenta(mars, moon); pol.userData.dx = -.43;   // Marte + Luna: centrata la coppia, non Marte (per unita' di scala)
         place('pol', pol, 1, 'polenta');
         place('fp', footprint(img), 1.1, 'footprint');
         place('rag', deathStar(dsd), 1, 'rag');
@@ -343,7 +343,7 @@
         if (b.obj.userData.tick) b.obj.userData.tick(dt, b.l);
         if (i !== sel && b.l.textContent !== b.l.dataset.n) b.l.textContent = b.l.dataset.n;   // il mese di Footprint solo da attivo
         const [cx, cy, cr] = screenCircle(...b.obj.userData.hit[0]);
-        const mid = b.id === 'pol' ? cx + cr * .38 : cx;   // etichetta di POLENTA sotto la coppia
+        const mid = b.id === 'pol' ? cx + cr * .43 : cx;   // etichetta di POLENTA sotto la coppia
         b.l.style.transform = `translate(${mid - b.l.offsetWidth / 2}px, ${cy + cr + 8}px)`;
         b.l.classList.toggle('is-on', i === sel);
         b.l.style.opacity = Math.max(0, Math.min(1, front * 3 + 1));   // chi passa dietro: niente etichetta
