@@ -10,7 +10,7 @@
   const btn   = document.getElementById('sb-cube-btn');
   if (!stack || !shell) return;
 
-  const V = '?v=20261126c';
+  const V = '?v=20261126d';
   let started = false;
 
   function load() {

@@ -315,7 +315,7 @@ function initRubikCube() {
   // l'intro (js/boot.js) tiene il cubo fermo nella posa di riposo mentre il cubo ASCII lo costruisce:
   // quella posa e' icons/cube-ph.png, da cui e' fatto l'ASCII. false: riprende a girare piano
   // Lasciato, riparte da fermo accelerando in ROT_IN ms: prima passava di colpo da 0 a velocita' piena
-  const ROT_IN = 1800;
+  const ROT_IN = 600;
   let rotK = 1, rotT0 = 0;
   window.rubikHold = function (hold) {
     if (hold) { autoRotate = false; rotK = 0; cubeGroup.rotation.set(0, 0, 0); }

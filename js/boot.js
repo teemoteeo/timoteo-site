@@ -192,14 +192,15 @@
       if (entered) return;
       if (window.rubikHold) window.rubikHold(true);   // fermo nella posa dell'ASCII finche' non lo sostituisce
       if (ascii.done() && (cube.classList.contains('is-live') || performance.now() - t0 > 4000)) showCube();
-      else setTimeout(wait, 50);
+      else requestAnimationFrame(wait);   // al frame: nessuna pausa tra cubo completo e partenza
     })();
     // l'ASCII sfuma e il cubo vero compare sul posto, fermo: stessa posa del segnaposto, combaciano
     function showCube() {
       revealed = true;
       ascii.el.classList.add('out'); setTimeout(ascii.stop, 800);   // .ci-ascii.out: aspetta che il cubo sotto sia pieno
       cube.classList.replace('ascii-wait', 'cube-reveal'); ui.classList.remove('ci-wait');
-      if (window.rubikHold) { window.rubikHold(true); setTimeout(() => window.rubikHold(false), 700); }   // a scambio finito riprende a girare, accelerando piano
+      // parte subito: il canvas ASCII ricopia il cubo vero a ogni frame (rubikAfterRender), girano insieme
+      if (window.rubikHold) window.rubikHold(false);
       // entered spegne anche cube-in: togliendo solo cube-reveal, il canvas ripartiva con cube-in (lampo)
       setTimeout(() => cube.classList.replace('cube-reveal', 'entered'), 700);
       // il cubo si fa notare: ogni 2.6s gira una faccia e la rimette a posto (la prima dopo che ha ripreso a girare)
