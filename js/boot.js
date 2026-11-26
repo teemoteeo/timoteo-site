@@ -36,6 +36,8 @@
   // disordine) trasforma ogni carattere, con un lampo, nei pixel veri dell'immagine in quel punto. Alla fine
   // sul canvas c'e' il cubo intero, identico al cubo WebGL fermo: done() e' vero e l'intro ci mette sotto
   // il cubo vero, poi toglie il canvas. Nessun cubo nuovo che compare: e' lo stesso che prende corpo.
+  // I pixel della materializzazione sono quelli del canvas WebGL (copiati dopo ogni render, a piena
+  // risoluzione): il segnaposto da 340px ingrandito era sgranato. Il segnaposto resta se three.js tarda.
   const RAMP = '.:-=+*#%@';
   const PAL = [[245, 245, 245], [229, 57, 53], [239, 108, 0], [21, 101, 192], [67, 160, 71], [255, 214, 0]];   // js/rubik3d.js
   const STEP0 = .15, RATIO = .86, BODY_IN = .3, MAT = 1.1;   // MAT: durata della materializzazione
@@ -44,7 +46,13 @@
     cv.className = 'ci-ascii';
     const light = root.dataset.theme === 'light';
     const grey = getComputedStyle(root).getPropertyValue('--fg-muted').trim() || '#888';
-    let W = 0, H = 0, dpr = 1, grid = null, t0 = 0, raf = 0, end = Infinity, matAt = Infinity;
+    let W = 0, H = 0, dpr = 1, grid = null, t0 = 0, raf = 0, end = Infinity, matAt = Infinity, snap = null;
+    window.rubikAfterRender = c => {   // la copia del cubo vero, fermo nella posa del segnaposto (rubikHold)
+      if (!c.width) return;
+      if (!snap) snap = document.createElement('canvas');
+      if (snap.width !== c.width || snap.height !== c.height) { snap.width = c.width; snap.height = c.height; }
+      const g = snap.getContext('2d'); g.clearRect(0, 0, snap.width, snap.height); g.drawImage(c, 0, 0);
+    };
     function fit() {
       dpr = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight;
       cv.width = W * dpr; cv.height = H * dpr; cv.style.width = W + 'px'; cv.style.height = H + 'px';
@@ -104,7 +112,7 @@
       if (mt > 0) {   // le celle gia' materializzate: i pixel dell'immagine, ritagliati (rettangoli un filo piu' grandi: niente righe tra le celle)
         x.save(); x.beginPath();
         for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) if (mt >= mat[j * cols + i]) x.rect(r.left + i * cw - .3, r.top + j * ch - .3, cw + .6, ch + .6);
-        x.clip(); x.globalAlpha = 1; x.drawImage(img, r.left, r.top, r.width, r.height); x.restore();
+        x.clip(); x.globalAlpha = 1; x.drawImage(snap || img, r.left, r.top, r.width, r.height); x.restore();
       }
       x.font = `700 ${fs}px 'JetBrains Mono', monospace`; x.textBaseline = 'middle'; x.textAlign = 'center';
       const fade = Math.min(1, t / BODY_IN);
@@ -128,7 +136,7 @@
     return {
       el: cv,
       done: () => grid && (performance.now() - t0) / 1000 >= end || end === 0,
-      stop() { cancelAnimationFrame(raf); removeEventListener('resize', fit); cv.remove(); },
+      stop() { cancelAnimationFrame(raf); removeEventListener('resize', fit); cv.remove(); window.rubikAfterRender = null; },
     };
   }
 

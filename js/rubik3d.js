@@ -332,6 +332,8 @@ function initRubikCube() {
     }
     if (state === 'solving') showTime(performance.now() - solveStart);
     renderer.render(scene, camera);
+    // l'intro (js/boot.js) copia il cubo appena disegnato: subito dopo il render il canvas WebGL e' pieno
+    if (window.rubikAfterRender) window.rubikAfterRender(renderer.domElement);
   })();
 
   syncBtn();
