@@ -199,12 +199,11 @@
       revealed = true;
       ascii.el.classList.add('out'); setTimeout(ascii.stop, 800);   // .ci-ascii.out: aspetta che il cubo sotto sia pieno
       cube.classList.replace('ascii-wait', 'cube-reveal'); ui.classList.remove('ci-wait');
-      if (window.rubikHold) { window.rubikHold(true); setTimeout(() => window.rubikHold(false), 900); }   // riprende a girare a scambio finito
+      if (window.rubikHold) { window.rubikHold(true); setTimeout(() => window.rubikHold(false), 700); }   // a scambio finito riprende a girare, accelerando piano
       // entered spegne anche cube-in: togliendo solo cube-reveal, il canvas ripartiva con cube-in (lampo)
       setTimeout(() => cube.classList.replace('cube-reveal', 'entered'), 700);
-      // il cubo si fa notare: ogni 2.6s gira una faccia e la rimette a posto
+      // il cubo si fa notare: ogni 2.6s gira una faccia e la rimette a posto (la prima dopo che ha ripreso a girare)
       tease = setInterval(() => window.rubikTease && window.rubikTease(), 2600);
-      setTimeout(() => !entered && window.rubikTease && window.rubikTease(), 900);
     }
 
     function enter(shuffle) {

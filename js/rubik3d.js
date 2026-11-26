@@ -314,7 +314,13 @@ function initRubikCube() {
   window.rubikSpin = function (dur, angle) { spin = { t0: performance.now(), dur, angle, done: 0 }; };
   // l'intro (js/boot.js) tiene il cubo fermo nella posa di riposo mentre il cubo ASCII lo costruisce:
   // quella posa e' icons/cube-ph.png, da cui e' fatto l'ASCII. false: riprende a girare piano
-  window.rubikHold = function (hold) { autoRotate = !hold; if (hold) cubeGroup.rotation.set(0, 0, 0); };
+  // Lasciato, riparte da fermo accelerando in ROT_IN ms: prima passava di colpo da 0 a velocita' piena
+  const ROT_IN = 1800;
+  let rotK = 1, rotT0 = 0;
+  window.rubikHold = function (hold) {
+    if (hold) { autoRotate = false; rotK = 0; cubeGroup.rotation.set(0, 0, 0); }
+    else if (!autoRotate) { autoRotate = true; rotT0 = performance.now(); }
+  };
   const easeInOut = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
   // fuori schermo non disegna: era un render WebGL a ogni frame anche a pagina scrollata
@@ -324,7 +330,10 @@ function initRubikCube() {
   (function render() {
     requestAnimationFrame(render);
     if (!onScreen) return;
-    if (autoRotate && !isMoving) cubeGroup.rotation.y += 0.004;
+    if (autoRotate && !isMoving) {
+      if (rotK < 1) { const k = Math.min(1, (performance.now() - rotT0) / ROT_IN); rotK = k * k * (3 - 2 * k); }
+      cubeGroup.rotation.y += 0.004 * rotK;
+    }
     if (spin) {
       const k = Math.min(1, (performance.now() - spin.t0) / spin.dur), a = spin.angle * easeInOut(k);
       cubeGroup.rotation.y += a - spin.done; spin.done = a;
