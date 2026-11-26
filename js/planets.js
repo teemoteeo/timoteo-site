@@ -7,7 +7,7 @@
 // pixel fissi + una sfera piena appena dentro che nasconde i puntini dietro):
 //   POLENTA   Marte + Luna, sempre insieme (i puntini sono quelli di POLENTA)
 //   Footprint la Terra da foto satellitare (NASA Blue Marble) con la heatmap 2020-2026 animata in rosso
-//   RAG       la Morte Nera, procedurale (deathStar())
+//   RAG       la Morte Nera di js/ships-sw.js (tools/deathstar-dots.js)
 // Le card .feat di selected work (index.html, data-planet) vengono spostate nello stage: si vede solo quella
 // del pianeta attivo, con la clip che gira. Il progetto si apre solo dalla card; i pianeti si trascinano.
 // Si parte da Footprint. Ogni corpo ha due palette (tema scuro / chiaro), cambiate su 'themechange'.
@@ -71,52 +71,30 @@
     return new T.Group().add(fill(fd, fl), layer(xyz, dots.length, at, dot));
   }
 
-  // Marte e Luna sono un corpo solo (Luna 0.51 come in POLENTA, accanto a Marte)
+  // Marte e Luna sono un corpo solo (Luna 0.51 come in POLENTA). La Luna sta in alto a destra, appena staccata
+  // (distanza 1.51 = 1 + 0.51): la coppia e' larga 2.76 invece di 3.13 e da attiva lascia piu' spazio alla card
   function polenta(mars, moon) {
     const m = dotBody(mars, [255, 165, 120, .88], [170, 72, 34, .9], '#1d1512', '#e9ddd3', 1.8);
     const l = dotBody(moon, [205, 208, 215, .59], [58, 60, 68, .85], '#17181c', '#e2e0da', 1.4);
-    l.position.set(1.62, .38, -.35); l.scale.setScalar(.51);
+    l.position.set(1.25, .85, 0); l.scale.setScalar(.51);
     const g = new T.Group().add(m, l);
     g.userData.tick = dt => { m.rotation.y += dt / 9; l.rotation.y += dt / 6.4; };
     g.userData.hit = [[m, 1], [l, 1]];
     return g;
   }
 
-  // Morte Nera procedurale, sullo stesso reticolo regolare della Terra (prima: punti a caso sulla mesh low-poly
-  // di js/ships-sw.js, troppo rumore). Trincea all'equatore con i bordi chiari, parabola concava nell'emisfero
-  // nord (anelli, bordo chiaro, fuoco acceso), pannelli a fasce con le giunture scure, qualche finestra accesa.
-  // Sfera con il buco della parabola + sfera interna che chiude la vista attraverso il buco.
-  function deathStar() {
-    const n = 52000, gold = Math.PI * (3 - Math.sqrt(5)), CUT = .34, axis = ll(-30, 30);
-    const hash = (a, b) => { let h = Math.imul(a * 374761393 + b * 668265263 | 0, 1274126177); h ^= h >>> 13; return (h >>> 0) % 1000 / 1000; };
-    const xyz = new Float32Array(n * 3), w = new Float32Array(n), lit = new Uint8Array(n);
-    for (let i = 0; i < n; i++) {
-      const lat = Math.asin(1 - 2 * (i + .5) / n) / D, lon = ((i * gold / D) % 360 + 540) % 360 - 180, p = ll(lon, lat);
-      const a = Math.acos(Math.min(1, p[0] * axis[0] + p[1] * axis[1] + p[2] * axis[2]));
-      let k = 1, v;
-      if (a < CUT) {   // parabola: conca profonda .12, piu' scura al centro, anelli concentrici
-        const t = a / CUT; k = 1 - .12 * (1 - t * t);
-        v = .3 + .5 * t; if (Math.abs((t * 5) % 1 - .5) > .4) v *= .55;
-        if (t < .07) { v = 1; lit[i] = 1; }
-      } else if (a < CUT + .035) v = 1;   // bordo della parabola
-      else if (Math.abs(lat) < 1.2) v = .12;   // trincea
-      else if (Math.abs(lat) < 2) v = 1;   // bordi della trincea
-      else {   // pannelli: fasce di 5 gradi, ogni fascia con la sua larghezza di pannello, toni vicini
-        const bi = Math.floor(lat / 5), cw = 5 + hash(bi, 1) * 7, x = (lon + 180 + hash(bi, 2) * 30) / cw, ci = Math.floor(x);
-        v = .7 + .3 * hash(bi, ci);
-        if ((lat / 5 - bi) < .12 || x - ci < .08) v *= .62;   // giunture
-        else if (hash(ci * 31 + bi, i % 211) < .004) lit[i] = 1;
-      }
-      xyz.set(p.map(c => c * k), i * 3); w[i] = v;
-    }
+  // Morte Nera: sfera con il buco della parabola + sfera interna che chiude la vista attraverso il buco
+  function deathStar({ axis, cut, dots }) {
+    const xyz = new Float32Array(dots.length * 3); dots.forEach(([x, y, z], i) => xyz.set([x, y, z], i * 3));
     const at = (i, L) => {
-      if (lit[i]) return L ? [.85, .5, 0, 1] : [1, .83, .5, 1];
-      const v = w[i];
-      return L ? [.5 - .36 * v, .5 - .36 * v, .54 - .36 * v, .45 + .5 * v] : [.66 * v + .12, .67 * v + .12, .71 * v + .12, .4 + .6 * v];
+      const w = dots[i][3];
+      if (dots[i][4]) return L ? [.85, .5, 0, 1] : [1, .83, .5, 1];
+      return L ? [.5 - .32 * w, .5 - .32 * w, .54 - .32 * w, .5 + .4 * w] : [.75 * w + .1, .76 * w + .1, .8 * w + .1, .55 + .4 * w];
     };
-    const shell = fill('#141418', '#dedcd6', 0, new T.SphereGeometry(.985, 64, 48, 0, Math.PI * 2, CUT, Math.PI - CUT));
+    const th = Math.acos(cut) + .02;
+    const shell = fill('#141418', '#dedcd6', 0, new T.SphereGeometry(.985, 64, 48, 0, Math.PI * 2, th, Math.PI - th));
     shell.quaternion.setFromUnitVectors(new T.Vector3(0, 1, 0), new T.Vector3(...axis));
-    const g = new T.Group().add(shell, fill('#0c0c0f', '#d2d0c9', .87), layer(xyz, n, at, 1.6));
+    const g = new T.Group().add(shell, fill('#0c0c0f', '#d2d0c9', .87), layer(xyz, dots.length, at, 1.5));
     g.userData.tick = dt => { g.rotation.y += dt / 9; };
     g.userData.hit = [[g, 1]];
     return g;
@@ -206,8 +184,8 @@
       W = stage.clientWidth;
       const u = stage.clientHeight / (2 * HH), X = W / 2 / u;   // px per unita'; meta' larghezza in unita'
       C = -X + 1;   // sopra e sotto stanno a C - R/2: la coppia piccola di POLENTA e' larga 1
-      // Marte+Luna davanti: la Luna finisce a C + R + 1.565 * BIG
-      stage.style.setProperty('--card-l', (C + R + 1.565 * BIG + .12 + X) * u + 'px');
+      // Marte+Luna davanti (centrati con dx): la Luna finisce a C + R + 1.38 * BIG
+      stage.style.setProperty('--card-l', (C + R + 1.38 * BIG + .12 + X) * u + 'px');
       const tall = Math.max(...ORDER.map(k => { const f = feats[k], d = f.style.display; f.style.display = 'grid'; const h = f.offsetHeight; f.style.display = d; return h; }));
       stage.style.minHeight = tall + 24 + 'px';
       H = stage.clientHeight;
@@ -224,12 +202,19 @@
 
     const bodies = [];
     let sel = ORDER.indexOf('fp');
-    // ogni corpo: outer (posto e scala sulla ruota) > spin (la rotazione del drag) > il corpo (che gira da se')
+    // ogni corpo: outer (posto e scala sulla ruota) > ... > spin (la rotazione del drag) > la sfera (che gira da se').
+    // Uno spin per ogni sfera di userData.hit: Marte e Luna si trascinano ciascuno per conto suo
     function place(id, obj, big, name) {
-      const spin = new T.Group().add(obj), outer = new T.Group().add(spin);
-      outer.userData = obj.userData; sc.add(outer);
+      const outer = new T.Group(); outer.userData = obj.userData; sc.add(outer);
+      const spins = obj.userData.hit.map(([o]) => {
+        const S = new T.Group();
+        if (o === obj) { outer.add(S); S.add(o); }
+        else { const p = o.parent; S.position.copy(o.position); o.position.set(0, 0, 0); p.remove(o); p.add(S); S.add(o); }
+        return { S, vx: 0, vy: 0 };
+      });
+      if (!obj.parent) outer.add(obj);
       const l = document.createElement('div'); l.className = 'sys-label'; l.textContent = l.dataset.n = name; stage.appendChild(l);
-      bodies[ORDER.indexOf(id)] = { id, obj: outer, spin, vx: 0, vy: 0, big, l };
+      bodies[ORDER.indexOf(id)] = { id, obj: outer, spins, big, l };
     }
     ORDER.forEach(id => {   // link per la tastiera: a fuoco attivano il pianeta
       const a = document.createElement('a'); a.href = P[id].url; a.textContent = P[id].name;
@@ -240,12 +225,12 @@
     const J = p => fetch('images/dots/' + p + '.json').then(x => x.json());
     const IMG = src => new Promise((ok, ko) => { const i = new Image(); i.onload = () => ok(i); i.onerror = ko; i.src = src; });
     const SCRIPT = src => new Promise((ok, ko) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = ko; document.head.appendChild(s); });
-    Promise.all([J('mars-dots'), J('moon-dots'), IMG('images/dots/earth.jpg'), window.FOOTPRINT ? 0 : SCRIPT('js/projects/data/footprint.js?v=20261003k')])
-      .then(([mars, moon, img]) => {
-        const pol = polenta(mars, moon); pol.userData.dx = -.565;   // Marte + Luna: centrata la coppia, non Marte (per unita' di scala)
+    Promise.all([J('mars-dots'), J('moon-dots'), J('deathstar-dots'), IMG('images/dots/earth.jpg'), window.FOOTPRINT ? 0 : SCRIPT('js/projects/data/footprint.js?v=20261003k')])
+      .then(([mars, moon, dsd, img]) => {
+        const pol = polenta(mars, moon); pol.userData.dx = -.38;   // Marte + Luna: centrata la coppia, non Marte (per unita' di scala)
         place('pol', pol, 1, 'polenta');
         place('fp', footprint(img), 1.1, 'footprint');
-        place('rag', deathStar(), 1, 'rag');
+        place('rag', deathStar(dsd), 1, 'rag');
       });
     document.addEventListener('themechange', () => { const L = isLight(); themed.forEach(f => f(L)); });
 
@@ -268,11 +253,13 @@
       const cw = W + 2 * PX, ch = H + 2 * PX;   // in px dello stage, non del canvas
       return [(v.x + 1) / 2 * cw - PX, (1 - v.y) / 2 * ch - PX, Math.abs(v2.x - v.x) / 2 * cw];
     }
-    function hitAt(x, y) {   // il piu' vicino alla camera tra quelli sotto il puntatore
+    // il corpo piu' vicino alla camera sotto il puntatore; in hitK la sfera presa (Marte o Luna)
+    let hitK = 0;
+    function hitAt(x, y) {
       let best = -1, bz = -1e9;
       for (let i = 0; i < bodies.length; i++) {
         const b = bodies[i]; if (!b) continue;
-        for (const [mesh, rad] of b.obj.userData.hit) { const [cx, cy, cr] = screenCircle(mesh, rad); if (Math.hypot(x - cx, y - cy) < cr * 1.15 + 6 && b.obj.position.z > bz) { best = i; bz = b.obj.position.z; } }
+        b.obj.userData.hit.forEach(([mesh, rad], k) => { const [cx, cy, cr] = screenCircle(mesh, rad); if (Math.hypot(x - cx, y - cy) < cr * 1.15 + 6 && b.obj.position.z > bz) { best = i; bz = b.obj.position.z; hitK = k; } });
       }
       return best;
     }
@@ -287,29 +274,34 @@
     // ruota), 1 raggio trascinato = 1 radiante; lasciato, continua per inerzia. Prenderne uno sopra o sotto lo
     // seleziona: la ruota lo porta davanti mentre lo stai girando
     let drag = null;
-    const q = new T.Quaternion(), AX = new T.Vector3(1, 0, 0), AY = new T.Vector3(0, 1, 0), Q0 = new T.Quaternion();
-    function turn(b, ax, ay) {
-      b.spin.quaternion.premultiply(q.setFromAxisAngle(AY, ax)).premultiply(q.setFromAxisAngle(AX, ay));
+    const q = new T.Quaternion(), qp = new T.Quaternion(), AX = new T.Vector3(1, 0, 0), AY = new T.Vector3(0, 1, 0), Q0 = new T.Quaternion();
+    // gira lo spin sp di (ax, ay) radianti attorno agli assi dello schermo: lo spin puo' stare dentro un gruppo
+    // ruotato (la Terra e' inclinata di 41 gradi), quindi la rotazione si porta nel suo spazio: P^-1 q P
+    function turn(sp, ax, ay) {
+      q.setFromAxisAngle(AX, ay).multiply(qp.setFromAxisAngle(AY, ax));
+      sp.S.parent.getWorldQuaternion(qp);
+      sp.S.quaternion.premultiply(q.premultiply(qp.clone().invert()).multiply(qp));
     }
     stage.addEventListener('pointerdown', e => {
       if (e.button) return;
       const i = hitAt(...local(e)); if (i < 0) return;
       e.preventDefault(); stage.setPointerCapture(e.pointerId);
-      drag = { b: bodies[i], x: e.clientX, y: e.clientY, t: performance.now() }; drag.b.vx = drag.b.vy = 0;
+      const b = bodies[i];
+      drag = { b, k: hitK, sp: b.spins[hitK], x: e.clientX, y: e.clientY, t: performance.now() }; drag.sp.vx = drag.sp.vy = 0;
       stage.classList.add('is-drag'); select(i);
     });
     stage.addEventListener('pointermove', e => {
       ptr = local(e);
       if (!drag) return;
-      const b = drag.b, cr = Math.max(20, screenCircle(...b.obj.userData.hit[0])[2]), now = performance.now(), dt = Math.max(.008, (now - drag.t) / 1000);
+      const { b, k, sp } = drag, cr = Math.max(14, screenCircle(...b.obj.userData.hit[k])[2]), now = performance.now(), dt = Math.max(.008, (now - drag.t) / 1000);
       const ax = (e.clientX - drag.x) / cr, ay = (e.clientY - drag.y) / cr;
-      turn(b, ax, ay);
-      b.vx += (ax / dt - b.vx) * .5; b.vy += (ay / dt - b.vy) * .5;   // velocita' angolare, smussata
+      turn(sp, ax, ay);
+      sp.vx += (ax / dt - sp.vx) * .5; sp.vy += (ay / dt - sp.vy) * .5;   // velocita' angolare, smussata
       drag.x = e.clientX; drag.y = e.clientY; drag.t = now;
     });
     const drop = () => {
       if (!drag) return;
-      if (performance.now() - drag.t > 80) drag.b.vx = drag.b.vy = 0;   // fermo prima di lasciare: niente lancio
+      if (performance.now() - drag.t > 80) drag.sp.vx = drag.sp.vy = 0;   // fermo prima di lasciare: niente lancio
       drag = null; armed = false; stage.classList.remove('is-drag');
     };
     stage.addEventListener('pointerup', drop);
@@ -339,10 +331,11 @@
         if (!b) return;
         // th: 0 davanti (destra della ruota), +120 sopra, -120 sotto; front: 1 davanti, 0 sopra/sotto
         b.h = (b.h || 0) + ((i === hot) - (b.h || 0)) * Math.min(1, dt * 10 || 1);
-        if (!drag || drag.b !== b) {   // inerzia del drag, poi torna piano dritto (Footprint deve guardare l'Europa)
-          if (Math.hypot(b.vx, b.vy) > .05) { turn(b, b.vx * dt, b.vy * dt); const k = Math.exp(-dt * 2.5); b.vx *= k; b.vy *= k; }
-          else { b.vx = b.vy = 0; b.spin.quaternion.slerp(Q0, Math.min(1, dt * 1.2)); }
-        }
+        b.spins.forEach(sp => {   // inerzia del drag, poi torna piano dritto (Footprint deve guardare l'Europa)
+          if (drag && drag.sp === sp) return;
+          if (Math.hypot(sp.vx, sp.vy) > .05) { turn(sp, sp.vx * dt, sp.vy * dt); const k = Math.exp(-dt * 2.5); sp.vx *= k; sp.vy *= k; }
+          else { sp.vx = sp.vy = 0; sp.S.quaternion.slerp(Q0, Math.min(1, dt * 1.2)); }
+        });
         const th = (off - i) * 120 * D, front = (Math.cos(th) + .5) / 1.5;
         const s = b.big * (SMALL + (BIG - SMALL) * front) * (1 + .12 * b.h);   // dietro (-1/3) ancora piu' piccolo
         b.obj.position.set(C + R * Math.cos(th) + (b.obj.userData.dx || 0) * s, R * Math.sin(th), front);   // z: davanti sopra
@@ -350,7 +343,7 @@
         if (b.obj.userData.tick) b.obj.userData.tick(dt, b.l);
         if (i !== sel && b.l.textContent !== b.l.dataset.n) b.l.textContent = b.l.dataset.n;   // il mese di Footprint solo da attivo
         const [cx, cy, cr] = screenCircle(...b.obj.userData.hit[0]);
-        const mid = b.id === 'pol' ? cx + cr * .8 : cx;   // etichetta di POLENTA sotto la coppia
+        const mid = b.id === 'pol' ? cx + cr * .38 : cx;   // etichetta di POLENTA sotto la coppia
         b.l.style.transform = `translate(${mid - b.l.offsetWidth / 2}px, ${cy + cr + 8}px)`;
         b.l.classList.toggle('is-on', i === sel);
         b.l.style.opacity = Math.max(0, Math.min(1, front * 3 + 1));   // chi passa dietro: niente etichetta
