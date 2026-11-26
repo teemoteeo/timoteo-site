@@ -5,13 +5,15 @@
 .system { display: none; }
 
 @media (min-width: 901px) and (hover: hover) {
-  .system { display: block; margin: -18px 0 12px; }
-  .system .sections-header-col { margin-bottom: 8px; }
+  .system { display: block; margin: -17px 0 var(--title-above, 28px); }
+  .system .sections-header-col { margin-bottom: -13px; }   /* lo stage ha ~27px vuoti sopra il pianeta in alto: cosi' sono 14 */
   .system ~ .featured { display: none; }   /* le card ora stanno nello stage */
+  @media (max-width: 1279px) { .system { margin-top: -12px; } }   /* l'hero sopra ha un altro layout: cosi' sempre 28 */
 
   .sys-stage { position: relative; height: clamp(230px, 28vh, 260px); }
   .sys-stage canvas { position: absolute; display: block; pointer-events: none; }   /* sborda dallo stage: misure e inset da js/planets.js size() */
-  .sys-stage.is-hit { cursor: pointer; }
+  .sys-stage.is-hit { cursor: grab; }
+  .sys-stage.is-drag { cursor: grabbing; }
   .sys-label {
     position: absolute; left: 0; top: 0; pointer-events: none; white-space: nowrap;
     font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--fg-muted);
@@ -26,6 +28,11 @@
   .sys-card .feat { --mh: 92px; grid-template-columns: 200px minmax(0, 1fr) auto; column-gap: 18px; }   /* la striscia di sempre, anteprima piu' stretta */
   .sys-card .feat-desc { display: block; max-height: none; }   /* una card sola: il testo intero, senza clamp */
   .sys-card .feat-img { height: auto; min-height: var(--mh); align-self: stretch; }   /* alta quanto il testo */
+  /* POLENTA: il video e' 660x254, Marte e Luna stanno in x 92-560. Nella miniatura quasi quadrata cover teneva
+     solo Marte: contain, largo 125% (la coppia riempie la miniatura con un po' di margine), sfondo = sfondo del video */
+  .sys-card .feat[data-planet="pol"] .feat-img { background: #05070b; }
+  :root[data-theme="light"] .sys-card .feat[data-planet="pol"] .feat-img { background: #e8e6e4; }
+  .sys-card .pv-l { object-fit: contain; width: 125%; left: -12.5%; }
   /* card stretta (schermi sotto ~1300px): anteprima | testo, i numeri sotto il testo */
   @container (max-width: 640px) {
     .sys-card .feat { --mh: 84px; grid-template-columns: 150px minmax(0, 1fr); column-gap: 14px; row-gap: 6px; }

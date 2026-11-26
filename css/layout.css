@@ -452,3 +452,24 @@
   .sidebar-contacts { gap: 6px; }
   .ct.ct-cv { margin-right: 8px; }   /* 8 + 6 = column-gap 14px */
 }
+
+/* ===== RITMO DEI TITOLI DI SEZIONE =====
+   Ogni titolo /// o // ha lo stesso spazio: --title-above dal contenuto sopra, --title-below dal contenuto
+   sotto, come nella sidebar (/// code, /// oracle), su desktop e mobile. Misurati sul contenuto visibile,
+   non sui box: alcuni valori compensano padding e line-height dei blocchi vicini. Il titolo di selected work
+   (desktop) sta in css/planets.css. */
+:root { --title-above: 28px; --title-below: 14px; }
+.sections-header-col { margin-bottom: var(--title-below); }
+.sections-header-col.display-header { margin-bottom: calc(var(--title-below) - 7px); }   /* + line-height delle righe sotto */
+.bio-block-label.is-spaced { margin-bottom: var(--title-below); }
+html .tech-grid-section .section-title { margin-bottom: var(--title-below); }   /* html: components.css arriva dopo */
+.bio-block { margin-bottom: var(--title-above); }
+.section.display-section { margin-bottom: 0; }
+html .tech-grid-section { margin-top: calc(var(--title-above) - 7px); }   /* + line-height dell'ultima riga sopra */
+@media (max-width: 900px) {
+  .container .featured { margin: 10px 0 var(--title-above); }
+  .container .bio-block { margin-bottom: var(--title-above); }
+  .container .section { margin-bottom: var(--title-above); }
+  .container .section.display-section { margin-bottom: 0; }
+  html .container .tech-grid-section { margin-top: calc(var(--title-above) - 7px); }
+}

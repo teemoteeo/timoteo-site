@@ -100,7 +100,7 @@
   .oracle {
     order: 15;
     grid-column: 1 / -1;
-    margin: 28px 0 8px;
+    margin: calc(var(--title-above, 28px) - 9px) 0 8px;   /* - il padding dell'ultima riga di other sopra */
   }
   .oracle-ball { width: 260px; height: 260px; max-width: 100%; margin: 14px auto 16px; }
   .oracle-ph, #eb-canvas { width: 100%; height: auto; aspect-ratio: 1; }
