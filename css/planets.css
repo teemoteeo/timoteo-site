@@ -5,7 +5,8 @@
 .system { display: none; }
 
 @media (min-width: 901px) and (hover: hover) {
-  .system { display: block; margin: -6px 0 24px; }
+  .system { display: block; margin: 4px 0 24px; }
+  .system .sections-header-col { margin-bottom: 14px; }   /* come in .featured */
   .system ~ .featured { display: none; }   /* le card ora stanno nello stage */
 
   .sys-stage { position: relative; height: clamp(280px, 34vh, 310px); }
@@ -23,6 +24,8 @@
   .sys-card .feat:not(.is-active) { display: none; }
   .sys-card { container-type: inline-size; }
   .sys-card .feat { --mh: 92px; grid-template-columns: 200px minmax(0, 1fr) auto; column-gap: 18px; }   /* la striscia di sempre, anteprima piu' stretta */
+  .sys-card .feat-desc { display: block; max-height: none; }   /* una card sola: il testo intero, senza clamp */
+  .sys-card .feat-img { height: auto; min-height: var(--mh); align-self: stretch; }   /* alta quanto il testo */
   /* card stretta (schermi sotto ~1300px): anteprima | testo, i numeri sotto il testo */
   @container (max-width: 640px) {
     .sys-card .feat { --mh: 84px; grid-template-columns: 150px minmax(0, 1fr); column-gap: 14px; row-gap: 6px; }
@@ -31,6 +34,12 @@
   }
   @container (max-width: 460px) {
     .sys-card .feat { grid-template-columns: 112px minmax(0, 1fr); }
+  }
+  /* sotto ~1000px di finestra: niente miniatura, tutto lo spazio al testo */
+  @container (max-width: 340px) {
+    .sys-card .feat { grid-template-columns: minmax(0, 1fr); padding: 12px 14px; }
+    .sys-card .feat-img { display: none; }
+    .sys-card .feat-foot { grid-column: 1; padding-right: 0; }
   }
   .sys-card .feat.is-active { animation: sys-in .25s ease-out; }
   @keyframes sys-in { from { opacity: 0; transform: translateX(-6px); } }

@@ -175,18 +175,29 @@
     // il canvas sborda dallo stage di PAD (unita' di scena) per lato: mentre la ruota gira i pianeti escono
     // sopra, sotto e a sinistra, e dentro lo stage venivano tagliati come in una scatola
     const PAD = .6;
+    // La scala (u, px per unita') viene dall'altezza del css; se la card piu' alta delle tre non ci sta (schermi
+    // stretti: card stretta, testo lungo) lo stage cresce ma i pianeti restano della stessa misura, centrati.
     let W = 1, H = 1, C = 0, PX = 0;
     function size() {
-      W = stage.clientWidth; H = stage.clientHeight;
-      const X = HH * W / H, u = H / (2 * HH);   // meta' larghezza in unita' di scena; px per unita'
-      PX = PAD * u; r.setSize(W + 2 * PX, H + 2 * PX); r.domElement.style.inset = -PX + 'px';
-      cam.left = -X - PAD; cam.right = X + PAD; cam.top = HH + PAD; cam.bottom = -HH - PAD; cam.updateProjectionMatrix();
-      cam.position.set(0, 0, 20); cam.lookAt(0, 0, 0);
+      stage.style.minHeight = '';
+      W = stage.clientWidth;
+      const u = stage.clientHeight / (2 * HH), X = W / 2 / u;   // px per unita'; meta' larghezza in unita'
       C = -X + 1;   // sopra e sotto stanno a C - R/2: la coppia piccola di POLENTA e' larga 1
       // Marte+Luna davanti: la Luna finisce a C + R + 1.565 * BIG
       stage.style.setProperty('--card-l', (C + R + 1.565 * BIG + .12 + X) * u + 'px');
+      const tall = Math.max(...ORDER.map(k => { const f = feats[k], d = f.style.display; f.style.display = 'grid'; const h = f.offsetHeight; f.style.display = d; return h; }));
+      stage.style.minHeight = tall + 24 + 'px';
+      H = stage.clientHeight;
+      const Y = H / 2 / u;   // meta' altezza in unita'
+      PX = Math.round(PAD * u);
+      const cw = W + 2 * PX, ch = H + 2 * PX, now = r.getSize(new T.Vector2());
+      // setSize svuota il canvas: dopo il render del frame lasciava un frame vuoto a ogni cambio di card
+      if (now.x !== cw || now.y !== ch) { r.setSize(cw, ch); r.domElement.style.inset = -PX + 'px'; }
+      const p = PX / u;
+      cam.left = -X - p; cam.right = X + p; cam.top = Y + p; cam.bottom = -Y - p; cam.updateProjectionMatrix();
+      cam.position.set(0, 0, 20); cam.lookAt(0, 0, 0);
     }
-    new ResizeObserver(size).observe(stage); size();
+    const ro = new ResizeObserver(size); ro.observe(stage); ro.observe(card); size();   // card: i font che arrivano tardi
 
     const bodies = [];
     let sel = ORDER.indexOf('fp');
