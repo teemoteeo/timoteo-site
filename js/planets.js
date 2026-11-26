@@ -2,7 +2,8 @@
 // SELECTED WORK: RUOTA DI PIANETI + LA CARD DEL PIANETA ATTIVO
 // ============================
 // Layout: a sinistra una ruota con i tre pianeti (l'attivo davanti e grande, gli altri sopra e sotto),
-// a destra dell'attivo la sua card. Hover su un pianeta sopra o sotto: la ruota gira e lo porta davanti.
+// a destra dell'attivo la sua card. Click su un pianeta: la ruota gira e lo porta davanti. Hover: la sua
+// card in anteprima, che torna quella del selezionato quando togli il cursore.
 // Tre progetti come pianeti a puntini, nello stile di DotPlanet.jsx di POLENTA (Points a
 // pixel fissi + una sfera piena appena dentro che nasconde i puntini dietro):
 //   POLENTA   Marte + Luna, sempre insieme (i puntini sono quelli di POLENTA)
@@ -269,12 +270,13 @@
       return best;
     }
     const local = e => { const b = stage.getBoundingClientRect(); return [e.clientX - b.left, e.clientY - b.top]; };
-    // hover su un pianeta sopra o sotto per DWELL secondi a ruota ferma: la ruota lo porta davanti. Il test si
-    // rifa' a ogni frame sull'ultima posizione del mouse (la ruota si muove anche col mouse fermo). Dopo una
-    // rotazione sotto il mouse fermo arriva un altro pianeta: non conta finche' il mouse non e' uscito dai
-    // pianeti a ruota ferma (armed). I pianeti non aprono niente: il progetto si apre solo dalla card.
-    const DWELL = .25, DIM = .35;   // DIM: luce dei puntini a pianeta spento (0-1)
-    let ptr = null, armed = true, dwell = 0, hot = -1, hov = -1;   // hot: il pianeta in attesa, cresce un po' (loop); hov: sotto il mouse
+    // Click (o presa per il drag) su un pianeta: la ruota lo porta davanti, e' il selezionato. Hover su un altro
+    // pianeta a ruota ferma: la sua card in anteprima (hot, e il pianeta cresce un po'); tolto il cursore torna
+    // la card del selezionato. Il test si rifa' a ogni frame sull'ultima posizione del mouse (la ruota si muove
+    // anche col mouse fermo); dopo un click, il pianeta che arriva sotto il mouse fermo non fa anteprima finche'
+    // il mouse non esce dai pianeti (armed). I pianeti non aprono niente: il progetto si apre solo dalla card.
+    const DIM = .35;   // luce dei puntini a pianeta spento (0-1)
+    let ptr = null, armed = true, hot = -1, hov = -1;   // hot: anteprima della card; hov: sotto il mouse (luce)
     // drag: il pianeta preso gira su se stesso come un mappamondo (premultiply: assi dello schermo, la ruota non
     // ruota), 1 raggio trascinato = 1 radiante; lasciato, continua per inerzia. Prenderne uno sopra o sotto lo
     // seleziona: la ruota lo porta davanti mentre lo stai girando
@@ -293,7 +295,7 @@
       e.preventDefault(); stage.setPointerCapture(e.pointerId);
       const b = bodies[i];
       drag = { b, k: hitK, sp: b.spins[hitK], x: e.clientX, y: e.clientY, t: performance.now() }; drag.sp.vx = drag.sp.vy = 0;
-      stage.classList.add('is-drag'); select(i);
+      stage.classList.add('is-drag'); select(i); armed = false;
     });
     stage.addEventListener('pointermove', e => {
       ptr = local(e);
@@ -316,12 +318,8 @@
       const i = ptr ? hitAt(...ptr) : -1, settled = tw >= 1;
       hov = drag ? bodies.indexOf(drag.b) : i;
       stage.classList.toggle('is-hit', i >= 0);
-      hot = -1;
-      if (!settled || drag) { dwell = 0; return; }
-      if (i < 0) { armed = true; dwell = 0; return; }
-      if (i === sel || !armed) { dwell = 0; return; }
-      hot = i;
-      if ((dwell += dt) >= DWELL || still) { armed = false; dwell = 0; select(i); }
+      if (i < 0 && settled) armed = true;   // durante il giro il cursore passa nel vuoto: non conta
+      hot = settled && !drag && armed && i >= 0 && i !== sel ? i : -1;
     }
 
     // loop: fermo fuori schermo
@@ -332,7 +330,7 @@
       const dt = still ? 0 : Math.min(.05, (now - last) / 1000); last = now;
       tw = still ? 1 : Math.min(1, tw + dt / SPIN);
       off = from + (target - from) * (tw < .5 ? 4 * tw ** 3 : 1 - (2 - 2 * tw) ** 3 / 2);
-      if (tw >= .45) showCard(ORDER[sel]);
+      if (tw >= .45) showCard(ORDER[hot >= 0 ? hot : sel]);   // l'anteprima dell'hover, se c'e'
       bodies.forEach((b, i) => {
         if (!b) return;
         // th: 0 davanti (destra della ruota), +120 sopra, -120 sotto; front: 1 davanti, 0 sopra/sotto
